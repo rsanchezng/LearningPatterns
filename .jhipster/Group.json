@@ -1,0 +1,47 @@
+{
+    "name": "Group",
+    "fields": [
+        {
+            "fieldName": "groupCreatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "groupCreationDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "groupModifiedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "groupModifiedDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "subject",
+            "otherEntityRelationshipName": "group",
+            "relationshipName": "subject",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "teacher",
+            "otherEntityRelationshipName": "group",
+            "relationshipName": "teacher",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191105150550",
+    "entityTableName": "group",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

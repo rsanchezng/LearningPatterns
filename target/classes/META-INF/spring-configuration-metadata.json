@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "application",
+      "type": "com.fime.config.ApplicationProperties",
+      "sourceType": "com.fime.config.ApplicationProperties"
+    },
+    {
+      "name": "spring.datasource.hikari",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.fime.config.CloudDatabaseConfiguration",
+      "sourceMethod": "dataSource()"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

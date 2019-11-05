@@ -1,0 +1,57 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="subject">
+            <h2><span>Subject</span> {{subject.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Subject Name</span></dt>
+                <dd>
+                    <span>{{subject.subjectName}}</span>
+                </dd>
+                <dt><span>Subject Description</span></dt>
+                <dd>
+                    <span>{{subject.subjectDescription}}</span>
+                </dd>
+                <dt><span>Subject Credits</span></dt>
+                <dd>
+                    <span>{{subject.subjectCredits}}</span>
+                </dd>
+                <dt><span>Subject Created By</span></dt>
+                <dd>
+                    <span>{{subject.subjectCreatedBy}}</span>
+                </dd>
+                <dt><span>Subject Creation Date</span></dt>
+                <dd>
+                    <span>{{subject.subjectCreationDate}}</span>
+                </dd>
+                <dt><span>Subject Modified By</span></dt>
+                <dd>
+                    <span>{{subject.subjectModifiedBy}}</span>
+                </dd>
+                <dt><span>Subject Modified Date</span></dt>
+                <dd>
+                    <span>{{subject.subjectModifiedDate}}</span>
+                </dd>
+                <dt><span>Teacher</span></dt>
+                <dd>
+                    <div *ngIf="subject.teacher">
+                        <a [routerLink]="['/teacher', subject.teacher?.id, 'view']">{{subject.teacher?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/subject', subject.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

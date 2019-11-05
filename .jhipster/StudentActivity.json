@@ -1,0 +1,63 @@
+{
+    "name": "StudentActivity",
+    "fields": [
+        {
+            "fieldName": "activityStartDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "activityEndDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "activityGrade",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "studentActivityGradeDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "studentActivityCreatedDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "studentActivityCreatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "studentActivityModifiedDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "studentActivityModifiedBy",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "activity",
+            "otherEntityRelationshipName": "studentActivity",
+            "relationshipName": "activity",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "student",
+            "otherEntityRelationshipName": "studentActivity",
+            "relationshipName": "student",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191105150554",
+    "entityTableName": "student_activity",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

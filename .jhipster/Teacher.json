@@ -1,0 +1,48 @@
+{
+    "name": "Teacher",
+    "fields": [
+        {
+            "fieldName": "teacherFirstName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "teacherLastName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "teacherEmail",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "teacherPassword",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "teacherCreatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "teacherCreationDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "teacherModifiedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "teacherModifiedDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [],
+    "changelogDate": "20191105150552",
+    "entityTableName": "teacher",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

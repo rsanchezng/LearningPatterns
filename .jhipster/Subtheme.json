@@ -1,0 +1,48 @@
+{
+    "name": "Subtheme",
+    "fields": [
+        {
+            "fieldName": "subthemeName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "subthemeDescription",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "subthemeCreatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "subthemeCreationDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "subthemeModifiedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "subthemeModifiedDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "theme",
+            "otherEntityRelationshipName": "subtheme",
+            "relationshipName": "theme",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191105150548",
+    "entityTableName": "subtheme",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubjectResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Learning Patterns</a> &gt; <a href="index.source.html" class="el_package">com.fime.web.rest</a> &gt; <span class="el_source">SubjectResource.java</span></div><h1>SubjectResource.java</h1><pre class="source lang-java linenums">package com.fime.web.rest;
+
+import com.fime.domain.Subject;
+import com.fime.repository.SubjectRepository;
+import com.fime.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * REST controller for managing {@link com.fime.domain.Subject}.
+ */
+@RestController
+@RequestMapping(&quot;/api&quot;)
+public class SubjectResource {
+
+<span class="nc" id="L28">    private final Logger log = LoggerFactory.getLogger(SubjectResource.class);</span>
+
+    private static final String ENTITY_NAME = &quot;subject&quot;;
+
+    @Value(&quot;${jhipster.clientApp.name}&quot;)
+    private String applicationName;
+
+    private final SubjectRepository subjectRepository;
+
+<span class="nc" id="L37">    public SubjectResource(SubjectRepository subjectRepository) {</span>
+<span class="nc" id="L38">        this.subjectRepository = subjectRepository;</span>
+<span class="nc" id="L39">    }</span>
+
+    /**
+     * {@code POST  /subjects} : Create a new subject.
+     *
+     * @param subject the subject to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new subject, or with status {@code 400 (Bad Request)} if the subject has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping(&quot;/subjects&quot;)
+    public ResponseEntity&lt;Subject&gt; createSubject(@RequestBody Subject subject) throws URISyntaxException {
+<span class="nc" id="L50">        log.debug(&quot;REST request to save Subject : {}&quot;, subject);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (subject.getId() != null) {</span>
+<span class="nc" id="L52">            throw new BadRequestAlertException(&quot;A new subject cannot already have an ID&quot;, ENTITY_NAME, &quot;idexists&quot;);</span>
+        }
+<span class="nc" id="L54">        Subject result = subjectRepository.save(subject);</span>
+<span class="nc" id="L55">        return ResponseEntity.created(new URI(&quot;/api/subjects/&quot; + result.getId()))</span>
+<span class="nc" id="L56">            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))</span>
+<span class="nc" id="L57">            .body(result);</span>
+    }
+
+    /**
+     * {@code PUT  /subjects} : Updates an existing subject.
+     *
+     * @param subject the subject to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subject,
+     * or with status {@code 400 (Bad Request)} if the subject is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the subject couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping(&quot;/subjects&quot;)
+    public ResponseEntity&lt;Subject&gt; updateSubject(@RequestBody Subject subject) throws URISyntaxException {
+<span class="nc" id="L71">        log.debug(&quot;REST request to update Subject : {}&quot;, subject);</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (subject.getId() == null) {</span>
+<span class="nc" id="L73">            throw new BadRequestAlertException(&quot;Invalid id&quot;, ENTITY_NAME, &quot;idnull&quot;);</span>
+        }
+<span class="nc" id="L75">        Subject result = subjectRepository.save(subject);</span>
+<span class="nc" id="L76">        return ResponseEntity.ok()</span>
+<span class="nc" id="L77">            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, subject.getId().toString()))</span>
+<span class="nc" id="L78">            .body(result);</span>
+    }
+
+    /**
+     * {@code GET  /subjects} : get all the subjects.
+     *
+
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of subjects in body.
+     */
+    @GetMapping(&quot;/subjects&quot;)
+    public List&lt;Subject&gt; getAllSubjects() {
+<span class="nc" id="L89">        log.debug(&quot;REST request to get all Subjects&quot;);</span>
+<span class="nc" id="L90">        return subjectRepository.findAll();</span>
+    }
+
+    /**
+     * {@code GET  /subjects/:id} : get the &quot;id&quot; subject.
+     *
+     * @param id the id of the subject to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the subject, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping(&quot;/subjects/{id}&quot;)
+    public ResponseEntity&lt;Subject&gt; getSubject(@PathVariable Long id) {
+<span class="nc" id="L101">        log.debug(&quot;REST request to get Subject : {}&quot;, id);</span>
+<span class="nc" id="L102">        Optional&lt;Subject&gt; subject = subjectRepository.findById(id);</span>
+<span class="nc" id="L103">        return ResponseUtil.wrapOrNotFound(subject);</span>
+    }
+
+    /**
+     * {@code DELETE  /subjects/:id} : delete the &quot;id&quot; subject.
+     *
+     * @param id the id of the subject to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping(&quot;/subjects/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteSubject(@PathVariable Long id) {
+<span class="nc" id="L114">        log.debug(&quot;REST request to delete Subject : {}&quot;, id);</span>
+<span class="nc" id="L115">        subjectRepository.deleteById(id);</span>
+<span class="nc" id="L116">        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

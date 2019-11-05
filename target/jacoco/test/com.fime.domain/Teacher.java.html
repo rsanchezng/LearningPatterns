@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Teacher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Learning Patterns</a> &gt; <a href="index.source.html" class="el_package">com.fime.domain</a> &gt; <span class="el_source">Teacher.java</span></div><h1>Teacher.java</h1><pre class="source lang-java linenums">package com.fime.domain;
+
+import javax.persistence.*;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+
+/**
+ * A Teacher.
+ */
+@Entity
+@Table(name = &quot;teacher&quot;)
+<span class="nc" id="L13">public class Teacher implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = &quot;sequenceGenerator&quot;)
+    @SequenceGenerator(name = &quot;sequenceGenerator&quot;)
+    private Long id;
+
+    @Column(name = &quot;teacher_first_name&quot;)
+    private String teacherFirstName;
+
+    @Column(name = &quot;teacher_last_name&quot;)
+    private String teacherLastName;
+
+    @Column(name = &quot;teacher_email&quot;)
+    private String teacherEmail;
+
+    @Column(name = &quot;teacher_password&quot;)
+    private String teacherPassword;
+
+    @Column(name = &quot;teacher_created_by&quot;)
+    private String teacherCreatedBy;
+
+    @Column(name = &quot;teacher_creation_date&quot;)
+    private LocalDate teacherCreationDate;
+
+    @Column(name = &quot;teacher_modified_by&quot;)
+    private String teacherModifiedBy;
+
+    @Column(name = &quot;teacher_modified_date&quot;)
+    private LocalDate teacherModifiedDate;
+
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    public Long getId() {
+<span class="nc" id="L48">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="nc" id="L52">        this.id = id;</span>
+<span class="nc" id="L53">    }</span>
+
+    public String getTeacherFirstName() {
+<span class="nc" id="L56">        return teacherFirstName;</span>
+    }
+
+    public Teacher teacherFirstName(String teacherFirstName) {
+<span class="nc" id="L60">        this.teacherFirstName = teacherFirstName;</span>
+<span class="nc" id="L61">        return this;</span>
+    }
+
+    public void setTeacherFirstName(String teacherFirstName) {
+<span class="nc" id="L65">        this.teacherFirstName = teacherFirstName;</span>
+<span class="nc" id="L66">    }</span>
+
+    public String getTeacherLastName() {
+<span class="nc" id="L69">        return teacherLastName;</span>
+    }
+
+    public Teacher teacherLastName(String teacherLastName) {
+<span class="nc" id="L73">        this.teacherLastName = teacherLastName;</span>
+<span class="nc" id="L74">        return this;</span>
+    }
+
+    public void setTeacherLastName(String teacherLastName) {
+<span class="nc" id="L78">        this.teacherLastName = teacherLastName;</span>
+<span class="nc" id="L79">    }</span>
+
+    public String getTeacherEmail() {
+<span class="nc" id="L82">        return teacherEmail;</span>
+    }
+
+    public Teacher teacherEmail(String teacherEmail) {
+<span class="nc" id="L86">        this.teacherEmail = teacherEmail;</span>
+<span class="nc" id="L87">        return this;</span>
+    }
+
+    public void setTeacherEmail(String teacherEmail) {
+<span class="nc" id="L91">        this.teacherEmail = teacherEmail;</span>
+<span class="nc" id="L92">    }</span>
+
+    public String getTeacherPassword() {
+<span class="nc" id="L95">        return teacherPassword;</span>
+    }
+
+    public Teacher teacherPassword(String teacherPassword) {
+<span class="nc" id="L99">        this.teacherPassword = teacherPassword;</span>
+<span class="nc" id="L100">        return this;</span>
+    }
+
+    public void setTeacherPassword(String teacherPassword) {
+<span class="nc" id="L104">        this.teacherPassword = teacherPassword;</span>
+<span class="nc" id="L105">    }</span>
+
+    public String getTeacherCreatedBy() {
+<span class="nc" id="L108">        return teacherCreatedBy;</span>
+    }
+
+    public Teacher teacherCreatedBy(String teacherCreatedBy) {
+<span class="nc" id="L112">        this.teacherCreatedBy = teacherCreatedBy;</span>
+<span class="nc" id="L113">        return this;</span>
+    }
+
+    public void setTeacherCreatedBy(String teacherCreatedBy) {
+<span class="nc" id="L117">        this.teacherCreatedBy = teacherCreatedBy;</span>
+<span class="nc" id="L118">    }</span>
+
+    public LocalDate getTeacherCreationDate() {
+<span class="nc" id="L121">        return teacherCreationDate;</span>
+    }
+
+    public Teacher teacherCreationDate(LocalDate teacherCreationDate) {
+<span class="nc" id="L125">        this.teacherCreationDate = teacherCreationDate;</span>
+<span class="nc" id="L126">        return this;</span>
+    }
+
+    public void setTeacherCreationDate(LocalDate teacherCreationDate) {
+<span class="nc" id="L130">        this.teacherCreationDate = teacherCreationDate;</span>
+<span class="nc" id="L131">    }</span>
+
+    public String getTeacherModifiedBy() {
+<span class="nc" id="L134">        return teacherModifiedBy;</span>
+    }
+
+    public Teacher teacherModifiedBy(String teacherModifiedBy) {
+<span class="nc" id="L138">        this.teacherModifiedBy = teacherModifiedBy;</span>
+<span class="nc" id="L139">        return this;</span>
+    }
+
+    public void setTeacherModifiedBy(String teacherModifiedBy) {
+<span class="nc" id="L143">        this.teacherModifiedBy = teacherModifiedBy;</span>
+<span class="nc" id="L144">    }</span>
+
+    public LocalDate getTeacherModifiedDate() {
+<span class="nc" id="L147">        return teacherModifiedDate;</span>
+    }
+
+    public Teacher teacherModifiedDate(LocalDate teacherModifiedDate) {
+<span class="nc" id="L151">        this.teacherModifiedDate = teacherModifiedDate;</span>
+<span class="nc" id="L152">        return this;</span>
+    }
+
+    public void setTeacherModifiedDate(LocalDate teacherModifiedDate) {
+<span class="nc" id="L156">        this.teacherModifiedDate = teacherModifiedDate;</span>
+<span class="nc" id="L157">    }</span>
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (this == o) {</span>
+<span class="nc" id="L163">            return true;</span>
+        }
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (!(o instanceof Teacher)) {</span>
+<span class="nc" id="L166">            return false;</span>
+        }
+<span class="nc bnc" id="L168" title="All 4 branches missed.">        return id != null &amp;&amp; id.equals(((Teacher) o).id);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L173">        return 31;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L178">        return &quot;Teacher{&quot; +</span>
+<span class="nc" id="L179">            &quot;id=&quot; + getId() +</span>
+<span class="nc" id="L180">            &quot;, teacherFirstName='&quot; + getTeacherFirstName() + &quot;'&quot; +</span>
+<span class="nc" id="L181">            &quot;, teacherLastName='&quot; + getTeacherLastName() + &quot;'&quot; +</span>
+<span class="nc" id="L182">            &quot;, teacherEmail='&quot; + getTeacherEmail() + &quot;'&quot; +</span>
+<span class="nc" id="L183">            &quot;, teacherPassword='&quot; + getTeacherPassword() + &quot;'&quot; +</span>
+<span class="nc" id="L184">            &quot;, teacherCreatedBy='&quot; + getTeacherCreatedBy() + &quot;'&quot; +</span>
+<span class="nc" id="L185">            &quot;, teacherCreationDate='&quot; + getTeacherCreationDate() + &quot;'&quot; +</span>
+<span class="nc" id="L186">            &quot;, teacherModifiedBy='&quot; + getTeacherModifiedBy() + &quot;'&quot; +</span>
+<span class="nc" id="L187">            &quot;, teacherModifiedDate='&quot; + getTeacherModifiedDate() + &quot;'&quot; +</span>
+            &quot;}&quot;;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

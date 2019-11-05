@@ -1,0 +1,48 @@
+{
+    "name": "Theme",
+    "fields": [
+        {
+            "fieldName": "themeName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "themeDescription",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "themeCreatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "themeCreationDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "themeModifiedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "themeModifiedDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "subject",
+            "otherEntityRelationshipName": "theme",
+            "relationshipName": "subject",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191105150547",
+    "entityTableName": "theme",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

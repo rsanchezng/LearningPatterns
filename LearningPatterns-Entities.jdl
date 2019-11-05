@@ -1,0 +1,100 @@
+entity Subject {
+  subjectName String
+  subjectDescription String
+  subjectCredits Integer
+  subjectCreatedBy String
+  subjectCreationDate LocalDate
+  subjectModifiedBy String
+  subjectModifiedDate LocalDate
+}
+
+entity Theme {
+	themeName String
+	themeDescription String
+	themeCreatedBy String
+	themeCreationDate LocalDate
+	themeModifiedBy String
+	themeModifiedDate LocalDate
+}
+
+entity Subtheme {
+  subthemeName String
+  subthemeDescription String
+  subthemeCreatedBy String
+  subthemeCreationDate LocalDate
+  subthemeModifiedBy String
+  subthemeModifiedDate LocalDate
+}
+
+entity Activity {
+  activityName String
+  activityDescription String
+  activityDuration Integer
+  activityUtility Integer
+  activityReqsId Integer
+  activityCreatedBy String
+  activityCreationDate LocalDate
+  activityModifiedBy String
+  activityModifiedDate LocalDate
+}
+
+entity Group {
+  groupCreatedBy String
+  groupCreationDate LocalDate
+  groupModifiedBy String
+  groupModifiedDate LocalDate
+}
+
+entity StudentSchedule {
+  scheduleCreatedBy String
+  scheduleCreationDate LocalDate
+  scheduleModifiedBy String
+  scheduleModifiedDate LocalDate
+}
+
+entity Teacher {
+  teacherFirstName String
+  teacherLastName String
+  teacherEmail String
+  teacherPassword String
+  teacherCreatedBy String
+  teacherCreationDate LocalDate
+  teacherModifiedBy String
+  teacherModifiedDate LocalDate
+}
+
+entity Student {
+  studentFirstName String
+  studentLastName String
+  studentEmail String
+  studentPassword String
+  studentCredits String
+  studentCreatedBy String
+  studentCreationDate LocalDate
+  studentModifiedBy String
+  studentModifiedDate LocalDate
+}
+
+entity StudentActivity {
+  ActivityStartDate LocalDate
+  ActivityEndDate LocalDate
+  ActivityGrade Integer
+  StudentActivityGradeDate LocalDate
+  StudentActivityCreatedDate LocalDate
+  StudentActivityCreatedBy String
+  StudentActivityModifiedDate LocalDate
+  StudentActivityModifiedBy LocalDate
+}
+
+relationship ManyToOne {
+  Activity{subtheme} to Subtheme
+  Subtheme{theme} to Theme
+  Theme{subject} to Subject
+  Group{subject} to Subject
+  Group{teacher} to Teacher
+  StudentSchedule{group} to Group
+  StudentSchedule{student} to Student
+  StudentActivity{activity} to Activity
+  StudentActivity{student} to Student
+  Subject{teacher} to Teacher
+}

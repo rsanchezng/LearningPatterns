@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Subject_.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Learning Patterns</a> &gt; <a href="index.source.html" class="el_package">com.fime.domain</a> &gt; <span class="el_source">Subject_.java</span></div><h1>Subject_.java</h1><pre class="source lang-java linenums">package com.fime.domain;
+
+import java.time.LocalDate;
+import javax.annotation.Generated;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.metamodel.StaticMetamodel;
+
+@Generated(value = &quot;org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor&quot;)
+@StaticMetamodel(Subject.class)
+<span class="nc" id="L10">public abstract class Subject_ {</span>
+
+	public static volatile SingularAttribute&lt;Subject, LocalDate&gt; subjectModifiedDate;
+	public static volatile SingularAttribute&lt;Subject, String&gt; subjectCreatedBy;
+	public static volatile SingularAttribute&lt;Subject, String&gt; subjectModifiedBy;
+	public static volatile SingularAttribute&lt;Subject, Teacher&gt; teacher;
+	public static volatile SingularAttribute&lt;Subject, String&gt; subjectDescription;
+	public static volatile SingularAttribute&lt;Subject, Integer&gt; subjectCredits;
+	public static volatile SingularAttribute&lt;Subject, Long&gt; id;
+	public static volatile SingularAttribute&lt;Subject, LocalDate&gt; subjectCreationDate;
+	public static volatile SingularAttribute&lt;Subject, String&gt; subjectName;
+
+	public static final String SUBJECT_MODIFIED_DATE = &quot;subjectModifiedDate&quot;;
+	public static final String SUBJECT_CREATED_BY = &quot;subjectCreatedBy&quot;;
+	public static final String SUBJECT_MODIFIED_BY = &quot;subjectModifiedBy&quot;;
+	public static final String TEACHER = &quot;teacher&quot;;
+	public static final String SUBJECT_DESCRIPTION = &quot;subjectDescription&quot;;
+	public static final String SUBJECT_CREDITS = &quot;subjectCredits&quot;;
+	public static final String ID = &quot;id&quot;;
+	public static final String SUBJECT_CREATION_DATE = &quot;subjectCreationDate&quot;;
+	public static final String SUBJECT_NAME = &quot;subjectName&quot;;
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

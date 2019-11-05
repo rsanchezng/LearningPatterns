@@ -1,0 +1,74 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            <h2 id="jhi-subject-heading">Create or edit a Subject</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!editForm.get('id').value">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id"
+                        readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_subjectName">Subject Name</label>
+                    <input type="text" class="form-control" name="subjectName" id="field_subjectName"
+                           formControlName="subjectName"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_subjectDescription">Subject Description</label>
+                    <input type="text" class="form-control" name="subjectDescription" id="field_subjectDescription"
+                           formControlName="subjectDescription"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_subjectCredits">Subject Credits</label>
+                    <input type="number" class="form-control" name="subjectCredits" id="field_subjectCredits"
+                           formControlName="subjectCredits"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_subjectCreatedBy">Subject Created By</label>
+                    <input type="text" class="form-control" name="subjectCreatedBy" id="field_subjectCreatedBy"
+                           formControlName="subjectCreatedBy"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_subjectCreationDate">Subject Creation Date</label>
+                    <div class="input-group">
+                        <input id="field_subjectCreationDate" type="text" class="form-control" name="subjectCreationDate" ngbDatepicker  #subjectCreationDateDp="ngbDatepicker" formControlName="subjectCreationDate"/>
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-secondary" (click)="subjectCreationDateDp.toggle()"><fa-icon [icon]="'calendar-alt'"></fa-icon></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_subjectModifiedBy">Subject Modified By</label>
+                    <input type="text" class="form-control" name="subjectModifiedBy" id="field_subjectModifiedBy"
+                           formControlName="subjectModifiedBy"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_subjectModifiedDate">Subject Modified Date</label>
+                    <div class="input-group">
+                        <input id="field_subjectModifiedDate" type="text" class="form-control" name="subjectModifiedDate" ngbDatepicker  #subjectModifiedDateDp="ngbDatepicker" formControlName="subjectModifiedDate"/>
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-secondary" (click)="subjectModifiedDateDp.toggle()"><fa-icon [icon]="'calendar-alt'"></fa-icon></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_teacher">Teacher</label>
+                    <select class="form-control" id="field_teacher" name="teacher" formControlName="teacher">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="teacherOption.id === editForm.get('teacher').value?.id ? editForm.get('teacher').value : teacherOption" *ngFor="let teacherOption of teachers; trackBy: trackTeacherById">{{teacherOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

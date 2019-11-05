@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Theme.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Learning Patterns</a> &gt; <a href="index.source.html" class="el_package">com.fime.domain</a> &gt; <span class="el_source">Theme.java</span></div><h1>Theme.java</h1><pre class="source lang-java linenums">package com.fime.domain;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+
+/**
+ * A Theme.
+ */
+@Entity
+@Table(name = &quot;theme&quot;)
+<span class="nc" id="L14">public class Theme implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = &quot;sequenceGenerator&quot;)
+    @SequenceGenerator(name = &quot;sequenceGenerator&quot;)
+    private Long id;
+
+    @Column(name = &quot;theme_name&quot;)
+    private String themeName;
+
+    @Column(name = &quot;theme_description&quot;)
+    private String themeDescription;
+
+    @Column(name = &quot;theme_created_by&quot;)
+    private String themeCreatedBy;
+
+    @Column(name = &quot;theme_creation_date&quot;)
+    private LocalDate themeCreationDate;
+
+    @Column(name = &quot;theme_modified_by&quot;)
+    private String themeModifiedBy;
+
+    @Column(name = &quot;theme_modified_date&quot;)
+    private LocalDate themeModifiedDate;
+
+    @ManyToOne
+    @JsonIgnoreProperties(&quot;themes&quot;)
+    private Subject subject;
+
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    public Long getId() {
+<span class="nc" id="L47">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="nc" id="L51">        this.id = id;</span>
+<span class="nc" id="L52">    }</span>
+
+    public String getThemeName() {
+<span class="nc" id="L55">        return themeName;</span>
+    }
+
+    public Theme themeName(String themeName) {
+<span class="nc" id="L59">        this.themeName = themeName;</span>
+<span class="nc" id="L60">        return this;</span>
+    }
+
+    public void setThemeName(String themeName) {
+<span class="nc" id="L64">        this.themeName = themeName;</span>
+<span class="nc" id="L65">    }</span>
+
+    public String getThemeDescription() {
+<span class="nc" id="L68">        return themeDescription;</span>
+    }
+
+    public Theme themeDescription(String themeDescription) {
+<span class="nc" id="L72">        this.themeDescription = themeDescription;</span>
+<span class="nc" id="L73">        return this;</span>
+    }
+
+    public void setThemeDescription(String themeDescription) {
+<span class="nc" id="L77">        this.themeDescription = themeDescription;</span>
+<span class="nc" id="L78">    }</span>
+
+    public String getThemeCreatedBy() {
+<span class="nc" id="L81">        return themeCreatedBy;</span>
+    }
+
+    public Theme themeCreatedBy(String themeCreatedBy) {
+<span class="nc" id="L85">        this.themeCreatedBy = themeCreatedBy;</span>
+<span class="nc" id="L86">        return this;</span>
+    }
+
+    public void setThemeCreatedBy(String themeCreatedBy) {
+<span class="nc" id="L90">        this.themeCreatedBy = themeCreatedBy;</span>
+<span class="nc" id="L91">    }</span>
+
+    public LocalDate getThemeCreationDate() {
+<span class="nc" id="L94">        return themeCreationDate;</span>
+    }
+
+    public Theme themeCreationDate(LocalDate themeCreationDate) {
+<span class="nc" id="L98">        this.themeCreationDate = themeCreationDate;</span>
+<span class="nc" id="L99">        return this;</span>
+    }
+
+    public void setThemeCreationDate(LocalDate themeCreationDate) {
+<span class="nc" id="L103">        this.themeCreationDate = themeCreationDate;</span>
+<span class="nc" id="L104">    }</span>
+
+    public String getThemeModifiedBy() {
+<span class="nc" id="L107">        return themeModifiedBy;</span>
+    }
+
+    public Theme themeModifiedBy(String themeModifiedBy) {
+<span class="nc" id="L111">        this.themeModifiedBy = themeModifiedBy;</span>
+<span class="nc" id="L112">        return this;</span>
+    }
+
+    public void setThemeModifiedBy(String themeModifiedBy) {
+<span class="nc" id="L116">        this.themeModifiedBy = themeModifiedBy;</span>
+<span class="nc" id="L117">    }</span>
+
+    public LocalDate getThemeModifiedDate() {
+<span class="nc" id="L120">        return themeModifiedDate;</span>
+    }
+
+    public Theme themeModifiedDate(LocalDate themeModifiedDate) {
+<span class="nc" id="L124">        this.themeModifiedDate = themeModifiedDate;</span>
+<span class="nc" id="L125">        return this;</span>
+    }
+
+    public void setThemeModifiedDate(LocalDate themeModifiedDate) {
+<span class="nc" id="L129">        this.themeModifiedDate = themeModifiedDate;</span>
+<span class="nc" id="L130">    }</span>
+
+    public Subject getSubject() {
+<span class="nc" id="L133">        return subject;</span>
+    }
+
+    public Theme subject(Subject subject) {
+<span class="nc" id="L137">        this.subject = subject;</span>
+<span class="nc" id="L138">        return this;</span>
+    }
+
+    public void setSubject(Subject subject) {
+<span class="nc" id="L142">        this.subject = subject;</span>
+<span class="nc" id="L143">    }</span>
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (this == o) {</span>
+<span class="nc" id="L149">            return true;</span>
+        }
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (!(o instanceof Theme)) {</span>
+<span class="nc" id="L152">            return false;</span>
+        }
+<span class="nc bnc" id="L154" title="All 4 branches missed.">        return id != null &amp;&amp; id.equals(((Theme) o).id);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L159">        return 31;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L164">        return &quot;Theme{&quot; +</span>
+<span class="nc" id="L165">            &quot;id=&quot; + getId() +</span>
+<span class="nc" id="L166">            &quot;, themeName='&quot; + getThemeName() + &quot;'&quot; +</span>
+<span class="nc" id="L167">            &quot;, themeDescription='&quot; + getThemeDescription() + &quot;'&quot; +</span>
+<span class="nc" id="L168">            &quot;, themeCreatedBy='&quot; + getThemeCreatedBy() + &quot;'&quot; +</span>
+<span class="nc" id="L169">            &quot;, themeCreationDate='&quot; + getThemeCreationDate() + &quot;'&quot; +</span>
+<span class="nc" id="L170">            &quot;, themeModifiedBy='&quot; + getThemeModifiedBy() + &quot;'&quot; +</span>
+<span class="nc" id="L171">            &quot;, themeModifiedDate='&quot; + getThemeModifiedDate() + &quot;'&quot; +</span>
+            &quot;}&quot;;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

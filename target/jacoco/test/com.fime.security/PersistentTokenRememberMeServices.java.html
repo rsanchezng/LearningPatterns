@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersistentTokenRememberMeServices.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Learning Patterns</a> &gt; <a href="index.source.html" class="el_package">com.fime.security</a> &gt; <span class="el_source">PersistentTokenRememberMeServices.java</span></div><h1>PersistentTokenRememberMeServices.java</h1><pre class="source lang-java linenums">package com.fime.security;
+
+import com.fime.domain.PersistentToken;
+import com.fime.repository.PersistentTokenRepository;
+import com.fime.repository.UserRepository;
+import com.fime.service.util.RandomUtil;
+
+
+import io.github.jhipster.config.JHipsterProperties;
+import io.github.jhipster.security.PersistentTokenCache;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.rememberme.*;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.*;
+
+/**
+ * Custom implementation of Spring Security's RememberMeServices.
+ * &lt;p&gt;
+ * Persistent tokens are used by Spring Security to automatically log in users.
+ * &lt;p&gt;
+ * This is a specific implementation of Spring Security's remember-me authentication, but it is much
+ * more powerful than the standard implementations:
+ * &lt;ul&gt;
+ * &lt;li&gt;It allows a user to see the list of his currently opened sessions, and invalidate them&lt;/li&gt;
+ * &lt;li&gt;It stores more information, such as the IP address and the user agent, for audit purposes&lt;li&gt;
+ * &lt;li&gt;When a user logs out, only his current session is invalidated, and not all of his sessions&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * Please note that it allows the use of the same token for 5 seconds, and this value stored in a specific
+ * cache during that period. This is to allow concurrent requests from the same user: otherwise, two
+ * requests being sent at the same time could invalidate each other's token.
+ * &lt;p&gt;
+ * This is inspired by:
+ * &lt;ul&gt;
+ * &lt;li&gt;&lt;a href=&quot;http://jaspan.com/improved_persistent_login_cookie_best_practice&quot;&gt;Improved Persistent Login Cookie
+ * Best Practice&lt;/a&gt;&lt;/li&gt;
+ * &lt;li&gt;&lt;a href=&quot;https://github.com/blog/1661-modeling-your-app-s-user-session&quot;&gt;GitHub's &quot;Modeling your App's User Session&quot;&lt;/a&gt;&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * The main algorithm comes from Spring Security's {@code PersistentTokenBasedRememberMeServices}, but this class
+ * couldn't be cleanly extended.
+ */
+@Service
+public class PersistentTokenRememberMeServices extends
+    AbstractRememberMeServices {
+
+<span class="nc" id="L58">    private final Logger log = LoggerFactory.getLogger(PersistentTokenRememberMeServices.class);</span>
+
+    // Token is valid for one month
+    private static final int TOKEN_VALIDITY_DAYS = 31;
+
+    private static final int TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * TOKEN_VALIDITY_DAYS;
+
+    private static final long UPGRADED_TOKEN_VALIDITY_MILLIS = 5000l;
+
+    private final PersistentTokenCache&lt;UpgradedRememberMeToken&gt; upgradedTokenCache;
+
+    private final PersistentTokenRepository persistentTokenRepository;
+
+    private final UserRepository userRepository;
+
+    public PersistentTokenRememberMeServices(JHipsterProperties jHipsterProperties,
+            org.springframework.security.core.userdetails.UserDetailsService userDetailsService,
+            PersistentTokenRepository persistentTokenRepository, UserRepository userRepository) {
+
+<span class="nc" id="L77">        super(jHipsterProperties.getSecurity().getRememberMe().getKey(), userDetailsService);</span>
+<span class="nc" id="L78">        this.persistentTokenRepository = persistentTokenRepository;</span>
+<span class="nc" id="L79">        this.userRepository = userRepository;</span>
+<span class="nc" id="L80">        upgradedTokenCache = new PersistentTokenCache&lt;&gt;(UPGRADED_TOKEN_VALIDITY_MILLIS);</span>
+<span class="nc" id="L81">    }</span>
+
+    @Override
+    protected UserDetails processAutoLoginCookie(String[] cookieTokens, HttpServletRequest request,
+        HttpServletResponse response) {
+
+<span class="nc" id="L87">        synchronized (this) { // prevent 2 authentication requests from the same user in parallel</span>
+<span class="nc" id="L88">            String login = null;</span>
+<span class="nc" id="L89">            UpgradedRememberMeToken upgradedToken = upgradedTokenCache.get(cookieTokens[0]);</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            if (upgradedToken != null) {</span>
+<span class="nc" id="L91">                login = upgradedToken.getUserLoginIfValid(cookieTokens);</span>
+<span class="nc" id="L92">                log.debug(&quot;Detected previously upgraded login token for user '{}'&quot;, login);</span>
+            }
+
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            if (login == null) {</span>
+<span class="nc" id="L96">                PersistentToken token = getPersistentToken(cookieTokens);</span>
+<span class="nc" id="L97">                login = token.getUser().getLogin();</span>
+
+                // Token also matches, so login is valid. Update the token value, keeping the *same* series number.
+<span class="nc" id="L100">                log.debug(&quot;Refreshing persistent login token for user '{}', series '{}'&quot;, login, token.getSeries());</span>
+<span class="nc" id="L101">                token.setTokenDate(LocalDate.now());</span>
+<span class="nc" id="L102">                token.setTokenValue(RandomUtil.generateTokenData());</span>
+<span class="nc" id="L103">                token.setIpAddress(request.getRemoteAddr());</span>
+<span class="nc" id="L104">                token.setUserAgent(request.getHeader(&quot;User-Agent&quot;));</span>
+                try {
+<span class="nc" id="L106">                    persistentTokenRepository.saveAndFlush(token);</span>
+<span class="nc" id="L107">                } catch (DataAccessException e) {</span>
+<span class="nc" id="L108">                    log.error(&quot;Failed to update token: &quot;, e);</span>
+<span class="nc" id="L109">                    throw new RememberMeAuthenticationException(&quot;Autologin failed due to data access problem&quot;, e);</span>
+<span class="nc" id="L110">                }</span>
+<span class="nc" id="L111">                addCookie(token, request, response);</span>
+<span class="nc" id="L112">                upgradedTokenCache.put(cookieTokens[0], new UpgradedRememberMeToken(cookieTokens, login));</span>
+            }
+<span class="nc" id="L114">            return getUserDetailsService().loadUserByUsername(login);</span>
+        }
+    }
+
+    @Override
+    protected void onLoginSuccess(HttpServletRequest request, HttpServletResponse response, Authentication
+        successfulAuthentication) {
+
+<span class="nc" id="L122">        String login = successfulAuthentication.getName();</span>
+
+<span class="nc" id="L124">        log.debug(&quot;Creating new persistent login for user {}&quot;, login);</span>
+<span class="nc" id="L125">        PersistentToken token = userRepository.findOneByLogin(login).map(u -&gt; {</span>
+<span class="nc" id="L126">            PersistentToken t = new PersistentToken();</span>
+<span class="nc" id="L127">            t.setSeries(RandomUtil.generateSeriesData());</span>
+<span class="nc" id="L128">            t.setUser(u);</span>
+<span class="nc" id="L129">            t.setTokenValue(RandomUtil.generateTokenData());</span>
+<span class="nc" id="L130">            t.setTokenDate(LocalDate.now());</span>
+<span class="nc" id="L131">            t.setIpAddress(request.getRemoteAddr());</span>
+<span class="nc" id="L132">            t.setUserAgent(request.getHeader(&quot;User-Agent&quot;));</span>
+<span class="nc" id="L133">            return t;</span>
+<span class="nc" id="L134">        }).orElseThrow(() -&gt; new UsernameNotFoundException(&quot;User &quot; + login + &quot; was not found in the database&quot;));</span>
+        try {
+<span class="nc" id="L136">            persistentTokenRepository.saveAndFlush(token);</span>
+<span class="nc" id="L137">            addCookie(token, request, response);</span>
+<span class="nc" id="L138">        } catch (DataAccessException e) {</span>
+<span class="nc" id="L139">            log.error(&quot;Failed to save persistent token &quot;, e);</span>
+<span class="nc" id="L140">        }</span>
+<span class="nc" id="L141">    }</span>
+
+    /**
+     * When logout occurs, only invalidate the current token, and not all user sessions.
+     * &lt;p&gt;
+     * The standard Spring Security implementations are too basic: they invalidate all tokens for the
+     * current user, so when he logs out from one browser, all his other sessions are destroyed.
+     *
+     * @param request the request.
+     * @param response the response.
+     * @param authentication the authentication.
+     */
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+<span class="nc" id="L155">        String rememberMeCookie = extractRememberMeCookie(request);</span>
+<span class="nc bnc" id="L156" title="All 4 branches missed.">        if (rememberMeCookie != null &amp;&amp; rememberMeCookie.length() != 0) {</span>
+            try {
+<span class="nc" id="L158">                String[] cookieTokens = decodeCookie(rememberMeCookie);</span>
+<span class="nc" id="L159">                PersistentToken token = getPersistentToken(cookieTokens);</span>
+<span class="nc" id="L160">                persistentTokenRepository.deleteById(token.getSeries());</span>
+<span class="nc" id="L161">            } catch (InvalidCookieException ice) {</span>
+<span class="nc" id="L162">                log.info(&quot;Invalid cookie, no persistent token could be deleted&quot;, ice);</span>
+<span class="nc" id="L163">            } catch (RememberMeAuthenticationException rmae) {</span>
+<span class="nc" id="L164">                log.debug(&quot;No persistent token found, so no token could be deleted&quot;, rmae);</span>
+<span class="nc" id="L165">            }</span>
+        }
+<span class="nc" id="L167">        super.logout(request, response, authentication);</span>
+<span class="nc" id="L168">    }</span>
+
+    /**
+     * Validate the token and return it.
+     */
+    private PersistentToken getPersistentToken(String[] cookieTokens) {
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        if (cookieTokens.length != 2) {</span>
+<span class="nc" id="L175">            throw new InvalidCookieException(&quot;Cookie token did not contain &quot; + 2 +</span>
+<span class="nc" id="L176">                &quot; tokens, but contained '&quot; + Arrays.asList(cookieTokens) + &quot;'&quot;);</span>
+        }
+<span class="nc" id="L178">        String presentedSeries = cookieTokens[0];</span>
+<span class="nc" id="L179">        String presentedToken = cookieTokens[1];</span>
+<span class="nc" id="L180">        Optional&lt;PersistentToken&gt; optionalToken = persistentTokenRepository.findById(presentedSeries);</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (!optionalToken.isPresent()) {</span>
+            // No series match, so we can't authenticate using this cookie
+<span class="nc" id="L183">            throw new RememberMeAuthenticationException(&quot;No persistent token found for series id: &quot; + presentedSeries);</span>
+        }
+<span class="nc" id="L185">        PersistentToken token = optionalToken.get();</span>
+        // We have a match for this user/series combination
+<span class="nc" id="L187">        log.info(&quot;presentedToken={} / tokenValue={}&quot;, presentedToken, token.getTokenValue());</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (!presentedToken.equals(token.getTokenValue())) {</span>
+            // Token doesn't match series value. Delete this session and throw an exception.
+<span class="nc" id="L190">            persistentTokenRepository.deleteById(token.getSeries());</span>
+<span class="nc" id="L191">            throw new CookieTheftException(&quot;Invalid remember-me token (Series/token) mismatch. Implies previous &quot; +</span>
+                &quot;cookie theft attack.&quot;);
+        }
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (token.getTokenDate().plusDays(TOKEN_VALIDITY_DAYS).isBefore(LocalDate.now())) {</span>
+<span class="nc" id="L195">            persistentTokenRepository.deleteById(token.getSeries());</span>
+<span class="nc" id="L196">            throw new RememberMeAuthenticationException(&quot;Remember-me login has expired&quot;);</span>
+        }
+<span class="nc" id="L198">        return token;</span>
+    }
+
+    private void addCookie(PersistentToken token, HttpServletRequest request, HttpServletResponse response) {
+<span class="nc" id="L202">        setCookie(</span>
+<span class="nc" id="L203">            new String[]{token.getSeries(), token.getTokenValue()},</span>
+            TOKEN_VALIDITY_SECONDS, request, response);
+<span class="nc" id="L205">    }</span>
+
+    private static class UpgradedRememberMeToken implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final String[] upgradedToken;
+
+        private final String userLogin;
+
+<span class="nc" id="L215">        UpgradedRememberMeToken(String[] upgradedToken, String userLogin) {</span>
+<span class="nc" id="L216">            this.upgradedToken = upgradedToken;</span>
+<span class="nc" id="L217">            this.userLogin = userLogin;</span>
+<span class="nc" id="L218">        }</span>
+
+        String getUserLoginIfValid(String[] currentToken) {
+<span class="nc bnc" id="L221" title="All 2 branches missed.">            if (currentToken[0].equals(this.upgradedToken[0]) &amp;&amp;</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">                    currentToken[1].equals(this.upgradedToken[1])) {</span>
+<span class="nc" id="L223">                return this.userLogin;</span>
+            }
+<span class="nc" id="L225">            return null;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

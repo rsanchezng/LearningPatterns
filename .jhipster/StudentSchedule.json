@@ -1,0 +1,47 @@
+{
+    "name": "StudentSchedule",
+    "fields": [
+        {
+            "fieldName": "scheduleCreatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "scheduleCreationDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "scheduleModifiedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "scheduleModifiedDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "group",
+            "otherEntityRelationshipName": "studentSchedule",
+            "relationshipName": "group",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "student",
+            "otherEntityRelationshipName": "studentSchedule",
+            "relationshipName": "student",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191105150551",
+    "entityTableName": "student_schedule",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

@@ -1,0 +1,52 @@
+{
+    "name": "Subject",
+    "fields": [
+        {
+            "fieldName": "subjectName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "subjectDescription",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "subjectCredits",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "subjectCreatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "subjectCreationDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "subjectModifiedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "subjectModifiedDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "teacher",
+            "otherEntityRelationshipName": "subject",
+            "relationshipName": "teacher",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191105150546",
+    "entityTableName": "subject",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

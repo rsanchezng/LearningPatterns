@@ -1,0 +1,52 @@
+{
+    "name": "Student",
+    "fields": [
+        {
+            "fieldName": "studentFirstName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "studentLastName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "studentEmail",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "studentPassword",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "studentCredits",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "studentCreatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "studentCreationDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "studentModifiedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "studentModifiedDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [],
+    "changelogDate": "20191105150553",
+    "entityTableName": "student",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

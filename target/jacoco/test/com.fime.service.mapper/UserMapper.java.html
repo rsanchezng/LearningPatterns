@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Learning Patterns</a> &gt; <a href="index.source.html" class="el_package">com.fime.service.mapper</a> &gt; <span class="el_source">UserMapper.java</span></div><h1>UserMapper.java</h1><pre class="source lang-java linenums">package com.fime.service.mapper;
+
+import com.fime.domain.Authority;
+import com.fime.domain.User;
+import com.fime.service.dto.UserDTO;
+
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * Mapper for the entity {@link User} and its DTO called {@link UserDTO}.
+ *
+ * Normal mappers are generated using MapStruct, this one is hand-coded as MapStruct
+ * support is still in beta, and requires a manual step with an IDE.
+ */
+@Service
+<span class="nc" id="L19">public class UserMapper {</span>
+
+    public List&lt;UserDTO&gt; usersToUserDTOs(List&lt;User&gt; users) {
+<span class="nc" id="L22">        return users.stream()</span>
+<span class="nc" id="L23">            .filter(Objects::nonNull)</span>
+<span class="nc" id="L24">            .map(this::userToUserDTO)</span>
+<span class="nc" id="L25">            .collect(Collectors.toList());</span>
+    }
+
+    public UserDTO userToUserDTO(User user) {
+<span class="nc" id="L29">        return new UserDTO(user);</span>
+    }
+
+    public List&lt;User&gt; userDTOsToUsers(List&lt;UserDTO&gt; userDTOs) {
+<span class="nc" id="L33">        return userDTOs.stream()</span>
+<span class="nc" id="L34">            .filter(Objects::nonNull)</span>
+<span class="nc" id="L35">            .map(this::userDTOToUser)</span>
+<span class="nc" id="L36">            .collect(Collectors.toList());</span>
+    }
+
+    public User userDTOToUser(UserDTO userDTO) {
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (userDTO == null) {</span>
+<span class="nc" id="L41">            return null;</span>
+        } else {
+<span class="nc" id="L43">            User user = new User();</span>
+<span class="nc" id="L44">            user.setId(userDTO.getId());</span>
+<span class="nc" id="L45">            user.setLogin(userDTO.getLogin());</span>
+<span class="nc" id="L46">            user.setFirstName(userDTO.getFirstName());</span>
+<span class="nc" id="L47">            user.setLastName(userDTO.getLastName());</span>
+<span class="nc" id="L48">            user.setEmail(userDTO.getEmail());</span>
+<span class="nc" id="L49">            user.setImageUrl(userDTO.getImageUrl());</span>
+<span class="nc" id="L50">            user.setActivated(userDTO.isActivated());</span>
+<span class="nc" id="L51">            user.setLangKey(userDTO.getLangKey());</span>
+<span class="nc" id="L52">            Set&lt;Authority&gt; authorities = this.authoritiesFromStrings(userDTO.getAuthorities());</span>
+<span class="nc" id="L53">            user.setAuthorities(authorities);</span>
+<span class="nc" id="L54">            return user;</span>
+        }
+    }
+
+
+    private Set&lt;Authority&gt; authoritiesFromStrings(Set&lt;String&gt; authoritiesAsString) {
+<span class="nc" id="L60">        Set&lt;Authority&gt; authorities = new HashSet&lt;&gt;();</span>
+
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if(authoritiesAsString != null){</span>
+<span class="nc" id="L63">            authorities = authoritiesAsString.stream().map(string -&gt; {</span>
+<span class="nc" id="L64">                Authority auth = new Authority();</span>
+<span class="nc" id="L65">                auth.setName(string);</span>
+<span class="nc" id="L66">                return auth;</span>
+<span class="nc" id="L67">            }).collect(Collectors.toSet());</span>
+        }
+
+<span class="nc" id="L70">        return authorities;</span>
+    }
+
+    public User userFromId(Long id) {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (id == null) {</span>
+<span class="nc" id="L75">            return null;</span>
+        }
+<span class="nc" id="L77">        User user = new User();</span>
+<span class="nc" id="L78">        user.setId(id);</span>
+<span class="nc" id="L79">        return user;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

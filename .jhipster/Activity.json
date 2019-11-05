@@ -1,0 +1,60 @@
+{
+    "name": "Activity",
+    "fields": [
+        {
+            "fieldName": "activityName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "activityDescription",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "activityDuration",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "activityUtility",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "activityReqsId",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "activityCreatedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "activityCreationDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "activityModifiedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "activityModifiedDate",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "subtheme",
+            "otherEntityRelationshipName": "activity",
+            "relationshipName": "subtheme",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191105150549",
+    "entityTableName": "activity",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}
