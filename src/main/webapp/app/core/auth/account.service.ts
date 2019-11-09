@@ -1,26 +1,24 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { shareReplay, tap } from 'rxjs/operators';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { Account } from 'app/core/user/account.model';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  private userIdentity: Account;
+  private userIdentity: any;
   private authenticated = false;
   private authenticationState = new Subject<any>();
-  private accountCache$: Observable<Account>;
 
   constructor(private http: HttpClient) {}
 
-  fetch(): Observable<Account> {
-    return this.http.get<Account>(SERVER_API_URL + 'api/account');
+  fetch(): Observable<HttpResponse<Account>> {
+    return this.http.get<Account>(SERVER_API_URL + 'api/account', { observe: 'response' });
   }
 
-  save(account: Account): Observable<Account> {
-    return this.http.post<Account>(SERVER_API_URL + 'api/account', account);
+  save(account: any): Observable<HttpResponse<any>> {
+    return this.http.post(SERVER_API_URL + 'api/account', account, { observe: 'response' });
   }
 
   authenticate(identity) {
@@ -29,46 +27,67 @@ export class AccountService {
     this.authenticationState.next(this.userIdentity);
   }
 
-  hasAnyAuthority(authorities: string[] | string): boolean {
+  hasAnyAuthority(authorities: string[]): boolean {
     if (!this.authenticated || !this.userIdentity || !this.userIdentity.authorities) {
       return false;
     }
 
-    if (!Array.isArray(authorities)) {
-      authorities = [authorities];
+    for (let i = 0; i < authorities.length; i++) {
+      if (this.userIdentity.authorities.includes(authorities[i])) {
+        return true;
+      }
     }
 
-    return authorities.some((authority: string) => this.userIdentity.authorities.includes(authority));
+    return false;
   }
 
-  identity(force?: boolean): Observable<Account> {
-    if (force) {
-      this.accountCache$ = null;
+  hasAuthority(authority: string): Promise<boolean> {
+    if (!this.authenticated) {
+      return Promise.resolve(false);
     }
 
-    if (!this.accountCache$) {
-      this.accountCache$ = this.fetch().pipe(
-        tap(
-          account => {
-            if (account) {
-              this.userIdentity = account;
-              this.authenticated = true;
-            } else {
-              this.userIdentity = null;
-              this.authenticated = false;
-            }
-            this.authenticationState.next(this.userIdentity);
-          },
-          () => {
-            this.userIdentity = null;
-            this.authenticated = false;
-            this.authenticationState.next(this.userIdentity);
-          }
-        ),
-        shareReplay()
-      );
+    return this.identity().then(
+      id => {
+        return Promise.resolve(id.authorities && id.authorities.includes(authority));
+      },
+      () => {
+        return Promise.resolve(false);
+      }
+    );
+  }
+
+  identity(force?: boolean): Promise<Account> {
+    if (force) {
+      this.userIdentity = undefined;
     }
-    return this.accountCache$;
+
+    // check and see if we have retrieved the userIdentity data from the server.
+    // if we have, reuse it by immediately resolving
+    if (this.userIdentity) {
+      return Promise.resolve(this.userIdentity);
+    }
+
+    // retrieve the userIdentity data from the server, update the identity object, and then resolve.
+    return this.fetch()
+      .toPromise()
+      .then(response => {
+        const account: Account = response.body;
+        if (account) {
+          this.userIdentity = account;
+          this.authenticated = true;
+        } else {
+          this.userIdentity = null;
+          this.authenticated = false;
+        }
+        this.authenticationState.next(this.userIdentity);
+        return this.userIdentity;
+      })
+      .catch(err => {
+        this.userIdentity = null;
+        this.authenticated = false;
+        this.authenticationState.next(this.userIdentity);
+        return null;
+      });
   }
 
   isAuthenticated(): boolean {

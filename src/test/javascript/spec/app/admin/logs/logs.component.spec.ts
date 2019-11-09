@@ -5,7 +5,8 @@ import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { LearningPatternsTestModule } from '../../../test.module';
 import { LogsComponent } from 'app/admin/logs/logs.component';
 import { LogsService } from 'app/admin/logs/logs.service';
-import { Log } from 'app/admin/logs/log.model';
+import { ITEMS_PER_PAGE } from 'app/shared';
+import { Log } from 'app/admin';
 
 describe('Component Tests', () => {
   describe('LogsComponent', () => {

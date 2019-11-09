@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { JhiDateUtils } from 'ng-jhipster';
 
-import { UserService } from 'app/core/user/user.service';
-import { User } from 'app/core/user/user.model';
+import { UserService, User } from 'app/core';
 import { SERVER_API_URL } from 'app/app.constants';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
@@ -37,7 +36,7 @@ describe('Service Tests', () => {
       });
       it('should return User', () => {
         service.find('user').subscribe(received => {
-          expectedResult = received.login;
+          expectedResult = received.body.login;
         });
 
         const req = httpMock.expectOne({ method: 'GET' });

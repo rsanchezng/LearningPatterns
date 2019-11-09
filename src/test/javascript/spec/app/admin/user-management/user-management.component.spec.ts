@@ -1,29 +1,28 @@
 import { ComponentFixture, TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 import { LearningPatternsTestModule } from '../../../test.module';
-import { UserManagementComponent } from 'app/admin/user-management/user-management.component';
-import { UserService } from 'app/core/user/user.service';
-import { User } from 'app/core/user/user.model';
+import { UserMgmtComponent } from 'app/admin/user-management/user-management.component';
+import { UserService, User } from 'app/core';
 
 describe('Component Tests', () => {
   describe('User Management Component', () => {
-    let comp: UserManagementComponent;
-    let fixture: ComponentFixture<UserManagementComponent>;
+    let comp: UserMgmtComponent;
+    let fixture: ComponentFixture<UserMgmtComponent>;
     let service: UserService;
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         imports: [LearningPatternsTestModule],
-        declarations: [UserManagementComponent]
+        declarations: [UserMgmtComponent]
       })
-        .overrideTemplate(UserManagementComponent, '')
+        .overrideTemplate(UserMgmtComponent, '')
         .compileComponents();
     }));
 
     beforeEach(() => {
-      fixture = TestBed.createComponent(UserManagementComponent);
+      fixture = TestBed.createComponent(UserMgmtComponent);
       comp = fixture.componentInstance;
       service = fixture.debugElement.injector.get(UserService);
     });

@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { User } from 'app/core/user/user.model';
-import { UserService } from 'app/core/user/user.service';
+import { User, UserService } from 'app/core';
 
 @Component({
   selector: 'jhi-user-mgmt-update',
   templateUrl: './user-management-update.component.html'
 })
-export class UserManagementUpdateComponent implements OnInit {
+export class UserMgmtUpdateComponent implements OnInit {
   user: User;
+  languages: any[];
   authorities: any[];
   isSaving: boolean;
 
@@ -25,7 +25,7 @@ export class UserManagementUpdateComponent implements OnInit {
     authorities: []
   });
 
-  constructor(private userService: UserService, private route: ActivatedRoute, private fb: FormBuilder) {}
+  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private fb: FormBuilder) {}
 
   ngOnInit() {
     this.isSaving = false;

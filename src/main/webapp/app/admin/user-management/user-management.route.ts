@@ -1,15 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiResolvePagingParams } from 'ng-jhipster';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes, CanActivate } from '@angular/router';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
 
-import { User } from 'app/core/user/user.model';
-import { UserService } from 'app/core/user/user.service';
-import { UserManagementComponent } from './user-management.component';
-import { UserManagementDetailComponent } from './user-management-detail.component';
-import { UserManagementUpdateComponent } from './user-management-update.component';
+import { AccountService, User, UserService } from 'app/core';
+import { UserMgmtComponent } from './user-management.component';
+import { UserMgmtDetailComponent } from './user-management-detail.component';
+import { UserMgmtUpdateComponent } from './user-management-update.component';
 
 @Injectable({ providedIn: 'root' })
-export class UserManagementResolve implements Resolve<any> {
+export class UserResolve implements CanActivate {
+  constructor(private accountService: AccountService) {}
+
+  canActivate() {
+    return this.accountService.identity().then(account => this.accountService.hasAnyAuthority(['ROLE_ADMIN']));
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class UserMgmtResolve implements Resolve<any> {
   constructor(private service: UserService) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -21,10 +29,10 @@ export class UserManagementResolve implements Resolve<any> {
   }
 }
 
-export const userManagementRoute: Routes = [
+export const userMgmtRoute: Routes = [
   {
-    path: '',
-    component: UserManagementComponent,
+    path: 'user-management',
+    component: UserMgmtComponent,
     resolve: {
       pagingParams: JhiResolvePagingParams
     },
@@ -34,27 +42,27 @@ export const userManagementRoute: Routes = [
     }
   },
   {
-    path: ':login/view',
-    component: UserManagementDetailComponent,
+    path: 'user-management/:login/view',
+    component: UserMgmtDetailComponent,
     resolve: {
-      user: UserManagementResolve
+      user: UserMgmtResolve
     },
     data: {
       pageTitle: 'Users'
     }
   },
   {
-    path: 'new',
-    component: UserManagementUpdateComponent,
+    path: 'user-management/new',
+    component: UserMgmtUpdateComponent,
     resolve: {
-      user: UserManagementResolve
+      user: UserMgmtResolve
     }
   },
   {
-    path: ':login/edit',
-    component: UserManagementUpdateComponent,
+    path: 'user-management/:login/edit',
+    component: UserMgmtUpdateComponent,
     resolve: {
-      user: UserManagementResolve
+      user: UserMgmtResolve
     }
   }
 ];

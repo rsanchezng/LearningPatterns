@@ -1,5 +1,0 @@
-{
-  "extends": "./tsconfig.build.json",
-  "include": ["src", "tests"],
-  "exclude": ["tests/test-project", "tests/test-tslint-rules-directory"]
-}

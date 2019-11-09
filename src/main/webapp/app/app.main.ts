@@ -10,6 +10,5 @@ if (module['hot']) {
 
 platformBrowserDynamic()
   .bootstrapModule(LearningPatternsAppModule, { preserveWhitespaces: true })
-  // eslint-disable-next-line no-console
-  .then(success => console.log('Application started'))
+  .then(success => console.log(`Application started`))
   .catch(err => console.error(err));

@@ -1,17 +1,19 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { LearningPatternsSharedModule } from 'app/shared/shared.module';
+import { LearningPatternsSharedModule } from 'app/shared';
 
-import { SessionsComponent } from './sessions/sessions.component';
-import { PasswordStrengthBarComponent } from './password/password-strength-bar.component';
-import { RegisterComponent } from './register/register.component';
-import { ActivateComponent } from './activate/activate.component';
-import { PasswordComponent } from './password/password.component';
-import { PasswordResetInitComponent } from './password-reset/init/password-reset-init.component';
-import { PasswordResetFinishComponent } from './password-reset/finish/password-reset-finish.component';
-import { SettingsComponent } from './settings/settings.component';
-import { accountState } from './account.route';
+import {
+  SessionsComponent,
+  PasswordStrengthBarComponent,
+  RegisterComponent,
+  ActivateComponent,
+  PasswordComponent,
+  PasswordResetInitComponent,
+  PasswordResetFinishComponent,
+  SettingsComponent,
+  accountState
+} from './';
 
 @NgModule({
   imports: [LearningPatternsSharedModule, RouterModule.forChild(accountState)],
@@ -24,6 +26,7 @@ import { accountState } from './account.route';
     PasswordResetFinishComponent,
     SessionsComponent,
     SettingsComponent
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class LearningPatternsAccountModule {}

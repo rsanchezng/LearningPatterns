@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { Router, ActivatedRouteSnapshot, NavigationEnd, NavigationError } from '@angular/router';
+
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'jhi-main',

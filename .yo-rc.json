@@ -3,7 +3,7 @@
     "promptValues": {
       "packageName": "com.fime"
     },
-    "jhipsterVersion": "6.4.1",
+    "jhipsterVersion": "6.2.0",
     "applicationType": "monolith",
     "baseName": "LearningPatterns",
     "packageName": "com.fime",

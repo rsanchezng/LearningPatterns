@@ -1,7 +1,6 @@
 package com.fime.web.rest;
 
 import com.fime.LearningPatternsApp;
-import io.github.jhipster.config.JHipsterProperties;
 import com.fime.config.audit.AuditEventConverter;
 import com.fime.domain.PersistentAuditEvent;
 import com.fime.repository.PersistenceAuditEventRepository;
@@ -47,9 +46,6 @@ public class AuditResourceIT {
     private AuditEventConverter auditEventConverter;
 
     @Autowired
-    private JHipsterProperties jhipsterProperties;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -67,7 +63,7 @@ public class AuditResourceIT {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         AuditEventService auditEventService =
-            new AuditEventService(auditEventRepository, auditEventConverter, jhipsterProperties);
+            new AuditEventService(auditEventRepository, auditEventConverter);
         AuditResource auditResource = new AuditResource(auditEventService);
         this.restAuditMockMvc = MockMvcBuilders.standaloneSetup(auditResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)

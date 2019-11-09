@@ -21,7 +21,7 @@ export class JhiConfigurationComponent implements OnInit {
     this.reverse = false;
   }
 
-  keys(dict): string[] {
+  keys(dict): Array<string> {
     return dict === undefined ? [] : Object.keys(dict);
   }
 

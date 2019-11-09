@@ -1,14 +1,17 @@
-import { NgModule } from '@angular/core';
-import { LearningPatternsSharedLibsModule } from './shared-libs.module';
-import { JhiAlertComponent } from './alert/alert.component';
-import { JhiAlertErrorComponent } from './alert/alert-error.component';
-import { JhiLoginModalComponent } from './login/login.component';
-import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { LearningPatternsSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective } from './';
 
 @NgModule({
-  imports: [LearningPatternsSharedLibsModule],
-  declarations: [JhiAlertComponent, JhiAlertErrorComponent, JhiLoginModalComponent, HasAnyAuthorityDirective],
+  imports: [LearningPatternsSharedCommonModule],
+  declarations: [JhiLoginModalComponent, HasAnyAuthorityDirective],
   entryComponents: [JhiLoginModalComponent],
-  exports: [LearningPatternsSharedLibsModule, JhiAlertComponent, JhiAlertErrorComponent, JhiLoginModalComponent, HasAnyAuthorityDirective]
+  exports: [LearningPatternsSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class LearningPatternsSharedModule {}
+export class LearningPatternsSharedModule {
+  static forRoot() {
+    return {
+      ngModule: LearningPatternsSharedModule
+    };
+  }
+}

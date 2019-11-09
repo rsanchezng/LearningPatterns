@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 import { LearningPatternsTestModule } from '../../../test.module';
-import { AccountService } from 'app/core/auth/account.service';
-import { Account } from 'app/core/user/account.model';
+import { AccountService, Account } from 'app/core';
 import { SettingsComponent } from 'app/account/settings/settings.component';
 
 describe('Component Tests', () => {
@@ -31,16 +30,14 @@ describe('Component Tests', () => {
 
     it('should send the current identity upon save', () => {
       // GIVEN
-      const accountValues: Account = {
+      const accountValues = {
         firstName: 'John',
         lastName: 'Doe',
 
         activated: true,
         email: 'john.doe@mail.com',
         langKey: 'en',
-        login: 'john',
-        authorities: [],
-        imageUrl: ''
+        login: 'john'
       };
       mockAuth.setIdentityResponse(accountValues);
 

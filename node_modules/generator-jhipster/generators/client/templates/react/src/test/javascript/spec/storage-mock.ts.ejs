@@ -1,4 +1,4 @@
-const StorageMock = () => {
+let StorageMock = () => {
   let storage = {};
   return {
     getItem: key => (key in storage ? storage[key] : null),
