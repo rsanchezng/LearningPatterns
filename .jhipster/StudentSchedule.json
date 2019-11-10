@@ -2,19 +2,19 @@
     "name": "StudentSchedule",
     "fields": [
         {
-            "fieldName": "scheduleCreatedBy",
+            "fieldName": "studentScheduleCreatedBy",
             "fieldType": "String"
         },
         {
-            "fieldName": "scheduleCreationDate",
+            "fieldName": "studentScheduleCreationDate",
             "fieldType": "LocalDate"
         },
         {
-            "fieldName": "scheduleModifiedBy",
+            "fieldName": "studentScheduleModifiedBy",
             "fieldType": "String"
         },
         {
-            "fieldName": "scheduleModifiedDate",
+            "fieldName": "studentScheduleModifiedDate",
             "fieldType": "LocalDate"
         }
     ],

@@ -46,7 +46,7 @@
             "relationshipType": "many-to-one",
             "otherEntityName": "studentSchedule",
             "otherEntityRelationshipName": "studentActivity",
-            "relationshipName": "studentSchedule",
+            "relationshipName": "studentschedule",
             "otherEntityField": "id"
         }
     ],
