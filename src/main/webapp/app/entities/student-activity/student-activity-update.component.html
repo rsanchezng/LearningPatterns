@@ -1,0 +1,102 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            <h2 id="jhi-student-activity-heading">Create or edit a Student Activity</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!editForm.get('id').value">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id"
+                        readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_activityStartDate">Activity Start Date</label>
+                    <div class="input-group">
+                        <input id="field_activityStartDate" type="text" class="form-control" name="activityStartDate" ngbDatepicker  #activityStartDateDp="ngbDatepicker" formControlName="activityStartDate"/>
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-secondary" (click)="activityStartDateDp.toggle()"><fa-icon [icon]="'calendar-alt'"></fa-icon></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_activityEndDate">Activity End Date</label>
+                    <div class="input-group">
+                        <input id="field_activityEndDate" type="text" class="form-control" name="activityEndDate" ngbDatepicker  #activityEndDateDp="ngbDatepicker" formControlName="activityEndDate"/>
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-secondary" (click)="activityEndDateDp.toggle()"><fa-icon [icon]="'calendar-alt'"></fa-icon></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_activityGrade">Activity Grade</label>
+                    <input type="number" class="form-control" name="activityGrade" id="field_activityGrade"
+                           formControlName="activityGrade"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_studentActivityGradeDate">Student Activity Grade Date</label>
+                    <div class="input-group">
+                        <input id="field_studentActivityGradeDate" type="text" class="form-control" name="studentActivityGradeDate" ngbDatepicker  #studentActivityGradeDateDp="ngbDatepicker" formControlName="studentActivityGradeDate"/>
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-secondary" (click)="studentActivityGradeDateDp.toggle()"><fa-icon [icon]="'calendar-alt'"></fa-icon></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_studentActivityCreatedDate">Student Activity Created Date</label>
+                    <div class="input-group">
+                        <input id="field_studentActivityCreatedDate" type="text" class="form-control" name="studentActivityCreatedDate" ngbDatepicker  #studentActivityCreatedDateDp="ngbDatepicker" formControlName="studentActivityCreatedDate"/>
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-secondary" (click)="studentActivityCreatedDateDp.toggle()"><fa-icon [icon]="'calendar-alt'"></fa-icon></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_studentActivityCreatedBy">Student Activity Created By</label>
+                    <input type="text" class="form-control" name="studentActivityCreatedBy" id="field_studentActivityCreatedBy"
+                           formControlName="studentActivityCreatedBy"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_studentActivityModifiedDate">Student Activity Modified Date</label>
+                    <div class="input-group">
+                        <input id="field_studentActivityModifiedDate" type="text" class="form-control" name="studentActivityModifiedDate" ngbDatepicker  #studentActivityModifiedDateDp="ngbDatepicker" formControlName="studentActivityModifiedDate"/>
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-secondary" (click)="studentActivityModifiedDateDp.toggle()"><fa-icon [icon]="'calendar-alt'"></fa-icon></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_studentActivityModifiedBy">Student Activity Modified By</label>
+                    <div class="input-group">
+                        <input id="field_studentActivityModifiedBy" type="text" class="form-control" name="studentActivityModifiedBy" ngbDatepicker  #studentActivityModifiedByDp="ngbDatepicker" formControlName="studentActivityModifiedBy"/>
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-secondary" (click)="studentActivityModifiedByDp.toggle()"><fa-icon [icon]="'calendar-alt'"></fa-icon></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_activity">Activity</label>
+                    <select class="form-control" id="field_activity" name="activity" formControlName="activity">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="activityOption.id === editForm.get('activity').value?.id ? editForm.get('activity').value : activityOption" *ngFor="let activityOption of activities; trackBy: trackActivityById">{{activityOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_studentschedule">Studentschedule</label>
+                    <select class="form-control" id="field_studentschedule" name="studentschedule" formControlName="studentschedule">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="studentScheduleOption.id === editForm.get('studentschedule').value?.id ? editForm.get('studentschedule').value : studentScheduleOption" *ngFor="let studentScheduleOption of studentschedules; trackBy: trackStudentScheduleById">{{studentScheduleOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

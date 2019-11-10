@@ -1,0 +1,75 @@
+<div>
+    <h2 id="page-heading">
+        <span>Student Schedules</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-student-schedule" [routerLink]="['/student-schedule/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span >
+            Create a new Student Schedule
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="alert alert-warning" *ngIf="studentSchedules?.length === 0">
+        <span>No studentSchedules found</span>
+    </div>
+    <div class="table-responsive" *ngIf="studentSchedules?.length > 0">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Student Schedule Created By</span></th>
+            <th><span>Student Schedule Creation Date</span></th>
+            <th><span>Student Schedule Modified By</span></th>
+            <th><span>Student Schedule Modified Date</span></th>
+            <th><span>Group</span></th>
+            <th><span>Student</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let studentSchedule of studentSchedules ;trackBy: trackId">
+                <td><a [routerLink]="['/student-schedule', studentSchedule.id, 'view' ]">{{studentSchedule.id}}</a></td>
+                <td>{{studentSchedule.studentScheduleCreatedBy}}</td>
+                <td>{{studentSchedule.studentScheduleCreationDate | date:'mediumDate'}}</td>
+                <td>{{studentSchedule.studentScheduleModifiedBy}}</td>
+                <td>{{studentSchedule.studentScheduleModifiedDate | date:'mediumDate'}}</td>
+                <td>
+                    <div *ngIf="studentSchedule.group">
+                        <a [routerLink]="['/group', studentSchedule.group?.id, 'view' ]" >{{studentSchedule.group?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="studentSchedule.student">
+                        <a [routerLink]="['/student', studentSchedule.student?.id, 'view' ]" >{{studentSchedule.student?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group">
+                        <button type="submit"
+                                [routerLink]="['/student-schedule', studentSchedule.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/student-schedule', studentSchedule.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/student-schedule', { outlets: { popup: studentSchedule.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

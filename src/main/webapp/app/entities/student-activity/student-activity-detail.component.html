@@ -1,0 +1,67 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="studentActivity">
+            <h2><span>Student Activity</span> {{studentActivity.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Activity Start Date</span></dt>
+                <dd>
+                    <span>{{studentActivity.activityStartDate}}</span>
+                </dd>
+                <dt><span>Activity End Date</span></dt>
+                <dd>
+                    <span>{{studentActivity.activityEndDate}}</span>
+                </dd>
+                <dt><span>Activity Grade</span></dt>
+                <dd>
+                    <span>{{studentActivity.activityGrade}}</span>
+                </dd>
+                <dt><span>Student Activity Grade Date</span></dt>
+                <dd>
+                    <span>{{studentActivity.studentActivityGradeDate}}</span>
+                </dd>
+                <dt><span>Student Activity Created Date</span></dt>
+                <dd>
+                    <span>{{studentActivity.studentActivityCreatedDate}}</span>
+                </dd>
+                <dt><span>Student Activity Created By</span></dt>
+                <dd>
+                    <span>{{studentActivity.studentActivityCreatedBy}}</span>
+                </dd>
+                <dt><span>Student Activity Modified Date</span></dt>
+                <dd>
+                    <span>{{studentActivity.studentActivityModifiedDate}}</span>
+                </dd>
+                <dt><span>Student Activity Modified By</span></dt>
+                <dd>
+                    <span>{{studentActivity.studentActivityModifiedBy}}</span>
+                </dd>
+                <dt><span>Activity</span></dt>
+                <dd>
+                    <div *ngIf="studentActivity.activity">
+                        <a [routerLink]="['/activity', studentActivity.activity?.id, 'view']">{{studentActivity.activity?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span>Studentschedule</span></dt>
+                <dd>
+                    <div *ngIf="studentActivity.studentschedule">
+                        <a [routerLink]="['/student-schedule', studentActivity.studentschedule?.id, 'view']">{{studentActivity.studentschedule?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/student-activity', studentActivity.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
