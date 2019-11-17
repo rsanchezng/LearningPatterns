@@ -53,9 +53,11 @@ test:
     override:
 <%_ if (buildTool === 'maven') { _%>
         - chmod +x mvnw
-        - ./mvnw clean verify
+        - ./mvnw -ntp checkstyle:check
+        - ./mvnw -ntp clean verify
 <%_ } else if (buildTool === 'gradle') { _%>
         - chmod +x gradlew
+        - ./gradlew checkstyleNohttp --no-daemon
         - ./gradlew clean test integrationTest --no-daemon
 <%_ } _%>
 <%_ if (!skipClient) { _%>
@@ -63,9 +65,9 @@ test:
 <%_ } _%>
 <%_ if (buildTool === 'maven') { _%>
     <%_ if (cicdIntegrations.includes('circle')) { _%>
-        - ./mvnw com.heroku.sdk:heroku-maven-plugin:2.0.5:deploy -DskipTests -Pprod -Dheroku.buildpacks=heroku/jvm -Dheroku.appName=<%= herokuAppName %>
+        - ./mvnw -ntp com.heroku.sdk:heroku-maven-plugin:2.0.5:deploy -DskipTests -Pprod -Dheroku.buildpacks=heroku/jvm -Dheroku.appName=<%= herokuAppName %>
     <%_ } else { _%>
-        - ./mvnw verify -Pprod -DskipTests
+        - ./mvnw -ntp verify -Pprod -DskipTests
     <%_ } _%>
 <%_ } else if (buildTool === 'gradle') { _%>
         - ./gradlew bootJar -Pprod -x test --no-daemon
