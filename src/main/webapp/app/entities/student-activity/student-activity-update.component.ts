@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { JhiAlertService } from 'ng-jhipster';
 import { IStudentActivity, StudentActivity } from 'app/shared/model/student-activity.model';
 import { StudentActivityService } from './student-activity.service';
 import { IActivity } from 'app/shared/model/activity.model';
-import { ActivityService } from 'app/entities/activity';
+import { ActivityService } from 'app/entities/activity/activity.service';
 import { IStudentSchedule } from 'app/shared/model/student-schedule.model';
-import { StudentScheduleService } from 'app/entities/student-schedule';
+import { StudentScheduleService } from 'app/entities/student-schedule/student-schedule.service';
 
 @Component({
   selector: 'jhi-student-activity-update',
@@ -60,18 +61,13 @@ export class StudentActivityUpdateComponent implements OnInit {
     });
     this.activityService
       .query()
-      .pipe(
-        filter((mayBeOk: HttpResponse<IActivity[]>) => mayBeOk.ok),
-        map((response: HttpResponse<IActivity[]>) => response.body)
-      )
-      .subscribe((res: IActivity[]) => (this.activities = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe((res: HttpResponse<IActivity[]>) => (this.activities = res.body), (res: HttpErrorResponse) => this.onError(res.message));
     this.studentScheduleService
       .query()
-      .pipe(
-        filter((mayBeOk: HttpResponse<IStudentSchedule[]>) => mayBeOk.ok),
-        map((response: HttpResponse<IStudentSchedule[]>) => response.body)
-      )
-      .subscribe((res: IStudentSchedule[]) => (this.studentschedules = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe(
+        (res: HttpResponse<IStudentSchedule[]>) => (this.studentschedules = res.body),
+        (res: HttpErrorResponse) => this.onError(res.message)
+      );
   }
 
   updateForm(studentActivity: IStudentActivity) {

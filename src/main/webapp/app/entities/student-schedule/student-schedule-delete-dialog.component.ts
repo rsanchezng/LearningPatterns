@@ -25,7 +25,7 @@ export class StudentScheduleDeleteDialogComponent {
   }
 
   confirmDelete(id: number) {
-    this.studentScheduleService.delete(id).subscribe(response => {
+    this.studentScheduleService.delete(id).subscribe(() => {
       this.eventManager.broadcast({
         name: 'studentScheduleListModification',
         content: 'Deleted an studentSchedule'
@@ -50,11 +50,11 @@ export class StudentScheduleDeletePopupComponent implements OnInit, OnDestroy {
         this.ngbModalRef = this.modalService.open(StudentScheduleDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
         this.ngbModalRef.componentInstance.studentSchedule = studentSchedule;
         this.ngbModalRef.result.then(
-          result => {
+          () => {
             this.router.navigate(['/student-schedule', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           },
-          reason => {
+          () => {
             this.router.navigate(['/student-schedule', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           }

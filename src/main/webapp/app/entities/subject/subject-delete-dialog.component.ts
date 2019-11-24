@@ -21,7 +21,7 @@ export class SubjectDeleteDialogComponent {
   }
 
   confirmDelete(id: number) {
-    this.subjectService.delete(id).subscribe(response => {
+    this.subjectService.delete(id).subscribe(() => {
       this.eventManager.broadcast({
         name: 'subjectListModification',
         content: 'Deleted an subject'
@@ -46,11 +46,11 @@ export class SubjectDeletePopupComponent implements OnInit, OnDestroy {
         this.ngbModalRef = this.modalService.open(SubjectDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
         this.ngbModalRef.componentInstance.subject = subject;
         this.ngbModalRef.result.then(
-          result => {
+          () => {
             this.router.navigate(['/subject', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           },
-          reason => {
+          () => {
             this.router.navigate(['/subject', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           }

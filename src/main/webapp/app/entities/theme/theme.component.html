@@ -8,24 +8,25 @@
             </span>
         </button>
     </h2>
+    <jhi-alert-error></jhi-alert-error>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="alert alert-warning" *ngIf="themes?.length === 0">
         <span>No themes found</span>
     </div>
     <div class="table-responsive" *ngIf="themes?.length > 0">
-        <table class="table table-striped">
+        <table class="table table-striped" aria-describedby="page-heading">
             <thead>
             <tr>
-            <th><span>ID</span></th>
-            <th><span>Theme Name</span></th>
-            <th><span>Theme Description</span></th>
-            <th><span>Theme Created By</span></th>
-            <th><span>Theme Creation Date</span></th>
-            <th><span>Theme Modified By</span></th>
-            <th><span>Theme Modified Date</span></th>
-            <th><span>Subject</span></th>
-            <th></th>
+            <th scope="col" ><span>ID</span></th>
+            <th scope="col" ><span>Theme Name</span></th>
+            <th scope="col" ><span>Theme Description</span></th>
+            <th scope="col" ><span>Theme Created By</span></th>
+            <th scope="col" ><span>Theme Creation Date</span></th>
+            <th scope="col" ><span>Theme Modified By</span></th>
+            <th scope="col" ><span>Theme Modified Date</span></th>
+            <th scope="col" ><span>Subject</span></th>
+            <th scope="col"></th>
             </tr>
             </thead>
             <tbody>

@@ -41,7 +41,7 @@ public class Subject implements Serializable {
     @Column(name = "subject_modified_date")
     private LocalDate subjectModifiedDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("subjects")
     private Teacher teacher;
 

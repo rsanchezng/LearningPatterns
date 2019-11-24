@@ -98,3 +98,13 @@ relationship ManyToOne {
   StudentActivity{studentschedule} to StudentSchedule
   Subject{teacher} to Teacher
 }
+
+filter Subject
+filter Theme
+filter Subtheme
+filter Activity
+filter Group
+filter StudentSchedule
+filter Teacher
+filter Student
+filter StudentActivity

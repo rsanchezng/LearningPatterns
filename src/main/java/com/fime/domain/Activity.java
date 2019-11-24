@@ -47,7 +47,7 @@ public class Activity implements Serializable {
     @Column(name = "activity_modified_date")
     private LocalDate activityModifiedDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("activities")
     private Subtheme subtheme;
 

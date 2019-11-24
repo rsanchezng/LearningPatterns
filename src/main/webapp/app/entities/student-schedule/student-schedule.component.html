@@ -8,23 +8,24 @@
             </span>
         </button>
     </h2>
+    <jhi-alert-error></jhi-alert-error>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="alert alert-warning" *ngIf="studentSchedules?.length === 0">
         <span>No studentSchedules found</span>
     </div>
     <div class="table-responsive" *ngIf="studentSchedules?.length > 0">
-        <table class="table table-striped">
+        <table class="table table-striped" aria-describedby="page-heading">
             <thead>
             <tr>
-            <th><span>ID</span></th>
-            <th><span>Student Schedule Created By</span></th>
-            <th><span>Student Schedule Creation Date</span></th>
-            <th><span>Student Schedule Modified By</span></th>
-            <th><span>Student Schedule Modified Date</span></th>
-            <th><span>Group</span></th>
-            <th><span>Student</span></th>
-            <th></th>
+            <th scope="col" ><span>ID</span></th>
+            <th scope="col" ><span>Student Schedule Created By</span></th>
+            <th scope="col" ><span>Student Schedule Creation Date</span></th>
+            <th scope="col" ><span>Student Schedule Modified By</span></th>
+            <th scope="col" ><span>Student Schedule Modified Date</span></th>
+            <th scope="col" ><span>Group</span></th>
+            <th scope="col" ><span>Student</span></th>
+            <th scope="col"></th>
             </tr>
             </thead>
             <tbody>

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { UserRouteAccessService } from 'app/core';
+import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
 import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Teacher } from 'app/shared/model/teacher.model';
 import { TeacherService } from './teacher.service';
 import { TeacherComponent } from './teacher.component';
@@ -16,13 +16,10 @@ import { ITeacher } from 'app/shared/model/teacher.model';
 export class TeacherResolve implements Resolve<ITeacher> {
   constructor(private service: TeacherService) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ITeacher> {
+  resolve(route: ActivatedRouteSnapshot): Observable<ITeacher> {
     const id = route.params['id'];
     if (id) {
-      return this.service.find(id).pipe(
-        filter((response: HttpResponse<Teacher>) => response.ok),
-        map((teacher: HttpResponse<Teacher>) => teacher.body)
-      );
+      return this.service.find(id).pipe(map((teacher: HttpResponse<Teacher>) => teacher.body));
     }
     return of(new Teacher());
   }

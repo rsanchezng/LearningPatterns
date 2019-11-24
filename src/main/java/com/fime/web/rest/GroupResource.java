@@ -1,8 +1,10 @@
 package com.fime.web.rest;
 
 import com.fime.domain.Group;
-import com.fime.repository.GroupRepository;
+import com.fime.service.GroupService;
 import com.fime.web.rest.errors.BadRequestAlertException;
+import com.fime.service.dto.GroupCriteria;
+import com.fime.service.GroupQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -32,10 +34,13 @@ public class GroupResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final GroupRepository groupRepository;
+    private final GroupService groupService;
 
-    public GroupResource(GroupRepository groupRepository) {
-        this.groupRepository = groupRepository;
+    private final GroupQueryService groupQueryService;
+
+    public GroupResource(GroupService groupService, GroupQueryService groupQueryService) {
+        this.groupService = groupService;
+        this.groupQueryService = groupQueryService;
     }
 
     /**
@@ -51,7 +56,7 @@ public class GroupResource {
         if (group.getId() != null) {
             throw new BadRequestAlertException("A new group cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Group result = groupRepository.save(group);
+        Group result = groupService.save(group);
         return ResponseEntity.created(new URI("/api/groups/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +77,7 @@ public class GroupResource {
         if (group.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Group result = groupRepository.save(group);
+        Group result = groupService.save(group);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, group.getId().toString()))
             .body(result);
@@ -82,12 +87,26 @@ public class GroupResource {
      * {@code GET  /groups} : get all the groups.
      *
 
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of groups in body.
      */
     @GetMapping("/groups")
-    public List<Group> getAllGroups() {
-        log.debug("REST request to get all Groups");
-        return groupRepository.findAll();
+    public ResponseEntity<List<Group>> getAllGroups(GroupCriteria criteria) {
+        log.debug("REST request to get Groups by criteria: {}", criteria);
+        List<Group> entityList = groupQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /groups/count} : count all the groups.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/groups/count")
+    public ResponseEntity<Long> countGroups(GroupCriteria criteria) {
+        log.debug("REST request to count Groups by criteria: {}", criteria);
+        return ResponseEntity.ok().body(groupQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -99,7 +118,7 @@ public class GroupResource {
     @GetMapping("/groups/{id}")
     public ResponseEntity<Group> getGroup(@PathVariable Long id) {
         log.debug("REST request to get Group : {}", id);
-        Optional<Group> group = groupRepository.findById(id);
+        Optional<Group> group = groupService.findOne(id);
         return ResponseUtil.wrapOrNotFound(group);
     }
 
@@ -112,7 +131,7 @@ public class GroupResource {
     @DeleteMapping("/groups/{id}")
     public ResponseEntity<Void> deleteGroup(@PathVariable Long id) {
         log.debug("REST request to delete Group : {}", id);
-        groupRepository.deleteById(id);
+        groupService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

@@ -1,8 +1,10 @@
 package com.fime.web.rest;
 
 import com.fime.domain.StudentSchedule;
-import com.fime.repository.StudentScheduleRepository;
+import com.fime.service.StudentScheduleService;
 import com.fime.web.rest.errors.BadRequestAlertException;
+import com.fime.service.dto.StudentScheduleCriteria;
+import com.fime.service.StudentScheduleQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -32,10 +34,13 @@ public class StudentScheduleResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final StudentScheduleRepository studentScheduleRepository;
+    private final StudentScheduleService studentScheduleService;
 
-    public StudentScheduleResource(StudentScheduleRepository studentScheduleRepository) {
-        this.studentScheduleRepository = studentScheduleRepository;
+    private final StudentScheduleQueryService studentScheduleQueryService;
+
+    public StudentScheduleResource(StudentScheduleService studentScheduleService, StudentScheduleQueryService studentScheduleQueryService) {
+        this.studentScheduleService = studentScheduleService;
+        this.studentScheduleQueryService = studentScheduleQueryService;
     }
 
     /**
@@ -51,7 +56,7 @@ public class StudentScheduleResource {
         if (studentSchedule.getId() != null) {
             throw new BadRequestAlertException("A new studentSchedule cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        StudentSchedule result = studentScheduleRepository.save(studentSchedule);
+        StudentSchedule result = studentScheduleService.save(studentSchedule);
         return ResponseEntity.created(new URI("/api/student-schedules/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +77,7 @@ public class StudentScheduleResource {
         if (studentSchedule.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        StudentSchedule result = studentScheduleRepository.save(studentSchedule);
+        StudentSchedule result = studentScheduleService.save(studentSchedule);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, studentSchedule.getId().toString()))
             .body(result);
@@ -82,12 +87,26 @@ public class StudentScheduleResource {
      * {@code GET  /student-schedules} : get all the studentSchedules.
      *
 
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of studentSchedules in body.
      */
     @GetMapping("/student-schedules")
-    public List<StudentSchedule> getAllStudentSchedules() {
-        log.debug("REST request to get all StudentSchedules");
-        return studentScheduleRepository.findAll();
+    public ResponseEntity<List<StudentSchedule>> getAllStudentSchedules(StudentScheduleCriteria criteria) {
+        log.debug("REST request to get StudentSchedules by criteria: {}", criteria);
+        List<StudentSchedule> entityList = studentScheduleQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /student-schedules/count} : count all the studentSchedules.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/student-schedules/count")
+    public ResponseEntity<Long> countStudentSchedules(StudentScheduleCriteria criteria) {
+        log.debug("REST request to count StudentSchedules by criteria: {}", criteria);
+        return ResponseEntity.ok().body(studentScheduleQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -99,7 +118,7 @@ public class StudentScheduleResource {
     @GetMapping("/student-schedules/{id}")
     public ResponseEntity<StudentSchedule> getStudentSchedule(@PathVariable Long id) {
         log.debug("REST request to get StudentSchedule : {}", id);
-        Optional<StudentSchedule> studentSchedule = studentScheduleRepository.findById(id);
+        Optional<StudentSchedule> studentSchedule = studentScheduleService.findOne(id);
         return ResponseUtil.wrapOrNotFound(studentSchedule);
     }
 
@@ -112,7 +131,7 @@ public class StudentScheduleResource {
     @DeleteMapping("/student-schedules/{id}")
     public ResponseEntity<Void> deleteStudentSchedule(@PathVariable Long id) {
         log.debug("REST request to delete StudentSchedule : {}", id);
-        studentScheduleRepository.deleteById(id);
+        studentScheduleService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

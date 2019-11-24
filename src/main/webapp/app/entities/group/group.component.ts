@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 
 import { IGroup } from 'app/shared/model/group.model';
-import { AccountService } from 'app/core';
 import { GroupService } from './group.service';
 
 @Component({
@@ -14,36 +12,18 @@ import { GroupService } from './group.service';
 })
 export class GroupComponent implements OnInit, OnDestroy {
   groups: IGroup[];
-  currentAccount: any;
   eventSubscriber: Subscription;
 
-  constructor(
-    protected groupService: GroupService,
-    protected jhiAlertService: JhiAlertService,
-    protected eventManager: JhiEventManager,
-    protected accountService: AccountService
-  ) {}
+  constructor(protected groupService: GroupService, protected eventManager: JhiEventManager) {}
 
   loadAll() {
-    this.groupService
-      .query()
-      .pipe(
-        filter((res: HttpResponse<IGroup[]>) => res.ok),
-        map((res: HttpResponse<IGroup[]>) => res.body)
-      )
-      .subscribe(
-        (res: IGroup[]) => {
-          this.groups = res;
-        },
-        (res: HttpErrorResponse) => this.onError(res.message)
-      );
+    this.groupService.query().subscribe((res: HttpResponse<IGroup[]>) => {
+      this.groups = res.body;
+    });
   }
 
   ngOnInit() {
     this.loadAll();
-    this.accountService.identity().then(account => {
-      this.currentAccount = account;
-    });
     this.registerChangeInGroups();
   }
 
@@ -56,10 +36,6 @@ export class GroupComponent implements OnInit, OnDestroy {
   }
 
   registerChangeInGroups() {
-    this.eventSubscriber = this.eventManager.subscribe('groupListModification', response => this.loadAll());
-  }
-
-  protected onError(errorMessage: string) {
-    this.jhiAlertService.error(errorMessage, null, null);
+    this.eventSubscriber = this.eventManager.subscribe('groupListModification', () => this.loadAll());
   }
 }

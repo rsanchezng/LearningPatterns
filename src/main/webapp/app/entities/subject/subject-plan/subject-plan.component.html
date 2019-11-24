@@ -1,0 +1,25 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="subject">
+            <h2><span>Create an Experiment Plan</span></h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Subject Name</span></dt>
+                <dd>
+                    <span>{{subject.subjectName}}</span>
+                </dd>
+                <dt><span>Subject Credits</span></dt>
+                <dd>
+                    <span>{{subject.subjectCredits}}</span>
+                </dd>
+            </dl>
+            <hr>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'times'"></fa-icon><span> Cancel</span>
+            </button>
+        </div>
+    </div>
+</div>

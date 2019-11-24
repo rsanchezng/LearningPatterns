@@ -21,7 +21,7 @@ export class ThemeDeleteDialogComponent {
   }
 
   confirmDelete(id: number) {
-    this.themeService.delete(id).subscribe(response => {
+    this.themeService.delete(id).subscribe(() => {
       this.eventManager.broadcast({
         name: 'themeListModification',
         content: 'Deleted an theme'
@@ -46,11 +46,11 @@ export class ThemeDeletePopupComponent implements OnInit, OnDestroy {
         this.ngbModalRef = this.modalService.open(ThemeDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
         this.ngbModalRef.componentInstance.theme = theme;
         this.ngbModalRef.result.then(
-          result => {
+          () => {
             this.router.navigate(['/theme', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           },
-          reason => {
+          () => {
             this.router.navigate(['/theme', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           }

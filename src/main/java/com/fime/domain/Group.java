@@ -32,11 +32,11 @@ public class Group implements Serializable {
     @Column(name = "group_modified_date")
     private LocalDate groupModifiedDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("groups")
     private Subject subject;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("groups")
     private Teacher teacher;
 

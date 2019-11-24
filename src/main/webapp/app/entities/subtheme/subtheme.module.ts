@@ -1,16 +1,12 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { LearningPatternsSharedModule } from 'app/shared';
-import {
-  SubthemeComponent,
-  SubthemeDetailComponent,
-  SubthemeUpdateComponent,
-  SubthemeDeletePopupComponent,
-  SubthemeDeleteDialogComponent,
-  subthemeRoute,
-  subthemePopupRoute
-} from './';
+import { LearningPatternsSharedModule } from 'app/shared/shared.module';
+import { SubthemeComponent } from './subtheme.component';
+import { SubthemeDetailComponent } from './subtheme-detail.component';
+import { SubthemeUpdateComponent } from './subtheme-update.component';
+import { SubthemeDeletePopupComponent, SubthemeDeleteDialogComponent } from './subtheme-delete-dialog.component';
+import { subthemeRoute, subthemePopupRoute } from './subtheme.route';
 
 const ENTITY_STATES = [...subthemeRoute, ...subthemePopupRoute];
 
@@ -23,7 +19,6 @@ const ENTITY_STATES = [...subthemeRoute, ...subthemePopupRoute];
     SubthemeDeleteDialogComponent,
     SubthemeDeletePopupComponent
   ],
-  entryComponents: [SubthemeComponent, SubthemeUpdateComponent, SubthemeDeleteDialogComponent, SubthemeDeletePopupComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  entryComponents: [SubthemeDeleteDialogComponent]
 })
 export class LearningPatternsSubthemeModule {}

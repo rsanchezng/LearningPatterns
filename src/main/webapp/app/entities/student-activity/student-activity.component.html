@@ -8,27 +8,28 @@
             </span>
         </button>
     </h2>
+    <jhi-alert-error></jhi-alert-error>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="alert alert-warning" *ngIf="studentActivities?.length === 0">
         <span>No studentActivities found</span>
     </div>
     <div class="table-responsive" *ngIf="studentActivities?.length > 0">
-        <table class="table table-striped">
+        <table class="table table-striped" aria-describedby="page-heading">
             <thead>
             <tr>
-            <th><span>ID</span></th>
-            <th><span>Activity Start Date</span></th>
-            <th><span>Activity End Date</span></th>
-            <th><span>Activity Grade</span></th>
-            <th><span>Student Activity Grade Date</span></th>
-            <th><span>Student Activity Created Date</span></th>
-            <th><span>Student Activity Created By</span></th>
-            <th><span>Student Activity Modified Date</span></th>
-            <th><span>Student Activity Modified By</span></th>
-            <th><span>Activity</span></th>
-            <th><span>Studentschedule</span></th>
-            <th></th>
+            <th scope="col" ><span>ID</span></th>
+            <th scope="col" ><span>Activity Start Date</span></th>
+            <th scope="col" ><span>Activity End Date</span></th>
+            <th scope="col" ><span>Activity Grade</span></th>
+            <th scope="col" ><span>Student Activity Grade Date</span></th>
+            <th scope="col" ><span>Student Activity Created Date</span></th>
+            <th scope="col" ><span>Student Activity Created By</span></th>
+            <th scope="col" ><span>Student Activity Modified Date</span></th>
+            <th scope="col" ><span>Student Activity Modified By</span></th>
+            <th scope="col" ><span>Activity</span></th>
+            <th scope="col" ><span>Studentschedule</span></th>
+            <th scope="col"></th>
             </tr>
             </thead>
             <tbody>

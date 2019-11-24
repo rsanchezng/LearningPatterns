@@ -8,24 +8,25 @@
             </span>
         </button>
     </h2>
+    <jhi-alert-error></jhi-alert-error>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="alert alert-warning" *ngIf="subthemes?.length === 0">
         <span>No subthemes found</span>
     </div>
     <div class="table-responsive" *ngIf="subthemes?.length > 0">
-        <table class="table table-striped">
+        <table class="table table-striped" aria-describedby="page-heading">
             <thead>
             <tr>
-            <th><span>ID</span></th>
-            <th><span>Subtheme Name</span></th>
-            <th><span>Subtheme Description</span></th>
-            <th><span>Subtheme Created By</span></th>
-            <th><span>Subtheme Creation Date</span></th>
-            <th><span>Subtheme Modified By</span></th>
-            <th><span>Subtheme Modified Date</span></th>
-            <th><span>Theme</span></th>
-            <th></th>
+            <th scope="col" ><span>ID</span></th>
+            <th scope="col" ><span>Subtheme Name</span></th>
+            <th scope="col" ><span>Subtheme Description</span></th>
+            <th scope="col" ><span>Subtheme Created By</span></th>
+            <th scope="col" ><span>Subtheme Creation Date</span></th>
+            <th scope="col" ><span>Subtheme Modified By</span></th>
+            <th scope="col" ><span>Subtheme Modified Date</span></th>
+            <th scope="col" ><span>Theme</span></th>
+            <th scope="col"></th>
             </tr>
             </thead>
             <tbody>

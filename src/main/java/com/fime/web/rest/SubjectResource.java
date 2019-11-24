@@ -1,8 +1,10 @@
 package com.fime.web.rest;
 
 import com.fime.domain.Subject;
-import com.fime.repository.SubjectRepository;
+import com.fime.service.SubjectService;
 import com.fime.web.rest.errors.BadRequestAlertException;
+import com.fime.service.dto.SubjectCriteria;
+import com.fime.service.SubjectQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -32,10 +34,13 @@ public class SubjectResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final SubjectRepository subjectRepository;
+    private final SubjectService subjectService;
 
-    public SubjectResource(SubjectRepository subjectRepository) {
-        this.subjectRepository = subjectRepository;
+    private final SubjectQueryService subjectQueryService;
+
+    public SubjectResource(SubjectService subjectService, SubjectQueryService subjectQueryService) {
+        this.subjectService = subjectService;
+        this.subjectQueryService = subjectQueryService;
     }
 
     /**
@@ -51,7 +56,7 @@ public class SubjectResource {
         if (subject.getId() != null) {
             throw new BadRequestAlertException("A new subject cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Subject result = subjectRepository.save(subject);
+        Subject result = subjectService.save(subject);
         return ResponseEntity.created(new URI("/api/subjects/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +77,7 @@ public class SubjectResource {
         if (subject.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Subject result = subjectRepository.save(subject);
+        Subject result = subjectService.save(subject);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, subject.getId().toString()))
             .body(result);
@@ -82,12 +87,26 @@ public class SubjectResource {
      * {@code GET  /subjects} : get all the subjects.
      *
 
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of subjects in body.
      */
     @GetMapping("/subjects")
-    public List<Subject> getAllSubjects() {
-        log.debug("REST request to get all Subjects");
-        return subjectRepository.findAll();
+    public ResponseEntity<List<Subject>> getAllSubjects(SubjectCriteria criteria) {
+        log.debug("REST request to get Subjects by criteria: {}", criteria);
+        List<Subject> entityList = subjectQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /subjects/count} : count all the subjects.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/subjects/count")
+    public ResponseEntity<Long> countSubjects(SubjectCriteria criteria) {
+        log.debug("REST request to count Subjects by criteria: {}", criteria);
+        return ResponseEntity.ok().body(subjectQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -99,7 +118,7 @@ public class SubjectResource {
     @GetMapping("/subjects/{id}")
     public ResponseEntity<Subject> getSubject(@PathVariable Long id) {
         log.debug("REST request to get Subject : {}", id);
-        Optional<Subject> subject = subjectRepository.findById(id);
+        Optional<Subject> subject = subjectService.findOne(id);
         return ResponseUtil.wrapOrNotFound(subject);
     }
 
@@ -112,7 +131,7 @@ public class SubjectResource {
     @DeleteMapping("/subjects/{id}")
     public ResponseEntity<Void> deleteSubject(@PathVariable Long id) {
         log.debug("REST request to delete Subject : {}", id);
-        subjectRepository.deleteById(id);
+        subjectService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

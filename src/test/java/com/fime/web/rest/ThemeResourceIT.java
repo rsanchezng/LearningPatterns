@@ -2,8 +2,12 @@ package com.fime.web.rest;
 
 import com.fime.LearningPatternsApp;
 import com.fime.domain.Theme;
+import com.fime.domain.Subject;
 import com.fime.repository.ThemeRepository;
+import com.fime.service.ThemeService;
 import com.fime.web.rest.errors.ExceptionTranslator;
+import com.fime.service.dto.ThemeCriteria;
+import com.fime.service.ThemeQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,6 +63,12 @@ public class ThemeResourceIT {
     private ThemeRepository themeRepository;
 
     @Autowired
+    private ThemeService themeService;
+
+    @Autowired
+    private ThemeQueryService themeQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -80,7 +90,7 @@ public class ThemeResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ThemeResource themeResource = new ThemeResource(themeRepository);
+        final ThemeResource themeResource = new ThemeResource(themeService, themeQueryService);
         this.restThemeMockMvc = MockMvcBuilders.standaloneSetup(themeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -181,11 +191,11 @@ public class ThemeResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(theme.getId().intValue())))
-            .andExpect(jsonPath("$.[*].themeName").value(hasItem(DEFAULT_THEME_NAME.toString())))
-            .andExpect(jsonPath("$.[*].themeDescription").value(hasItem(DEFAULT_THEME_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].themeCreatedBy").value(hasItem(DEFAULT_THEME_CREATED_BY.toString())))
+            .andExpect(jsonPath("$.[*].themeName").value(hasItem(DEFAULT_THEME_NAME)))
+            .andExpect(jsonPath("$.[*].themeDescription").value(hasItem(DEFAULT_THEME_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].themeCreatedBy").value(hasItem(DEFAULT_THEME_CREATED_BY)))
             .andExpect(jsonPath("$.[*].themeCreationDate").value(hasItem(DEFAULT_THEME_CREATION_DATE.toString())))
-            .andExpect(jsonPath("$.[*].themeModifiedBy").value(hasItem(DEFAULT_THEME_MODIFIED_BY.toString())))
+            .andExpect(jsonPath("$.[*].themeModifiedBy").value(hasItem(DEFAULT_THEME_MODIFIED_BY)))
             .andExpect(jsonPath("$.[*].themeModifiedDate").value(hasItem(DEFAULT_THEME_MODIFIED_DATE.toString())));
     }
     
@@ -200,13 +210,614 @@ public class ThemeResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(theme.getId().intValue()))
-            .andExpect(jsonPath("$.themeName").value(DEFAULT_THEME_NAME.toString()))
-            .andExpect(jsonPath("$.themeDescription").value(DEFAULT_THEME_DESCRIPTION.toString()))
-            .andExpect(jsonPath("$.themeCreatedBy").value(DEFAULT_THEME_CREATED_BY.toString()))
+            .andExpect(jsonPath("$.themeName").value(DEFAULT_THEME_NAME))
+            .andExpect(jsonPath("$.themeDescription").value(DEFAULT_THEME_DESCRIPTION))
+            .andExpect(jsonPath("$.themeCreatedBy").value(DEFAULT_THEME_CREATED_BY))
             .andExpect(jsonPath("$.themeCreationDate").value(DEFAULT_THEME_CREATION_DATE.toString()))
-            .andExpect(jsonPath("$.themeModifiedBy").value(DEFAULT_THEME_MODIFIED_BY.toString()))
+            .andExpect(jsonPath("$.themeModifiedBy").value(DEFAULT_THEME_MODIFIED_BY))
             .andExpect(jsonPath("$.themeModifiedDate").value(DEFAULT_THEME_MODIFIED_DATE.toString()));
     }
+
+
+    @Test
+    @Transactional
+    public void getThemesByIdFiltering() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        Long id = theme.getId();
+
+        defaultThemeShouldBeFound("id.equals=" + id);
+        defaultThemeShouldNotBeFound("id.notEquals=" + id);
+
+        defaultThemeShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultThemeShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultThemeShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultThemeShouldNotBeFound("id.lessThan=" + id);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeName equals to DEFAULT_THEME_NAME
+        defaultThemeShouldBeFound("themeName.equals=" + DEFAULT_THEME_NAME);
+
+        // Get all the themeList where themeName equals to UPDATED_THEME_NAME
+        defaultThemeShouldNotBeFound("themeName.equals=" + UPDATED_THEME_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeNameIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeName not equals to DEFAULT_THEME_NAME
+        defaultThemeShouldNotBeFound("themeName.notEquals=" + DEFAULT_THEME_NAME);
+
+        // Get all the themeList where themeName not equals to UPDATED_THEME_NAME
+        defaultThemeShouldBeFound("themeName.notEquals=" + UPDATED_THEME_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeName in DEFAULT_THEME_NAME or UPDATED_THEME_NAME
+        defaultThemeShouldBeFound("themeName.in=" + DEFAULT_THEME_NAME + "," + UPDATED_THEME_NAME);
+
+        // Get all the themeList where themeName equals to UPDATED_THEME_NAME
+        defaultThemeShouldNotBeFound("themeName.in=" + UPDATED_THEME_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeName is not null
+        defaultThemeShouldBeFound("themeName.specified=true");
+
+        // Get all the themeList where themeName is null
+        defaultThemeShouldNotBeFound("themeName.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllThemesByThemeNameContainsSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeName contains DEFAULT_THEME_NAME
+        defaultThemeShouldBeFound("themeName.contains=" + DEFAULT_THEME_NAME);
+
+        // Get all the themeList where themeName contains UPDATED_THEME_NAME
+        defaultThemeShouldNotBeFound("themeName.contains=" + UPDATED_THEME_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeName does not contain DEFAULT_THEME_NAME
+        defaultThemeShouldNotBeFound("themeName.doesNotContain=" + DEFAULT_THEME_NAME);
+
+        // Get all the themeList where themeName does not contain UPDATED_THEME_NAME
+        defaultThemeShouldBeFound("themeName.doesNotContain=" + UPDATED_THEME_NAME);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeDescription equals to DEFAULT_THEME_DESCRIPTION
+        defaultThemeShouldBeFound("themeDescription.equals=" + DEFAULT_THEME_DESCRIPTION);
+
+        // Get all the themeList where themeDescription equals to UPDATED_THEME_DESCRIPTION
+        defaultThemeShouldNotBeFound("themeDescription.equals=" + UPDATED_THEME_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeDescriptionIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeDescription not equals to DEFAULT_THEME_DESCRIPTION
+        defaultThemeShouldNotBeFound("themeDescription.notEquals=" + DEFAULT_THEME_DESCRIPTION);
+
+        // Get all the themeList where themeDescription not equals to UPDATED_THEME_DESCRIPTION
+        defaultThemeShouldBeFound("themeDescription.notEquals=" + UPDATED_THEME_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeDescription in DEFAULT_THEME_DESCRIPTION or UPDATED_THEME_DESCRIPTION
+        defaultThemeShouldBeFound("themeDescription.in=" + DEFAULT_THEME_DESCRIPTION + "," + UPDATED_THEME_DESCRIPTION);
+
+        // Get all the themeList where themeDescription equals to UPDATED_THEME_DESCRIPTION
+        defaultThemeShouldNotBeFound("themeDescription.in=" + UPDATED_THEME_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeDescription is not null
+        defaultThemeShouldBeFound("themeDescription.specified=true");
+
+        // Get all the themeList where themeDescription is null
+        defaultThemeShouldNotBeFound("themeDescription.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllThemesByThemeDescriptionContainsSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeDescription contains DEFAULT_THEME_DESCRIPTION
+        defaultThemeShouldBeFound("themeDescription.contains=" + DEFAULT_THEME_DESCRIPTION);
+
+        // Get all the themeList where themeDescription contains UPDATED_THEME_DESCRIPTION
+        defaultThemeShouldNotBeFound("themeDescription.contains=" + UPDATED_THEME_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeDescriptionNotContainsSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeDescription does not contain DEFAULT_THEME_DESCRIPTION
+        defaultThemeShouldNotBeFound("themeDescription.doesNotContain=" + DEFAULT_THEME_DESCRIPTION);
+
+        // Get all the themeList where themeDescription does not contain UPDATED_THEME_DESCRIPTION
+        defaultThemeShouldBeFound("themeDescription.doesNotContain=" + UPDATED_THEME_DESCRIPTION);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreatedByIsEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreatedBy equals to DEFAULT_THEME_CREATED_BY
+        defaultThemeShouldBeFound("themeCreatedBy.equals=" + DEFAULT_THEME_CREATED_BY);
+
+        // Get all the themeList where themeCreatedBy equals to UPDATED_THEME_CREATED_BY
+        defaultThemeShouldNotBeFound("themeCreatedBy.equals=" + UPDATED_THEME_CREATED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreatedByIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreatedBy not equals to DEFAULT_THEME_CREATED_BY
+        defaultThemeShouldNotBeFound("themeCreatedBy.notEquals=" + DEFAULT_THEME_CREATED_BY);
+
+        // Get all the themeList where themeCreatedBy not equals to UPDATED_THEME_CREATED_BY
+        defaultThemeShouldBeFound("themeCreatedBy.notEquals=" + UPDATED_THEME_CREATED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreatedByIsInShouldWork() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreatedBy in DEFAULT_THEME_CREATED_BY or UPDATED_THEME_CREATED_BY
+        defaultThemeShouldBeFound("themeCreatedBy.in=" + DEFAULT_THEME_CREATED_BY + "," + UPDATED_THEME_CREATED_BY);
+
+        // Get all the themeList where themeCreatedBy equals to UPDATED_THEME_CREATED_BY
+        defaultThemeShouldNotBeFound("themeCreatedBy.in=" + UPDATED_THEME_CREATED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreatedByIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreatedBy is not null
+        defaultThemeShouldBeFound("themeCreatedBy.specified=true");
+
+        // Get all the themeList where themeCreatedBy is null
+        defaultThemeShouldNotBeFound("themeCreatedBy.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllThemesByThemeCreatedByContainsSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreatedBy contains DEFAULT_THEME_CREATED_BY
+        defaultThemeShouldBeFound("themeCreatedBy.contains=" + DEFAULT_THEME_CREATED_BY);
+
+        // Get all the themeList where themeCreatedBy contains UPDATED_THEME_CREATED_BY
+        defaultThemeShouldNotBeFound("themeCreatedBy.contains=" + UPDATED_THEME_CREATED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreatedByNotContainsSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreatedBy does not contain DEFAULT_THEME_CREATED_BY
+        defaultThemeShouldNotBeFound("themeCreatedBy.doesNotContain=" + DEFAULT_THEME_CREATED_BY);
+
+        // Get all the themeList where themeCreatedBy does not contain UPDATED_THEME_CREATED_BY
+        defaultThemeShouldBeFound("themeCreatedBy.doesNotContain=" + UPDATED_THEME_CREATED_BY);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreationDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreationDate equals to DEFAULT_THEME_CREATION_DATE
+        defaultThemeShouldBeFound("themeCreationDate.equals=" + DEFAULT_THEME_CREATION_DATE);
+
+        // Get all the themeList where themeCreationDate equals to UPDATED_THEME_CREATION_DATE
+        defaultThemeShouldNotBeFound("themeCreationDate.equals=" + UPDATED_THEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreationDateIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreationDate not equals to DEFAULT_THEME_CREATION_DATE
+        defaultThemeShouldNotBeFound("themeCreationDate.notEquals=" + DEFAULT_THEME_CREATION_DATE);
+
+        // Get all the themeList where themeCreationDate not equals to UPDATED_THEME_CREATION_DATE
+        defaultThemeShouldBeFound("themeCreationDate.notEquals=" + UPDATED_THEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreationDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreationDate in DEFAULT_THEME_CREATION_DATE or UPDATED_THEME_CREATION_DATE
+        defaultThemeShouldBeFound("themeCreationDate.in=" + DEFAULT_THEME_CREATION_DATE + "," + UPDATED_THEME_CREATION_DATE);
+
+        // Get all the themeList where themeCreationDate equals to UPDATED_THEME_CREATION_DATE
+        defaultThemeShouldNotBeFound("themeCreationDate.in=" + UPDATED_THEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreationDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreationDate is not null
+        defaultThemeShouldBeFound("themeCreationDate.specified=true");
+
+        // Get all the themeList where themeCreationDate is null
+        defaultThemeShouldNotBeFound("themeCreationDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreationDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreationDate is greater than or equal to DEFAULT_THEME_CREATION_DATE
+        defaultThemeShouldBeFound("themeCreationDate.greaterThanOrEqual=" + DEFAULT_THEME_CREATION_DATE);
+
+        // Get all the themeList where themeCreationDate is greater than or equal to UPDATED_THEME_CREATION_DATE
+        defaultThemeShouldNotBeFound("themeCreationDate.greaterThanOrEqual=" + UPDATED_THEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreationDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreationDate is less than or equal to DEFAULT_THEME_CREATION_DATE
+        defaultThemeShouldBeFound("themeCreationDate.lessThanOrEqual=" + DEFAULT_THEME_CREATION_DATE);
+
+        // Get all the themeList where themeCreationDate is less than or equal to SMALLER_THEME_CREATION_DATE
+        defaultThemeShouldNotBeFound("themeCreationDate.lessThanOrEqual=" + SMALLER_THEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreationDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreationDate is less than DEFAULT_THEME_CREATION_DATE
+        defaultThemeShouldNotBeFound("themeCreationDate.lessThan=" + DEFAULT_THEME_CREATION_DATE);
+
+        // Get all the themeList where themeCreationDate is less than UPDATED_THEME_CREATION_DATE
+        defaultThemeShouldBeFound("themeCreationDate.lessThan=" + UPDATED_THEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeCreationDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeCreationDate is greater than DEFAULT_THEME_CREATION_DATE
+        defaultThemeShouldNotBeFound("themeCreationDate.greaterThan=" + DEFAULT_THEME_CREATION_DATE);
+
+        // Get all the themeList where themeCreationDate is greater than SMALLER_THEME_CREATION_DATE
+        defaultThemeShouldBeFound("themeCreationDate.greaterThan=" + SMALLER_THEME_CREATION_DATE);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedByIsEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedBy equals to DEFAULT_THEME_MODIFIED_BY
+        defaultThemeShouldBeFound("themeModifiedBy.equals=" + DEFAULT_THEME_MODIFIED_BY);
+
+        // Get all the themeList where themeModifiedBy equals to UPDATED_THEME_MODIFIED_BY
+        defaultThemeShouldNotBeFound("themeModifiedBy.equals=" + UPDATED_THEME_MODIFIED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedByIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedBy not equals to DEFAULT_THEME_MODIFIED_BY
+        defaultThemeShouldNotBeFound("themeModifiedBy.notEquals=" + DEFAULT_THEME_MODIFIED_BY);
+
+        // Get all the themeList where themeModifiedBy not equals to UPDATED_THEME_MODIFIED_BY
+        defaultThemeShouldBeFound("themeModifiedBy.notEquals=" + UPDATED_THEME_MODIFIED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedByIsInShouldWork() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedBy in DEFAULT_THEME_MODIFIED_BY or UPDATED_THEME_MODIFIED_BY
+        defaultThemeShouldBeFound("themeModifiedBy.in=" + DEFAULT_THEME_MODIFIED_BY + "," + UPDATED_THEME_MODIFIED_BY);
+
+        // Get all the themeList where themeModifiedBy equals to UPDATED_THEME_MODIFIED_BY
+        defaultThemeShouldNotBeFound("themeModifiedBy.in=" + UPDATED_THEME_MODIFIED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedByIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedBy is not null
+        defaultThemeShouldBeFound("themeModifiedBy.specified=true");
+
+        // Get all the themeList where themeModifiedBy is null
+        defaultThemeShouldNotBeFound("themeModifiedBy.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedByContainsSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedBy contains DEFAULT_THEME_MODIFIED_BY
+        defaultThemeShouldBeFound("themeModifiedBy.contains=" + DEFAULT_THEME_MODIFIED_BY);
+
+        // Get all the themeList where themeModifiedBy contains UPDATED_THEME_MODIFIED_BY
+        defaultThemeShouldNotBeFound("themeModifiedBy.contains=" + UPDATED_THEME_MODIFIED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedByNotContainsSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedBy does not contain DEFAULT_THEME_MODIFIED_BY
+        defaultThemeShouldNotBeFound("themeModifiedBy.doesNotContain=" + DEFAULT_THEME_MODIFIED_BY);
+
+        // Get all the themeList where themeModifiedBy does not contain UPDATED_THEME_MODIFIED_BY
+        defaultThemeShouldBeFound("themeModifiedBy.doesNotContain=" + UPDATED_THEME_MODIFIED_BY);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedDate equals to DEFAULT_THEME_MODIFIED_DATE
+        defaultThemeShouldBeFound("themeModifiedDate.equals=" + DEFAULT_THEME_MODIFIED_DATE);
+
+        // Get all the themeList where themeModifiedDate equals to UPDATED_THEME_MODIFIED_DATE
+        defaultThemeShouldNotBeFound("themeModifiedDate.equals=" + UPDATED_THEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedDateIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedDate not equals to DEFAULT_THEME_MODIFIED_DATE
+        defaultThemeShouldNotBeFound("themeModifiedDate.notEquals=" + DEFAULT_THEME_MODIFIED_DATE);
+
+        // Get all the themeList where themeModifiedDate not equals to UPDATED_THEME_MODIFIED_DATE
+        defaultThemeShouldBeFound("themeModifiedDate.notEquals=" + UPDATED_THEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedDate in DEFAULT_THEME_MODIFIED_DATE or UPDATED_THEME_MODIFIED_DATE
+        defaultThemeShouldBeFound("themeModifiedDate.in=" + DEFAULT_THEME_MODIFIED_DATE + "," + UPDATED_THEME_MODIFIED_DATE);
+
+        // Get all the themeList where themeModifiedDate equals to UPDATED_THEME_MODIFIED_DATE
+        defaultThemeShouldNotBeFound("themeModifiedDate.in=" + UPDATED_THEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedDate is not null
+        defaultThemeShouldBeFound("themeModifiedDate.specified=true");
+
+        // Get all the themeList where themeModifiedDate is null
+        defaultThemeShouldNotBeFound("themeModifiedDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedDate is greater than or equal to DEFAULT_THEME_MODIFIED_DATE
+        defaultThemeShouldBeFound("themeModifiedDate.greaterThanOrEqual=" + DEFAULT_THEME_MODIFIED_DATE);
+
+        // Get all the themeList where themeModifiedDate is greater than or equal to UPDATED_THEME_MODIFIED_DATE
+        defaultThemeShouldNotBeFound("themeModifiedDate.greaterThanOrEqual=" + UPDATED_THEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedDate is less than or equal to DEFAULT_THEME_MODIFIED_DATE
+        defaultThemeShouldBeFound("themeModifiedDate.lessThanOrEqual=" + DEFAULT_THEME_MODIFIED_DATE);
+
+        // Get all the themeList where themeModifiedDate is less than or equal to SMALLER_THEME_MODIFIED_DATE
+        defaultThemeShouldNotBeFound("themeModifiedDate.lessThanOrEqual=" + SMALLER_THEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedDate is less than DEFAULT_THEME_MODIFIED_DATE
+        defaultThemeShouldNotBeFound("themeModifiedDate.lessThan=" + DEFAULT_THEME_MODIFIED_DATE);
+
+        // Get all the themeList where themeModifiedDate is less than UPDATED_THEME_MODIFIED_DATE
+        defaultThemeShouldBeFound("themeModifiedDate.lessThan=" + UPDATED_THEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllThemesByThemeModifiedDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+
+        // Get all the themeList where themeModifiedDate is greater than DEFAULT_THEME_MODIFIED_DATE
+        defaultThemeShouldNotBeFound("themeModifiedDate.greaterThan=" + DEFAULT_THEME_MODIFIED_DATE);
+
+        // Get all the themeList where themeModifiedDate is greater than SMALLER_THEME_MODIFIED_DATE
+        defaultThemeShouldBeFound("themeModifiedDate.greaterThan=" + SMALLER_THEME_MODIFIED_DATE);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllThemesBySubjectIsEqualToSomething() throws Exception {
+        // Initialize the database
+        themeRepository.saveAndFlush(theme);
+        Subject subject = SubjectResourceIT.createEntity(em);
+        em.persist(subject);
+        em.flush();
+        theme.setSubject(subject);
+        themeRepository.saveAndFlush(theme);
+        Long subjectId = subject.getId();
+
+        // Get all the themeList where subject equals to subjectId
+        defaultThemeShouldBeFound("subjectId.equals=" + subjectId);
+
+        // Get all the themeList where subject equals to subjectId + 1
+        defaultThemeShouldNotBeFound("subjectId.equals=" + (subjectId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultThemeShouldBeFound(String filter) throws Exception {
+        restThemeMockMvc.perform(get("/api/themes?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(theme.getId().intValue())))
+            .andExpect(jsonPath("$.[*].themeName").value(hasItem(DEFAULT_THEME_NAME)))
+            .andExpect(jsonPath("$.[*].themeDescription").value(hasItem(DEFAULT_THEME_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].themeCreatedBy").value(hasItem(DEFAULT_THEME_CREATED_BY)))
+            .andExpect(jsonPath("$.[*].themeCreationDate").value(hasItem(DEFAULT_THEME_CREATION_DATE.toString())))
+            .andExpect(jsonPath("$.[*].themeModifiedBy").value(hasItem(DEFAULT_THEME_MODIFIED_BY)))
+            .andExpect(jsonPath("$.[*].themeModifiedDate").value(hasItem(DEFAULT_THEME_MODIFIED_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restThemeMockMvc.perform(get("/api/themes/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultThemeShouldNotBeFound(String filter) throws Exception {
+        restThemeMockMvc.perform(get("/api/themes?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restThemeMockMvc.perform(get("/api/themes/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional
@@ -220,7 +831,7 @@ public class ThemeResourceIT {
     @Transactional
     public void updateTheme() throws Exception {
         // Initialize the database
-        themeRepository.saveAndFlush(theme);
+        themeService.save(theme);
 
         int databaseSizeBeforeUpdate = themeRepository.findAll().size();
 
@@ -275,7 +886,7 @@ public class ThemeResourceIT {
     @Transactional
     public void deleteTheme() throws Exception {
         // Initialize the database
-        themeRepository.saveAndFlush(theme);
+        themeService.save(theme);
 
         int databaseSizeBeforeDelete = themeRepository.findAll().size();
 
@@ -287,20 +898,5 @@ public class ThemeResourceIT {
         // Validate the database contains one less item
         List<Theme> themeList = themeRepository.findAll();
         assertThat(themeList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void equalsVerifier() throws Exception {
-        TestUtil.equalsVerifier(Theme.class);
-        Theme theme1 = new Theme();
-        theme1.setId(1L);
-        Theme theme2 = new Theme();
-        theme2.setId(theme1.getId());
-        assertThat(theme1).isEqualTo(theme2);
-        theme2.setId(2L);
-        assertThat(theme1).isNotEqualTo(theme2);
-        theme1.setId(null);
-        assertThat(theme1).isNotEqualTo(theme2);
     }
 }

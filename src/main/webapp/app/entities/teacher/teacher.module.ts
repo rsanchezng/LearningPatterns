@@ -1,16 +1,12 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { LearningPatternsSharedModule } from 'app/shared';
-import {
-  TeacherComponent,
-  TeacherDetailComponent,
-  TeacherUpdateComponent,
-  TeacherDeletePopupComponent,
-  TeacherDeleteDialogComponent,
-  teacherRoute,
-  teacherPopupRoute
-} from './';
+import { LearningPatternsSharedModule } from 'app/shared/shared.module';
+import { TeacherComponent } from './teacher.component';
+import { TeacherDetailComponent } from './teacher-detail.component';
+import { TeacherUpdateComponent } from './teacher-update.component';
+import { TeacherDeletePopupComponent, TeacherDeleteDialogComponent } from './teacher-delete-dialog.component';
+import { teacherRoute, teacherPopupRoute } from './teacher.route';
 
 const ENTITY_STATES = [...teacherRoute, ...teacherPopupRoute];
 
@@ -23,7 +19,6 @@ const ENTITY_STATES = [...teacherRoute, ...teacherPopupRoute];
     TeacherDeleteDialogComponent,
     TeacherDeletePopupComponent
   ],
-  entryComponents: [TeacherComponent, TeacherUpdateComponent, TeacherDeleteDialogComponent, TeacherDeletePopupComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  entryComponents: [TeacherDeleteDialogComponent]
 })
 export class LearningPatternsTeacherModule {}

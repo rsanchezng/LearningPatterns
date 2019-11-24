@@ -21,7 +21,7 @@ export class ActivityDeleteDialogComponent {
   }
 
   confirmDelete(id: number) {
-    this.activityService.delete(id).subscribe(response => {
+    this.activityService.delete(id).subscribe(() => {
       this.eventManager.broadcast({
         name: 'activityListModification',
         content: 'Deleted an activity'
@@ -46,11 +46,11 @@ export class ActivityDeletePopupComponent implements OnInit, OnDestroy {
         this.ngbModalRef = this.modalService.open(ActivityDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
         this.ngbModalRef.componentInstance.activity = activity;
         this.ngbModalRef.result.then(
-          result => {
+          () => {
             this.router.navigate(['/activity', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           },
-          reason => {
+          () => {
             this.router.navigate(['/activity', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           }

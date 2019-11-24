@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { UserRouteAccessService } from 'app/core';
+import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
 import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Subtheme } from 'app/shared/model/subtheme.model';
 import { SubthemeService } from './subtheme.service';
 import { SubthemeComponent } from './subtheme.component';
@@ -16,13 +16,10 @@ import { ISubtheme } from 'app/shared/model/subtheme.model';
 export class SubthemeResolve implements Resolve<ISubtheme> {
   constructor(private service: SubthemeService) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ISubtheme> {
+  resolve(route: ActivatedRouteSnapshot): Observable<ISubtheme> {
     const id = route.params['id'];
     if (id) {
-      return this.service.find(id).pipe(
-        filter((response: HttpResponse<Subtheme>) => response.ok),
-        map((subtheme: HttpResponse<Subtheme>) => subtheme.body)
-      );
+      return this.service.find(id).pipe(map((subtheme: HttpResponse<Subtheme>) => subtheme.body));
     }
     return of(new Subtheme());
   }

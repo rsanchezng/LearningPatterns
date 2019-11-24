@@ -1,5 +1,4 @@
 package com.fime.repository;
-
 import com.fime.domain.StudentSchedule;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
@@ -10,6 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface StudentScheduleRepository extends JpaRepository<StudentSchedule, Long> {
+public interface StudentScheduleRepository extends JpaRepository<StudentSchedule, Long>, JpaSpecificationExecutor<StudentSchedule> {
 
 }

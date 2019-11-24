@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 
 import { IStudentSchedule } from 'app/shared/model/student-schedule.model';
-import { AccountService } from 'app/core';
 import { StudentScheduleService } from './student-schedule.service';
 
 @Component({
@@ -14,36 +12,18 @@ import { StudentScheduleService } from './student-schedule.service';
 })
 export class StudentScheduleComponent implements OnInit, OnDestroy {
   studentSchedules: IStudentSchedule[];
-  currentAccount: any;
   eventSubscriber: Subscription;
 
-  constructor(
-    protected studentScheduleService: StudentScheduleService,
-    protected jhiAlertService: JhiAlertService,
-    protected eventManager: JhiEventManager,
-    protected accountService: AccountService
-  ) {}
+  constructor(protected studentScheduleService: StudentScheduleService, protected eventManager: JhiEventManager) {}
 
   loadAll() {
-    this.studentScheduleService
-      .query()
-      .pipe(
-        filter((res: HttpResponse<IStudentSchedule[]>) => res.ok),
-        map((res: HttpResponse<IStudentSchedule[]>) => res.body)
-      )
-      .subscribe(
-        (res: IStudentSchedule[]) => {
-          this.studentSchedules = res;
-        },
-        (res: HttpErrorResponse) => this.onError(res.message)
-      );
+    this.studentScheduleService.query().subscribe((res: HttpResponse<IStudentSchedule[]>) => {
+      this.studentSchedules = res.body;
+    });
   }
 
   ngOnInit() {
     this.loadAll();
-    this.accountService.identity().then(account => {
-      this.currentAccount = account;
-    });
     this.registerChangeInStudentSchedules();
   }
 
@@ -56,10 +36,6 @@ export class StudentScheduleComponent implements OnInit, OnDestroy {
   }
 
   registerChangeInStudentSchedules() {
-    this.eventSubscriber = this.eventManager.subscribe('studentScheduleListModification', response => this.loadAll());
-  }
-
-  protected onError(errorMessage: string) {
-    this.jhiAlertService.error(errorMessage, null, null);
+    this.eventSubscriber = this.eventManager.subscribe('studentScheduleListModification', () => this.loadAll());
   }
 }

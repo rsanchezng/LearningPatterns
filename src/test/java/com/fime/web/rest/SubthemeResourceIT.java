@@ -2,8 +2,12 @@ package com.fime.web.rest;
 
 import com.fime.LearningPatternsApp;
 import com.fime.domain.Subtheme;
+import com.fime.domain.Theme;
 import com.fime.repository.SubthemeRepository;
+import com.fime.service.SubthemeService;
 import com.fime.web.rest.errors.ExceptionTranslator;
+import com.fime.service.dto.SubthemeCriteria;
+import com.fime.service.SubthemeQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,6 +63,12 @@ public class SubthemeResourceIT {
     private SubthemeRepository subthemeRepository;
 
     @Autowired
+    private SubthemeService subthemeService;
+
+    @Autowired
+    private SubthemeQueryService subthemeQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -80,7 +90,7 @@ public class SubthemeResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final SubthemeResource subthemeResource = new SubthemeResource(subthemeRepository);
+        final SubthemeResource subthemeResource = new SubthemeResource(subthemeService, subthemeQueryService);
         this.restSubthemeMockMvc = MockMvcBuilders.standaloneSetup(subthemeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -181,11 +191,11 @@ public class SubthemeResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(subtheme.getId().intValue())))
-            .andExpect(jsonPath("$.[*].subthemeName").value(hasItem(DEFAULT_SUBTHEME_NAME.toString())))
-            .andExpect(jsonPath("$.[*].subthemeDescription").value(hasItem(DEFAULT_SUBTHEME_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].subthemeCreatedBy").value(hasItem(DEFAULT_SUBTHEME_CREATED_BY.toString())))
+            .andExpect(jsonPath("$.[*].subthemeName").value(hasItem(DEFAULT_SUBTHEME_NAME)))
+            .andExpect(jsonPath("$.[*].subthemeDescription").value(hasItem(DEFAULT_SUBTHEME_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].subthemeCreatedBy").value(hasItem(DEFAULT_SUBTHEME_CREATED_BY)))
             .andExpect(jsonPath("$.[*].subthemeCreationDate").value(hasItem(DEFAULT_SUBTHEME_CREATION_DATE.toString())))
-            .andExpect(jsonPath("$.[*].subthemeModifiedBy").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_BY.toString())))
+            .andExpect(jsonPath("$.[*].subthemeModifiedBy").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_BY)))
             .andExpect(jsonPath("$.[*].subthemeModifiedDate").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_DATE.toString())));
     }
     
@@ -200,13 +210,614 @@ public class SubthemeResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(subtheme.getId().intValue()))
-            .andExpect(jsonPath("$.subthemeName").value(DEFAULT_SUBTHEME_NAME.toString()))
-            .andExpect(jsonPath("$.subthemeDescription").value(DEFAULT_SUBTHEME_DESCRIPTION.toString()))
-            .andExpect(jsonPath("$.subthemeCreatedBy").value(DEFAULT_SUBTHEME_CREATED_BY.toString()))
+            .andExpect(jsonPath("$.subthemeName").value(DEFAULT_SUBTHEME_NAME))
+            .andExpect(jsonPath("$.subthemeDescription").value(DEFAULT_SUBTHEME_DESCRIPTION))
+            .andExpect(jsonPath("$.subthemeCreatedBy").value(DEFAULT_SUBTHEME_CREATED_BY))
             .andExpect(jsonPath("$.subthemeCreationDate").value(DEFAULT_SUBTHEME_CREATION_DATE.toString()))
-            .andExpect(jsonPath("$.subthemeModifiedBy").value(DEFAULT_SUBTHEME_MODIFIED_BY.toString()))
+            .andExpect(jsonPath("$.subthemeModifiedBy").value(DEFAULT_SUBTHEME_MODIFIED_BY))
             .andExpect(jsonPath("$.subthemeModifiedDate").value(DEFAULT_SUBTHEME_MODIFIED_DATE.toString()));
     }
+
+
+    @Test
+    @Transactional
+    public void getSubthemesByIdFiltering() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        Long id = subtheme.getId();
+
+        defaultSubthemeShouldBeFound("id.equals=" + id);
+        defaultSubthemeShouldNotBeFound("id.notEquals=" + id);
+
+        defaultSubthemeShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultSubthemeShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultSubthemeShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultSubthemeShouldNotBeFound("id.lessThan=" + id);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeName equals to DEFAULT_SUBTHEME_NAME
+        defaultSubthemeShouldBeFound("subthemeName.equals=" + DEFAULT_SUBTHEME_NAME);
+
+        // Get all the subthemeList where subthemeName equals to UPDATED_SUBTHEME_NAME
+        defaultSubthemeShouldNotBeFound("subthemeName.equals=" + UPDATED_SUBTHEME_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeNameIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeName not equals to DEFAULT_SUBTHEME_NAME
+        defaultSubthemeShouldNotBeFound("subthemeName.notEquals=" + DEFAULT_SUBTHEME_NAME);
+
+        // Get all the subthemeList where subthemeName not equals to UPDATED_SUBTHEME_NAME
+        defaultSubthemeShouldBeFound("subthemeName.notEquals=" + UPDATED_SUBTHEME_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeName in DEFAULT_SUBTHEME_NAME or UPDATED_SUBTHEME_NAME
+        defaultSubthemeShouldBeFound("subthemeName.in=" + DEFAULT_SUBTHEME_NAME + "," + UPDATED_SUBTHEME_NAME);
+
+        // Get all the subthemeList where subthemeName equals to UPDATED_SUBTHEME_NAME
+        defaultSubthemeShouldNotBeFound("subthemeName.in=" + UPDATED_SUBTHEME_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeName is not null
+        defaultSubthemeShouldBeFound("subthemeName.specified=true");
+
+        // Get all the subthemeList where subthemeName is null
+        defaultSubthemeShouldNotBeFound("subthemeName.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeNameContainsSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeName contains DEFAULT_SUBTHEME_NAME
+        defaultSubthemeShouldBeFound("subthemeName.contains=" + DEFAULT_SUBTHEME_NAME);
+
+        // Get all the subthemeList where subthemeName contains UPDATED_SUBTHEME_NAME
+        defaultSubthemeShouldNotBeFound("subthemeName.contains=" + UPDATED_SUBTHEME_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeName does not contain DEFAULT_SUBTHEME_NAME
+        defaultSubthemeShouldNotBeFound("subthemeName.doesNotContain=" + DEFAULT_SUBTHEME_NAME);
+
+        // Get all the subthemeList where subthemeName does not contain UPDATED_SUBTHEME_NAME
+        defaultSubthemeShouldBeFound("subthemeName.doesNotContain=" + UPDATED_SUBTHEME_NAME);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeDescription equals to DEFAULT_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldBeFound("subthemeDescription.equals=" + DEFAULT_SUBTHEME_DESCRIPTION);
+
+        // Get all the subthemeList where subthemeDescription equals to UPDATED_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldNotBeFound("subthemeDescription.equals=" + UPDATED_SUBTHEME_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeDescriptionIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeDescription not equals to DEFAULT_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldNotBeFound("subthemeDescription.notEquals=" + DEFAULT_SUBTHEME_DESCRIPTION);
+
+        // Get all the subthemeList where subthemeDescription not equals to UPDATED_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldBeFound("subthemeDescription.notEquals=" + UPDATED_SUBTHEME_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeDescription in DEFAULT_SUBTHEME_DESCRIPTION or UPDATED_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldBeFound("subthemeDescription.in=" + DEFAULT_SUBTHEME_DESCRIPTION + "," + UPDATED_SUBTHEME_DESCRIPTION);
+
+        // Get all the subthemeList where subthemeDescription equals to UPDATED_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldNotBeFound("subthemeDescription.in=" + UPDATED_SUBTHEME_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeDescription is not null
+        defaultSubthemeShouldBeFound("subthemeDescription.specified=true");
+
+        // Get all the subthemeList where subthemeDescription is null
+        defaultSubthemeShouldNotBeFound("subthemeDescription.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeDescriptionContainsSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeDescription contains DEFAULT_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldBeFound("subthemeDescription.contains=" + DEFAULT_SUBTHEME_DESCRIPTION);
+
+        // Get all the subthemeList where subthemeDescription contains UPDATED_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldNotBeFound("subthemeDescription.contains=" + UPDATED_SUBTHEME_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeDescriptionNotContainsSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeDescription does not contain DEFAULT_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldNotBeFound("subthemeDescription.doesNotContain=" + DEFAULT_SUBTHEME_DESCRIPTION);
+
+        // Get all the subthemeList where subthemeDescription does not contain UPDATED_SUBTHEME_DESCRIPTION
+        defaultSubthemeShouldBeFound("subthemeDescription.doesNotContain=" + UPDATED_SUBTHEME_DESCRIPTION);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreatedByIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreatedBy equals to DEFAULT_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldBeFound("subthemeCreatedBy.equals=" + DEFAULT_SUBTHEME_CREATED_BY);
+
+        // Get all the subthemeList where subthemeCreatedBy equals to UPDATED_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldNotBeFound("subthemeCreatedBy.equals=" + UPDATED_SUBTHEME_CREATED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreatedByIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreatedBy not equals to DEFAULT_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldNotBeFound("subthemeCreatedBy.notEquals=" + DEFAULT_SUBTHEME_CREATED_BY);
+
+        // Get all the subthemeList where subthemeCreatedBy not equals to UPDATED_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldBeFound("subthemeCreatedBy.notEquals=" + UPDATED_SUBTHEME_CREATED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreatedByIsInShouldWork() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreatedBy in DEFAULT_SUBTHEME_CREATED_BY or UPDATED_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldBeFound("subthemeCreatedBy.in=" + DEFAULT_SUBTHEME_CREATED_BY + "," + UPDATED_SUBTHEME_CREATED_BY);
+
+        // Get all the subthemeList where subthemeCreatedBy equals to UPDATED_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldNotBeFound("subthemeCreatedBy.in=" + UPDATED_SUBTHEME_CREATED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreatedByIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreatedBy is not null
+        defaultSubthemeShouldBeFound("subthemeCreatedBy.specified=true");
+
+        // Get all the subthemeList where subthemeCreatedBy is null
+        defaultSubthemeShouldNotBeFound("subthemeCreatedBy.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreatedByContainsSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreatedBy contains DEFAULT_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldBeFound("subthemeCreatedBy.contains=" + DEFAULT_SUBTHEME_CREATED_BY);
+
+        // Get all the subthemeList where subthemeCreatedBy contains UPDATED_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldNotBeFound("subthemeCreatedBy.contains=" + UPDATED_SUBTHEME_CREATED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreatedByNotContainsSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreatedBy does not contain DEFAULT_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldNotBeFound("subthemeCreatedBy.doesNotContain=" + DEFAULT_SUBTHEME_CREATED_BY);
+
+        // Get all the subthemeList where subthemeCreatedBy does not contain UPDATED_SUBTHEME_CREATED_BY
+        defaultSubthemeShouldBeFound("subthemeCreatedBy.doesNotContain=" + UPDATED_SUBTHEME_CREATED_BY);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreationDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreationDate equals to DEFAULT_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldBeFound("subthemeCreationDate.equals=" + DEFAULT_SUBTHEME_CREATION_DATE);
+
+        // Get all the subthemeList where subthemeCreationDate equals to UPDATED_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldNotBeFound("subthemeCreationDate.equals=" + UPDATED_SUBTHEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreationDateIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreationDate not equals to DEFAULT_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldNotBeFound("subthemeCreationDate.notEquals=" + DEFAULT_SUBTHEME_CREATION_DATE);
+
+        // Get all the subthemeList where subthemeCreationDate not equals to UPDATED_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldBeFound("subthemeCreationDate.notEquals=" + UPDATED_SUBTHEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreationDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreationDate in DEFAULT_SUBTHEME_CREATION_DATE or UPDATED_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldBeFound("subthemeCreationDate.in=" + DEFAULT_SUBTHEME_CREATION_DATE + "," + UPDATED_SUBTHEME_CREATION_DATE);
+
+        // Get all the subthemeList where subthemeCreationDate equals to UPDATED_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldNotBeFound("subthemeCreationDate.in=" + UPDATED_SUBTHEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreationDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreationDate is not null
+        defaultSubthemeShouldBeFound("subthemeCreationDate.specified=true");
+
+        // Get all the subthemeList where subthemeCreationDate is null
+        defaultSubthemeShouldNotBeFound("subthemeCreationDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreationDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreationDate is greater than or equal to DEFAULT_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldBeFound("subthemeCreationDate.greaterThanOrEqual=" + DEFAULT_SUBTHEME_CREATION_DATE);
+
+        // Get all the subthemeList where subthemeCreationDate is greater than or equal to UPDATED_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldNotBeFound("subthemeCreationDate.greaterThanOrEqual=" + UPDATED_SUBTHEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreationDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreationDate is less than or equal to DEFAULT_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldBeFound("subthemeCreationDate.lessThanOrEqual=" + DEFAULT_SUBTHEME_CREATION_DATE);
+
+        // Get all the subthemeList where subthemeCreationDate is less than or equal to SMALLER_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldNotBeFound("subthemeCreationDate.lessThanOrEqual=" + SMALLER_SUBTHEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreationDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreationDate is less than DEFAULT_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldNotBeFound("subthemeCreationDate.lessThan=" + DEFAULT_SUBTHEME_CREATION_DATE);
+
+        // Get all the subthemeList where subthemeCreationDate is less than UPDATED_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldBeFound("subthemeCreationDate.lessThan=" + UPDATED_SUBTHEME_CREATION_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeCreationDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeCreationDate is greater than DEFAULT_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldNotBeFound("subthemeCreationDate.greaterThan=" + DEFAULT_SUBTHEME_CREATION_DATE);
+
+        // Get all the subthemeList where subthemeCreationDate is greater than SMALLER_SUBTHEME_CREATION_DATE
+        defaultSubthemeShouldBeFound("subthemeCreationDate.greaterThan=" + SMALLER_SUBTHEME_CREATION_DATE);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedByIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedBy equals to DEFAULT_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldBeFound("subthemeModifiedBy.equals=" + DEFAULT_SUBTHEME_MODIFIED_BY);
+
+        // Get all the subthemeList where subthemeModifiedBy equals to UPDATED_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldNotBeFound("subthemeModifiedBy.equals=" + UPDATED_SUBTHEME_MODIFIED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedByIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedBy not equals to DEFAULT_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldNotBeFound("subthemeModifiedBy.notEquals=" + DEFAULT_SUBTHEME_MODIFIED_BY);
+
+        // Get all the subthemeList where subthemeModifiedBy not equals to UPDATED_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldBeFound("subthemeModifiedBy.notEquals=" + UPDATED_SUBTHEME_MODIFIED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedByIsInShouldWork() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedBy in DEFAULT_SUBTHEME_MODIFIED_BY or UPDATED_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldBeFound("subthemeModifiedBy.in=" + DEFAULT_SUBTHEME_MODIFIED_BY + "," + UPDATED_SUBTHEME_MODIFIED_BY);
+
+        // Get all the subthemeList where subthemeModifiedBy equals to UPDATED_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldNotBeFound("subthemeModifiedBy.in=" + UPDATED_SUBTHEME_MODIFIED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedByIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedBy is not null
+        defaultSubthemeShouldBeFound("subthemeModifiedBy.specified=true");
+
+        // Get all the subthemeList where subthemeModifiedBy is null
+        defaultSubthemeShouldNotBeFound("subthemeModifiedBy.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedByContainsSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedBy contains DEFAULT_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldBeFound("subthemeModifiedBy.contains=" + DEFAULT_SUBTHEME_MODIFIED_BY);
+
+        // Get all the subthemeList where subthemeModifiedBy contains UPDATED_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldNotBeFound("subthemeModifiedBy.contains=" + UPDATED_SUBTHEME_MODIFIED_BY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedByNotContainsSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedBy does not contain DEFAULT_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldNotBeFound("subthemeModifiedBy.doesNotContain=" + DEFAULT_SUBTHEME_MODIFIED_BY);
+
+        // Get all the subthemeList where subthemeModifiedBy does not contain UPDATED_SUBTHEME_MODIFIED_BY
+        defaultSubthemeShouldBeFound("subthemeModifiedBy.doesNotContain=" + UPDATED_SUBTHEME_MODIFIED_BY);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedDate equals to DEFAULT_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldBeFound("subthemeModifiedDate.equals=" + DEFAULT_SUBTHEME_MODIFIED_DATE);
+
+        // Get all the subthemeList where subthemeModifiedDate equals to UPDATED_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldNotBeFound("subthemeModifiedDate.equals=" + UPDATED_SUBTHEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedDateIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedDate not equals to DEFAULT_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldNotBeFound("subthemeModifiedDate.notEquals=" + DEFAULT_SUBTHEME_MODIFIED_DATE);
+
+        // Get all the subthemeList where subthemeModifiedDate not equals to UPDATED_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldBeFound("subthemeModifiedDate.notEquals=" + UPDATED_SUBTHEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedDate in DEFAULT_SUBTHEME_MODIFIED_DATE or UPDATED_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldBeFound("subthemeModifiedDate.in=" + DEFAULT_SUBTHEME_MODIFIED_DATE + "," + UPDATED_SUBTHEME_MODIFIED_DATE);
+
+        // Get all the subthemeList where subthemeModifiedDate equals to UPDATED_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldNotBeFound("subthemeModifiedDate.in=" + UPDATED_SUBTHEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedDate is not null
+        defaultSubthemeShouldBeFound("subthemeModifiedDate.specified=true");
+
+        // Get all the subthemeList where subthemeModifiedDate is null
+        defaultSubthemeShouldNotBeFound("subthemeModifiedDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedDate is greater than or equal to DEFAULT_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldBeFound("subthemeModifiedDate.greaterThanOrEqual=" + DEFAULT_SUBTHEME_MODIFIED_DATE);
+
+        // Get all the subthemeList where subthemeModifiedDate is greater than or equal to UPDATED_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldNotBeFound("subthemeModifiedDate.greaterThanOrEqual=" + UPDATED_SUBTHEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedDate is less than or equal to DEFAULT_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldBeFound("subthemeModifiedDate.lessThanOrEqual=" + DEFAULT_SUBTHEME_MODIFIED_DATE);
+
+        // Get all the subthemeList where subthemeModifiedDate is less than or equal to SMALLER_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldNotBeFound("subthemeModifiedDate.lessThanOrEqual=" + SMALLER_SUBTHEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedDate is less than DEFAULT_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldNotBeFound("subthemeModifiedDate.lessThan=" + DEFAULT_SUBTHEME_MODIFIED_DATE);
+
+        // Get all the subthemeList where subthemeModifiedDate is less than UPDATED_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldBeFound("subthemeModifiedDate.lessThan=" + UPDATED_SUBTHEME_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeModifiedDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeModifiedDate is greater than DEFAULT_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldNotBeFound("subthemeModifiedDate.greaterThan=" + DEFAULT_SUBTHEME_MODIFIED_DATE);
+
+        // Get all the subthemeList where subthemeModifiedDate is greater than SMALLER_SUBTHEME_MODIFIED_DATE
+        defaultSubthemeShouldBeFound("subthemeModifiedDate.greaterThan=" + SMALLER_SUBTHEME_MODIFIED_DATE);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllSubthemesByThemeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+        Theme theme = ThemeResourceIT.createEntity(em);
+        em.persist(theme);
+        em.flush();
+        subtheme.setTheme(theme);
+        subthemeRepository.saveAndFlush(subtheme);
+        Long themeId = theme.getId();
+
+        // Get all the subthemeList where theme equals to themeId
+        defaultSubthemeShouldBeFound("themeId.equals=" + themeId);
+
+        // Get all the subthemeList where theme equals to themeId + 1
+        defaultSubthemeShouldNotBeFound("themeId.equals=" + (themeId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultSubthemeShouldBeFound(String filter) throws Exception {
+        restSubthemeMockMvc.perform(get("/api/subthemes?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(subtheme.getId().intValue())))
+            .andExpect(jsonPath("$.[*].subthemeName").value(hasItem(DEFAULT_SUBTHEME_NAME)))
+            .andExpect(jsonPath("$.[*].subthemeDescription").value(hasItem(DEFAULT_SUBTHEME_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].subthemeCreatedBy").value(hasItem(DEFAULT_SUBTHEME_CREATED_BY)))
+            .andExpect(jsonPath("$.[*].subthemeCreationDate").value(hasItem(DEFAULT_SUBTHEME_CREATION_DATE.toString())))
+            .andExpect(jsonPath("$.[*].subthemeModifiedBy").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_BY)))
+            .andExpect(jsonPath("$.[*].subthemeModifiedDate").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restSubthemeMockMvc.perform(get("/api/subthemes/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultSubthemeShouldNotBeFound(String filter) throws Exception {
+        restSubthemeMockMvc.perform(get("/api/subthemes?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restSubthemeMockMvc.perform(get("/api/subthemes/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional
@@ -220,7 +831,7 @@ public class SubthemeResourceIT {
     @Transactional
     public void updateSubtheme() throws Exception {
         // Initialize the database
-        subthemeRepository.saveAndFlush(subtheme);
+        subthemeService.save(subtheme);
 
         int databaseSizeBeforeUpdate = subthemeRepository.findAll().size();
 
@@ -275,7 +886,7 @@ public class SubthemeResourceIT {
     @Transactional
     public void deleteSubtheme() throws Exception {
         // Initialize the database
-        subthemeRepository.saveAndFlush(subtheme);
+        subthemeService.save(subtheme);
 
         int databaseSizeBeforeDelete = subthemeRepository.findAll().size();
 
@@ -287,20 +898,5 @@ public class SubthemeResourceIT {
         // Validate the database contains one less item
         List<Subtheme> subthemeList = subthemeRepository.findAll();
         assertThat(subthemeList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void equalsVerifier() throws Exception {
-        TestUtil.equalsVerifier(Subtheme.class);
-        Subtheme subtheme1 = new Subtheme();
-        subtheme1.setId(1L);
-        Subtheme subtheme2 = new Subtheme();
-        subtheme2.setId(subtheme1.getId());
-        assertThat(subtheme1).isEqualTo(subtheme2);
-        subtheme2.setId(2L);
-        assertThat(subtheme1).isNotEqualTo(subtheme2);
-        subtheme1.setId(null);
-        assertThat(subtheme1).isNotEqualTo(subtheme2);
     }
 }

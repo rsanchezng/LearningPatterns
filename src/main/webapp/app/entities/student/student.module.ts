@@ -1,16 +1,12 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { LearningPatternsSharedModule } from 'app/shared';
-import {
-  StudentComponent,
-  StudentDetailComponent,
-  StudentUpdateComponent,
-  StudentDeletePopupComponent,
-  StudentDeleteDialogComponent,
-  studentRoute,
-  studentPopupRoute
-} from './';
+import { LearningPatternsSharedModule } from 'app/shared/shared.module';
+import { StudentComponent } from './student.component';
+import { StudentDetailComponent } from './student-detail.component';
+import { StudentUpdateComponent } from './student-update.component';
+import { StudentDeletePopupComponent, StudentDeleteDialogComponent } from './student-delete-dialog.component';
+import { studentRoute, studentPopupRoute } from './student.route';
 
 const ENTITY_STATES = [...studentRoute, ...studentPopupRoute];
 
@@ -23,7 +19,6 @@ const ENTITY_STATES = [...studentRoute, ...studentPopupRoute];
     StudentDeleteDialogComponent,
     StudentDeletePopupComponent
   ],
-  entryComponents: [StudentComponent, StudentUpdateComponent, StudentDeleteDialogComponent, StudentDeletePopupComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  entryComponents: [StudentDeleteDialogComponent]
 })
 export class LearningPatternsStudentModule {}

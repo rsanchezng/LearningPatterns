@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { JhiAlertService } from 'ng-jhipster';
 import { IActivity, Activity } from 'app/shared/model/activity.model';
 import { ActivityService } from './activity.service';
 import { ISubtheme } from 'app/shared/model/subtheme.model';
-import { SubthemeService } from 'app/entities/subtheme';
+import { SubthemeService } from 'app/entities/subtheme/subtheme.service';
 
 @Component({
   selector: 'jhi-activity-update',
@@ -51,11 +52,7 @@ export class ActivityUpdateComponent implements OnInit {
     });
     this.subthemeService
       .query()
-      .pipe(
-        filter((mayBeOk: HttpResponse<ISubtheme[]>) => mayBeOk.ok),
-        map((response: HttpResponse<ISubtheme[]>) => response.body)
-      )
-      .subscribe((res: ISubtheme[]) => (this.subthemes = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe((res: HttpResponse<ISubtheme[]>) => (this.subthemes = res.body), (res: HttpErrorResponse) => this.onError(res.message));
   }
 
   updateForm(activity: IActivity) {

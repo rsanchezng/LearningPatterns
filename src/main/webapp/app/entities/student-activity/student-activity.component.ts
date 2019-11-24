@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 
 import { IStudentActivity } from 'app/shared/model/student-activity.model';
-import { AccountService } from 'app/core';
 import { StudentActivityService } from './student-activity.service';
 
 @Component({
@@ -14,36 +12,18 @@ import { StudentActivityService } from './student-activity.service';
 })
 export class StudentActivityComponent implements OnInit, OnDestroy {
   studentActivities: IStudentActivity[];
-  currentAccount: any;
   eventSubscriber: Subscription;
 
-  constructor(
-    protected studentActivityService: StudentActivityService,
-    protected jhiAlertService: JhiAlertService,
-    protected eventManager: JhiEventManager,
-    protected accountService: AccountService
-  ) {}
+  constructor(protected studentActivityService: StudentActivityService, protected eventManager: JhiEventManager) {}
 
   loadAll() {
-    this.studentActivityService
-      .query()
-      .pipe(
-        filter((res: HttpResponse<IStudentActivity[]>) => res.ok),
-        map((res: HttpResponse<IStudentActivity[]>) => res.body)
-      )
-      .subscribe(
-        (res: IStudentActivity[]) => {
-          this.studentActivities = res;
-        },
-        (res: HttpErrorResponse) => this.onError(res.message)
-      );
+    this.studentActivityService.query().subscribe((res: HttpResponse<IStudentActivity[]>) => {
+      this.studentActivities = res.body;
+    });
   }
 
   ngOnInit() {
     this.loadAll();
-    this.accountService.identity().then(account => {
-      this.currentAccount = account;
-    });
     this.registerChangeInStudentActivities();
   }
 
@@ -56,10 +36,6 @@ export class StudentActivityComponent implements OnInit, OnDestroy {
   }
 
   registerChangeInStudentActivities() {
-    this.eventSubscriber = this.eventManager.subscribe('studentActivityListModification', response => this.loadAll());
-  }
-
-  protected onError(errorMessage: string) {
-    this.jhiAlertService.error(errorMessage, null, null);
+    this.eventSubscriber = this.eventManager.subscribe('studentActivityListModification', () => this.loadAll());
   }
 }

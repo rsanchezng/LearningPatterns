@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { UserRouteAccessService } from 'app/core';
+import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
 import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Theme } from 'app/shared/model/theme.model';
 import { ThemeService } from './theme.service';
 import { ThemeComponent } from './theme.component';
@@ -16,13 +16,10 @@ import { ITheme } from 'app/shared/model/theme.model';
 export class ThemeResolve implements Resolve<ITheme> {
   constructor(private service: ThemeService) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ITheme> {
+  resolve(route: ActivatedRouteSnapshot): Observable<ITheme> {
     const id = route.params['id'];
     if (id) {
-      return this.service.find(id).pipe(
-        filter((response: HttpResponse<Theme>) => response.ok),
-        map((theme: HttpResponse<Theme>) => theme.body)
-      );
+      return this.service.find(id).pipe(map((theme: HttpResponse<Theme>) => theme.body));
     }
     return of(new Theme());
   }

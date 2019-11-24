@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 
 import { ITheme } from 'app/shared/model/theme.model';
-import { AccountService } from 'app/core';
 import { ThemeService } from './theme.service';
 
 @Component({
@@ -14,36 +12,18 @@ import { ThemeService } from './theme.service';
 })
 export class ThemeComponent implements OnInit, OnDestroy {
   themes: ITheme[];
-  currentAccount: any;
   eventSubscriber: Subscription;
 
-  constructor(
-    protected themeService: ThemeService,
-    protected jhiAlertService: JhiAlertService,
-    protected eventManager: JhiEventManager,
-    protected accountService: AccountService
-  ) {}
+  constructor(protected themeService: ThemeService, protected eventManager: JhiEventManager) {}
 
   loadAll() {
-    this.themeService
-      .query()
-      .pipe(
-        filter((res: HttpResponse<ITheme[]>) => res.ok),
-        map((res: HttpResponse<ITheme[]>) => res.body)
-      )
-      .subscribe(
-        (res: ITheme[]) => {
-          this.themes = res;
-        },
-        (res: HttpErrorResponse) => this.onError(res.message)
-      );
+    this.themeService.query().subscribe((res: HttpResponse<ITheme[]>) => {
+      this.themes = res.body;
+    });
   }
 
   ngOnInit() {
     this.loadAll();
-    this.accountService.identity().then(account => {
-      this.currentAccount = account;
-    });
     this.registerChangeInThemes();
   }
 
@@ -56,10 +36,6 @@ export class ThemeComponent implements OnInit, OnDestroy {
   }
 
   registerChangeInThemes() {
-    this.eventSubscriber = this.eventManager.subscribe('themeListModification', response => this.loadAll());
-  }
-
-  protected onError(errorMessage: string) {
-    this.jhiAlertService.error(errorMessage, null, null);
+    this.eventSubscriber = this.eventManager.subscribe('themeListModification', () => this.loadAll());
   }
 }
