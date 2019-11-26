@@ -36,9 +36,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/LearningPatternsDev
-    username: postgres
-    password: 123456
+    url: jdbc:postgresql://fime-db.ciogvjqblpbn.us-east-2.rds.amazonaws.com/LearningPatternsDev
+    username: fimeAdmin
+    password: fimeadmin
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -54,7 +54,7 @@ spring:
       hibernate.generate_statistics: false
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
-    contexts: dev
+    contexts: dev, faker
   mail:
     host: localhost
     port: 25
