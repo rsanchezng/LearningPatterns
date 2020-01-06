@@ -55,6 +55,7 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
       multi: true
     }
   ],
+  exports: [],
   bootstrap: [JhiMainComponent]
 })
 export class LearningPatternsAppModule {

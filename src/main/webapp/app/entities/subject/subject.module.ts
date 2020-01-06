@@ -8,6 +8,7 @@ import { SubjectUpdateComponent } from './subject-update.component';
 import { SubjectDeletePopupComponent, SubjectDeleteDialogComponent } from './subject-delete-dialog.component';
 import { subjectRoute, subjectPopupRoute } from './subject.route';
 import { SubjectPlanComponent } from './subject-plan/subject-plan.component';
+import { LearningDiagramComponent } from 'app/entities/subject/learning-diagram/learning-diagram.component';
 
 const ENTITY_STATES = [...subjectRoute, ...subjectPopupRoute];
 
@@ -19,7 +20,8 @@ const ENTITY_STATES = [...subjectRoute, ...subjectPopupRoute];
     SubjectUpdateComponent,
     SubjectDeleteDialogComponent,
     SubjectDeletePopupComponent,
-    SubjectPlanComponent
+    SubjectPlanComponent,
+    LearningDiagramComponent
   ],
   entryComponents: [SubjectDeleteDialogComponent]
 })
