@@ -11,5 +11,5 @@ public class Resource {
 	public void setResourceName(String resourceName) {
 		this.resourceName = resourceName;
 	}
-	
+		
 }

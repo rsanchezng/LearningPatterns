@@ -5,6 +5,12 @@ public class Theme {
 
 	private String themeName;
 	private List<Subtheme> subthemes;
+	
+	public Theme(String themeName, List<Subtheme> subthemes) {
+		super();
+		this.themeName = themeName;
+		this.subthemes = subthemes;
+	}
 
 	public String getThemeName() {
 		return themeName;
@@ -20,6 +26,12 @@ public class Theme {
 
 	public void setSubthemes(List<Subtheme> subthemes) {
 		this.subthemes = subthemes;
+	}
+	
+	@Override
+	public String toString() {
+		return  themeName + "\n\n" +
+				subthemes.toString();
 	}
 
 }

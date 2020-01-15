@@ -15,7 +15,7 @@ public class PDDL {
 
 	public static void main(String[] args) throws IOException {
 		
-		Subject dataStructures = new Subject();
+		Subject dataStructures = new Subject(null, null);
 		dataStructures.setSubjectName("DataStructuresAlgs");
 		
 		List<Subject> subjects = new ArrayList<>();
