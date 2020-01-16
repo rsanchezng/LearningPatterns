@@ -7,7 +7,6 @@ public class Theme {
 	private List<Subtheme> subthemes;
 	
 	public Theme(String themeName, List<Subtheme> subthemes) {
-		super();
 		this.themeName = themeName;
 		this.subthemes = subthemes;
 	}
