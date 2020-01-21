@@ -8,7 +8,6 @@ public class Activity {
 	private List<Resource> resources;
 	
 	public Activity(String activityIdentifier, String activityName, List<Resource> resources) {
-		super();
 		this.activityIdentifier = activityIdentifier;
 		this.activityName = activityName;
 		this.resources = resources;
