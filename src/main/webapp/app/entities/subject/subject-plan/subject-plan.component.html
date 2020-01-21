@@ -16,8 +16,11 @@
                                     <label class="form-control-label" for="field_studentMinGrade">Minimum Grade</label>
                                     <input type="number" class="form-control" name="studentMinGrade" id="field_studentMinGrade" formControlName="studentMinGrade"/>
                                 </div>
-                                <div *ngIf="themes">
-
+                                <div class="form-group">
+                                    <label formArrayName="selectedActivities" *ngFor="let activity of planForm.controls.selectedActivities.controls; let i = index">
+                                        <input type="checkbox" [formControlName]="i">
+                                        {{activities[i].activityName}}
+                                    </label>
                                 </div>
                             </div>
                         </div>

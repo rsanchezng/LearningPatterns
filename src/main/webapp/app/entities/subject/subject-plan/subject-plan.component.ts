@@ -16,7 +16,8 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'jhi-subject-plan',
-  templateUrl: './subject-plan.component.html'
+  templateUrl: './subject-plan.component.html',
+  styleUrls: ['./subject-plan.component.scss']
 })
 export class SubjectPlanComponent implements OnInit {
   planForm: FormGroup;
@@ -59,7 +60,8 @@ export class SubjectPlanComponent implements OnInit {
   ) {
     this.planForm = this.formBuilder.group({
       studentCredits: [],
-      studentMinGrade: []
+      studentMinGrade: [],
+      selectedActivities: new FormArray([])
     });
   }
 
@@ -93,6 +95,8 @@ export class SubjectPlanComponent implements OnInit {
                   .subscribe(
                     (activityres: HttpResponse<IActivity[]>) => {
                       this.activities = activityres.body;
+                      this.addActivities();
+                      this.createDiagram(this.subject, this.themes, this.subthemes, this.activities);
                     },
                     (activityres: HttpErrorResponse) => this.onError(activityres.message)
                   );
@@ -108,10 +112,39 @@ export class SubjectPlanComponent implements OnInit {
     window.history.back();
   }
 
+  addActivities() {
+    this.activities.forEach((a, i) => {
+      const control = new FormControl(i === 0);
+      (this.planForm.controls.selectedActivities as FormArray).push(control);
+    });
+  }
+
+  createDiagram(subject, themes, subthemes, activities) {
+    this.model.commit(function(d) {
+      const subjectObj = { key: subject.id, name: subject.subjectName };
+      d.addNodeData(subjectObj);
+      themes.forEach((t, i) => {
+        const themeObj = { key: t[i].id, name: t[i].themeName, parent: t[i].subject };
+        d.addNodeData(themeObj);
+      });
+      subthemes.forEach((s, i) => {
+        const subthemeObj = { key: s[i].id, name: s[i].subthemeName, parent: s[i].theme };
+        d.addNodeData(subthemeObj);
+      });
+      activities.forEach((a, i) => {
+        const activityObj = { key: a[i].id, name: a[i].activityName, parent: a[i].subtheme };
+        d.addNodeData(activityObj);
+      });
+    });
+  }
+
   generatePlan() {
-    console.log(this.themes);
-    console.log(this.subthemes);
-    console.log(this.activities);
+    const selectedActivitiesIds = this.planForm.value.selectedActivities
+      .map((v, i) => (v ? this.activities[i].id : null))
+      .filter(v => v !== null);
+    console.log(selectedActivitiesIds);
+    console.log(this.planForm.value.studentMinGrade);
+    console.log(this.planForm.value.studentCredits);
     window.alert('Testing! Check the console for more details.');
   }
 
