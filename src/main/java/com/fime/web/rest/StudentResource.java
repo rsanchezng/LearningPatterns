@@ -1,8 +1,10 @@
 package com.fime.web.rest;
 
 import com.fime.domain.Student;
-import com.fime.repository.StudentRepository;
+import com.fime.service.StudentService;
 import com.fime.web.rest.errors.BadRequestAlertException;
+import com.fime.service.dto.StudentCriteria;
+import com.fime.service.StudentQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -32,10 +34,13 @@ public class StudentResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final StudentRepository studentRepository;
+    private final StudentService studentService;
 
-    public StudentResource(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    private final StudentQueryService studentQueryService;
+
+    public StudentResource(StudentService studentService, StudentQueryService studentQueryService) {
+        this.studentService = studentService;
+        this.studentQueryService = studentQueryService;
     }
 
     /**
@@ -51,7 +56,7 @@ public class StudentResource {
         if (student.getId() != null) {
             throw new BadRequestAlertException("A new student cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Student result = studentRepository.save(student);
+        Student result = studentService.save(student);
         return ResponseEntity.created(new URI("/api/students/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +77,7 @@ public class StudentResource {
         if (student.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Student result = studentRepository.save(student);
+        Student result = studentService.save(student);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, student.getId().toString()))
             .body(result);
@@ -82,12 +87,26 @@ public class StudentResource {
      * {@code GET  /students} : get all the students.
      *
 
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of students in body.
      */
     @GetMapping("/students")
-    public List<Student> getAllStudents() {
-        log.debug("REST request to get all Students");
-        return studentRepository.findAll();
+    public ResponseEntity<List<Student>> getAllStudents(StudentCriteria criteria) {
+        log.debug("REST request to get Students by criteria: {}", criteria);
+        List<Student> entityList = studentQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /students/count} : count all the students.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/students/count")
+    public ResponseEntity<Long> countStudents(StudentCriteria criteria) {
+        log.debug("REST request to count Students by criteria: {}", criteria);
+        return ResponseEntity.ok().body(studentQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -99,7 +118,7 @@ public class StudentResource {
     @GetMapping("/students/{id}")
     public ResponseEntity<Student> getStudent(@PathVariable Long id) {
         log.debug("REST request to get Student : {}", id);
-        Optional<Student> student = studentRepository.findById(id);
+        Optional<Student> student = studentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(student);
     }
 
@@ -112,7 +131,7 @@ public class StudentResource {
     @DeleteMapping("/students/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         log.debug("REST request to delete Student : {}", id);
-        studentRepository.deleteById(id);
+        studentService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

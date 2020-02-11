@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 
 import { IActivity } from 'app/shared/model/activity.model';
-import { AccountService } from 'app/core';
 import { ActivityService } from './activity.service';
 
 @Component({
@@ -14,36 +12,18 @@ import { ActivityService } from './activity.service';
 })
 export class ActivityComponent implements OnInit, OnDestroy {
   activities: IActivity[];
-  currentAccount: any;
   eventSubscriber: Subscription;
 
-  constructor(
-    protected activityService: ActivityService,
-    protected jhiAlertService: JhiAlertService,
-    protected eventManager: JhiEventManager,
-    protected accountService: AccountService
-  ) {}
+  constructor(protected activityService: ActivityService, protected eventManager: JhiEventManager) {}
 
   loadAll() {
-    this.activityService
-      .query()
-      .pipe(
-        filter((res: HttpResponse<IActivity[]>) => res.ok),
-        map((res: HttpResponse<IActivity[]>) => res.body)
-      )
-      .subscribe(
-        (res: IActivity[]) => {
-          this.activities = res;
-        },
-        (res: HttpErrorResponse) => this.onError(res.message)
-      );
+    this.activityService.query().subscribe((res: HttpResponse<IActivity[]>) => {
+      this.activities = res.body;
+    });
   }
 
   ngOnInit() {
     this.loadAll();
-    this.accountService.identity().then(account => {
-      this.currentAccount = account;
-    });
     this.registerChangeInActivities();
   }
 
@@ -56,10 +36,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
   }
 
   registerChangeInActivities() {
-    this.eventSubscriber = this.eventManager.subscribe('activityListModification', response => this.loadAll());
-  }
-
-  protected onError(errorMessage: string) {
-    this.jhiAlertService.error(errorMessage, null, null);
+    this.eventSubscriber = this.eventManager.subscribe('activityListModification', () => this.loadAll());
   }
 }

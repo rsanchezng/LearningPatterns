@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { JhiAlertService } from 'ng-jhipster';
 import { IStudentSchedule, StudentSchedule } from 'app/shared/model/student-schedule.model';
 import { StudentScheduleService } from './student-schedule.service';
 import { IGroup } from 'app/shared/model/group.model';
-import { GroupService } from 'app/entities/group';
+import { GroupService } from 'app/entities/group/group.service';
 import { IStudent } from 'app/shared/model/student.model';
-import { StudentService } from 'app/entities/student';
+import { StudentService } from 'app/entities/student/student.service';
 
 @Component({
   selector: 'jhi-student-schedule-update',
@@ -52,18 +53,10 @@ export class StudentScheduleUpdateComponent implements OnInit {
     });
     this.groupService
       .query()
-      .pipe(
-        filter((mayBeOk: HttpResponse<IGroup[]>) => mayBeOk.ok),
-        map((response: HttpResponse<IGroup[]>) => response.body)
-      )
-      .subscribe((res: IGroup[]) => (this.groups = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe((res: HttpResponse<IGroup[]>) => (this.groups = res.body), (res: HttpErrorResponse) => this.onError(res.message));
     this.studentService
       .query()
-      .pipe(
-        filter((mayBeOk: HttpResponse<IStudent[]>) => mayBeOk.ok),
-        map((response: HttpResponse<IStudent[]>) => response.body)
-      )
-      .subscribe((res: IStudent[]) => (this.students = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe((res: HttpResponse<IStudent[]>) => (this.students = res.body), (res: HttpErrorResponse) => this.onError(res.message));
   }
 
   updateForm(studentSchedule: IStudentSchedule) {

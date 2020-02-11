@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { JhiAlertService } from 'ng-jhipster';
 import { ISubtheme, Subtheme } from 'app/shared/model/subtheme.model';
 import { SubthemeService } from './subtheme.service';
 import { ITheme } from 'app/shared/model/theme.model';
-import { ThemeService } from 'app/entities/theme';
+import { ThemeService } from 'app/entities/theme/theme.service';
 
 @Component({
   selector: 'jhi-subtheme-update',
@@ -48,11 +49,7 @@ export class SubthemeUpdateComponent implements OnInit {
     });
     this.themeService
       .query()
-      .pipe(
-        filter((mayBeOk: HttpResponse<ITheme[]>) => mayBeOk.ok),
-        map((response: HttpResponse<ITheme[]>) => response.body)
-      )
-      .subscribe((res: ITheme[]) => (this.themes = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe((res: HttpResponse<ITheme[]>) => (this.themes = res.body), (res: HttpErrorResponse) => this.onError(res.message));
   }
 
   updateForm(subtheme: ISubtheme) {

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { UserRouteAccessService } from 'app/core';
+import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
 import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Activity } from 'app/shared/model/activity.model';
 import { ActivityService } from './activity.service';
 import { ActivityComponent } from './activity.component';
@@ -16,13 +16,10 @@ import { IActivity } from 'app/shared/model/activity.model';
 export class ActivityResolve implements Resolve<IActivity> {
   constructor(private service: ActivityService) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IActivity> {
+  resolve(route: ActivatedRouteSnapshot): Observable<IActivity> {
     const id = route.params['id'];
     if (id) {
-      return this.service.find(id).pipe(
-        filter((response: HttpResponse<Activity>) => response.ok),
-        map((activity: HttpResponse<Activity>) => activity.body)
-      );
+      return this.service.find(id).pipe(map((activity: HttpResponse<Activity>) => activity.body));
     }
     return of(new Activity());
   }

@@ -38,7 +38,7 @@ public class Subtheme implements Serializable {
     @Column(name = "subtheme_modified_date")
     private LocalDate subthemeModifiedDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("subthemes")
     private Theme theme;
 

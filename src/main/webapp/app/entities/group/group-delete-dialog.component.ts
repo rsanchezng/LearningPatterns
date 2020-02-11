@@ -21,7 +21,7 @@ export class GroupDeleteDialogComponent {
   }
 
   confirmDelete(id: number) {
-    this.groupService.delete(id).subscribe(response => {
+    this.groupService.delete(id).subscribe(() => {
       this.eventManager.broadcast({
         name: 'groupListModification',
         content: 'Deleted an group'
@@ -46,11 +46,11 @@ export class GroupDeletePopupComponent implements OnInit, OnDestroy {
         this.ngbModalRef = this.modalService.open(GroupDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
         this.ngbModalRef.componentInstance.group = group;
         this.ngbModalRef.result.then(
-          result => {
+          () => {
             this.router.navigate(['/group', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           },
-          reason => {
+          () => {
             this.router.navigate(['/group', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           }

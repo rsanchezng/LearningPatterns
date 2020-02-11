@@ -44,11 +44,11 @@ public class StudentActivity implements Serializable {
     @Column(name = "student_activity_modified_by")
     private LocalDate studentActivityModifiedBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("studentActivities")
     private Activity activity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("studentActivities")
     private StudentSchedule studentschedule;
 

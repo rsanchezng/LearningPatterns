@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { UserRouteAccessService } from 'app/core';
+import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
 import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { StudentSchedule } from 'app/shared/model/student-schedule.model';
 import { StudentScheduleService } from './student-schedule.service';
 import { StudentScheduleComponent } from './student-schedule.component';
@@ -16,13 +16,10 @@ import { IStudentSchedule } from 'app/shared/model/student-schedule.model';
 export class StudentScheduleResolve implements Resolve<IStudentSchedule> {
   constructor(private service: StudentScheduleService) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IStudentSchedule> {
+  resolve(route: ActivatedRouteSnapshot): Observable<IStudentSchedule> {
     const id = route.params['id'];
     if (id) {
-      return this.service.find(id).pipe(
-        filter((response: HttpResponse<StudentSchedule>) => response.ok),
-        map((studentSchedule: HttpResponse<StudentSchedule>) => studentSchedule.body)
-      );
+      return this.service.find(id).pipe(map((studentSchedule: HttpResponse<StudentSchedule>) => studentSchedule.body));
     }
     return of(new StudentSchedule());
   }

@@ -1,8 +1,10 @@
 package com.fime.web.rest;
 
 import com.fime.domain.StudentActivity;
-import com.fime.repository.StudentActivityRepository;
+import com.fime.service.StudentActivityService;
 import com.fime.web.rest.errors.BadRequestAlertException;
+import com.fime.service.dto.StudentActivityCriteria;
+import com.fime.service.StudentActivityQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -32,10 +34,13 @@ public class StudentActivityResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final StudentActivityRepository studentActivityRepository;
+    private final StudentActivityService studentActivityService;
 
-    public StudentActivityResource(StudentActivityRepository studentActivityRepository) {
-        this.studentActivityRepository = studentActivityRepository;
+    private final StudentActivityQueryService studentActivityQueryService;
+
+    public StudentActivityResource(StudentActivityService studentActivityService, StudentActivityQueryService studentActivityQueryService) {
+        this.studentActivityService = studentActivityService;
+        this.studentActivityQueryService = studentActivityQueryService;
     }
 
     /**
@@ -51,7 +56,7 @@ public class StudentActivityResource {
         if (studentActivity.getId() != null) {
             throw new BadRequestAlertException("A new studentActivity cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        StudentActivity result = studentActivityRepository.save(studentActivity);
+        StudentActivity result = studentActivityService.save(studentActivity);
         return ResponseEntity.created(new URI("/api/student-activities/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +77,7 @@ public class StudentActivityResource {
         if (studentActivity.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        StudentActivity result = studentActivityRepository.save(studentActivity);
+        StudentActivity result = studentActivityService.save(studentActivity);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, studentActivity.getId().toString()))
             .body(result);
@@ -82,12 +87,26 @@ public class StudentActivityResource {
      * {@code GET  /student-activities} : get all the studentActivities.
      *
 
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of studentActivities in body.
      */
     @GetMapping("/student-activities")
-    public List<StudentActivity> getAllStudentActivities() {
-        log.debug("REST request to get all StudentActivities");
-        return studentActivityRepository.findAll();
+    public ResponseEntity<List<StudentActivity>> getAllStudentActivities(StudentActivityCriteria criteria) {
+        log.debug("REST request to get StudentActivities by criteria: {}", criteria);
+        List<StudentActivity> entityList = studentActivityQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /student-activities/count} : count all the studentActivities.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/student-activities/count")
+    public ResponseEntity<Long> countStudentActivities(StudentActivityCriteria criteria) {
+        log.debug("REST request to count StudentActivities by criteria: {}", criteria);
+        return ResponseEntity.ok().body(studentActivityQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -99,7 +118,7 @@ public class StudentActivityResource {
     @GetMapping("/student-activities/{id}")
     public ResponseEntity<StudentActivity> getStudentActivity(@PathVariable Long id) {
         log.debug("REST request to get StudentActivity : {}", id);
-        Optional<StudentActivity> studentActivity = studentActivityRepository.findById(id);
+        Optional<StudentActivity> studentActivity = studentActivityService.findOne(id);
         return ResponseUtil.wrapOrNotFound(studentActivity);
     }
 
@@ -112,7 +131,7 @@ public class StudentActivityResource {
     @DeleteMapping("/student-activities/{id}")
     public ResponseEntity<Void> deleteStudentActivity(@PathVariable Long id) {
         log.debug("REST request to delete StudentActivity : {}", id);
-        studentActivityRepository.deleteById(id);
+        studentActivityService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

@@ -1,8 +1,10 @@
 package com.fime.web.rest;
 
 import com.fime.domain.Teacher;
-import com.fime.repository.TeacherRepository;
+import com.fime.service.TeacherService;
 import com.fime.web.rest.errors.BadRequestAlertException;
+import com.fime.service.dto.TeacherCriteria;
+import com.fime.service.TeacherQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -32,10 +34,13 @@ public class TeacherResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final TeacherRepository teacherRepository;
+    private final TeacherService teacherService;
 
-    public TeacherResource(TeacherRepository teacherRepository) {
-        this.teacherRepository = teacherRepository;
+    private final TeacherQueryService teacherQueryService;
+
+    public TeacherResource(TeacherService teacherService, TeacherQueryService teacherQueryService) {
+        this.teacherService = teacherService;
+        this.teacherQueryService = teacherQueryService;
     }
 
     /**
@@ -51,7 +56,7 @@ public class TeacherResource {
         if (teacher.getId() != null) {
             throw new BadRequestAlertException("A new teacher cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Teacher result = teacherRepository.save(teacher);
+        Teacher result = teacherService.save(teacher);
         return ResponseEntity.created(new URI("/api/teachers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +77,7 @@ public class TeacherResource {
         if (teacher.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Teacher result = teacherRepository.save(teacher);
+        Teacher result = teacherService.save(teacher);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, teacher.getId().toString()))
             .body(result);
@@ -82,12 +87,26 @@ public class TeacherResource {
      * {@code GET  /teachers} : get all the teachers.
      *
 
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of teachers in body.
      */
     @GetMapping("/teachers")
-    public List<Teacher> getAllTeachers() {
-        log.debug("REST request to get all Teachers");
-        return teacherRepository.findAll();
+    public ResponseEntity<List<Teacher>> getAllTeachers(TeacherCriteria criteria) {
+        log.debug("REST request to get Teachers by criteria: {}", criteria);
+        List<Teacher> entityList = teacherQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /teachers/count} : count all the teachers.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/teachers/count")
+    public ResponseEntity<Long> countTeachers(TeacherCriteria criteria) {
+        log.debug("REST request to count Teachers by criteria: {}", criteria);
+        return ResponseEntity.ok().body(teacherQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -99,7 +118,7 @@ public class TeacherResource {
     @GetMapping("/teachers/{id}")
     public ResponseEntity<Teacher> getTeacher(@PathVariable Long id) {
         log.debug("REST request to get Teacher : {}", id);
-        Optional<Teacher> teacher = teacherRepository.findById(id);
+        Optional<Teacher> teacher = teacherService.findOne(id);
         return ResponseUtil.wrapOrNotFound(teacher);
     }
 
@@ -112,7 +131,7 @@ public class TeacherResource {
     @DeleteMapping("/teachers/{id}")
     public ResponseEntity<Void> deleteTeacher(@PathVariable Long id) {
         log.debug("REST request to delete Teacher : {}", id);
-        teacherRepository.deleteById(id);
+        teacherService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

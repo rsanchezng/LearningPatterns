@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { JhiAlertService } from 'ng-jhipster';
 import { ITheme, Theme } from 'app/shared/model/theme.model';
 import { ThemeService } from './theme.service';
 import { ISubject } from 'app/shared/model/subject.model';
-import { SubjectService } from 'app/entities/subject';
+import { SubjectService } from 'app/entities/subject/subject.service';
 
 @Component({
   selector: 'jhi-theme-update',
@@ -48,11 +49,7 @@ export class ThemeUpdateComponent implements OnInit {
     });
     this.subjectService
       .query()
-      .pipe(
-        filter((mayBeOk: HttpResponse<ISubject[]>) => mayBeOk.ok),
-        map((response: HttpResponse<ISubject[]>) => response.body)
-      )
-      .subscribe((res: ISubject[]) => (this.subjects = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe((res: HttpResponse<ISubject[]>) => (this.subjects = res.body), (res: HttpErrorResponse) => this.onError(res.message));
   }
 
   updateForm(theme: ITheme) {

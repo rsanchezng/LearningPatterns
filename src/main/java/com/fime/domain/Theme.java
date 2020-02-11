@@ -38,7 +38,7 @@ public class Theme implements Serializable {
     @Column(name = "theme_modified_date")
     private LocalDate themeModifiedDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("themes")
     private Subject subject;
 

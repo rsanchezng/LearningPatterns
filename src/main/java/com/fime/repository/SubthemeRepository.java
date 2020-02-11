@@ -1,5 +1,4 @@
 package com.fime.repository;
-
 import com.fime.domain.Subtheme;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
@@ -10,6 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface SubthemeRepository extends JpaRepository<Subtheme, Long> {
+public interface SubthemeRepository extends JpaRepository<Subtheme, Long>, JpaSpecificationExecutor<Subtheme> {
 
 }

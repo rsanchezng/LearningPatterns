@@ -21,7 +21,7 @@ export class SubthemeDeleteDialogComponent {
   }
 
   confirmDelete(id: number) {
-    this.subthemeService.delete(id).subscribe(response => {
+    this.subthemeService.delete(id).subscribe(() => {
       this.eventManager.broadcast({
         name: 'subthemeListModification',
         content: 'Deleted an subtheme'
@@ -46,11 +46,11 @@ export class SubthemeDeletePopupComponent implements OnInit, OnDestroy {
         this.ngbModalRef = this.modalService.open(SubthemeDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
         this.ngbModalRef.componentInstance.subtheme = subtheme;
         this.ngbModalRef.result.then(
-          result => {
+          () => {
             this.router.navigate(['/subtheme', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           },
-          reason => {
+          () => {
             this.router.navigate(['/subtheme', { outlets: { popup: null } }]);
             this.ngbModalRef = null;
           }

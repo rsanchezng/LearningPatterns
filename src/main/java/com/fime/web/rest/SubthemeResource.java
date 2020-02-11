@@ -1,8 +1,10 @@
 package com.fime.web.rest;
 
 import com.fime.domain.Subtheme;
-import com.fime.repository.SubthemeRepository;
+import com.fime.service.SubthemeService;
 import com.fime.web.rest.errors.BadRequestAlertException;
+import com.fime.service.dto.SubthemeCriteria;
+import com.fime.service.SubthemeQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -32,10 +34,13 @@ public class SubthemeResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final SubthemeRepository subthemeRepository;
+    private final SubthemeService subthemeService;
 
-    public SubthemeResource(SubthemeRepository subthemeRepository) {
-        this.subthemeRepository = subthemeRepository;
+    private final SubthemeQueryService subthemeQueryService;
+
+    public SubthemeResource(SubthemeService subthemeService, SubthemeQueryService subthemeQueryService) {
+        this.subthemeService = subthemeService;
+        this.subthemeQueryService = subthemeQueryService;
     }
 
     /**
@@ -51,7 +56,7 @@ public class SubthemeResource {
         if (subtheme.getId() != null) {
             throw new BadRequestAlertException("A new subtheme cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Subtheme result = subthemeRepository.save(subtheme);
+        Subtheme result = subthemeService.save(subtheme);
         return ResponseEntity.created(new URI("/api/subthemes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +77,7 @@ public class SubthemeResource {
         if (subtheme.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Subtheme result = subthemeRepository.save(subtheme);
+        Subtheme result = subthemeService.save(subtheme);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, subtheme.getId().toString()))
             .body(result);
@@ -82,12 +87,26 @@ public class SubthemeResource {
      * {@code GET  /subthemes} : get all the subthemes.
      *
 
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of subthemes in body.
      */
     @GetMapping("/subthemes")
-    public List<Subtheme> getAllSubthemes() {
-        log.debug("REST request to get all Subthemes");
-        return subthemeRepository.findAll();
+    public ResponseEntity<List<Subtheme>> getAllSubthemes(SubthemeCriteria criteria) {
+        log.debug("REST request to get Subthemes by criteria: {}", criteria);
+        List<Subtheme> entityList = subthemeQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /subthemes/count} : count all the subthemes.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/subthemes/count")
+    public ResponseEntity<Long> countSubthemes(SubthemeCriteria criteria) {
+        log.debug("REST request to count Subthemes by criteria: {}", criteria);
+        return ResponseEntity.ok().body(subthemeQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -99,7 +118,7 @@ public class SubthemeResource {
     @GetMapping("/subthemes/{id}")
     public ResponseEntity<Subtheme> getSubtheme(@PathVariable Long id) {
         log.debug("REST request to get Subtheme : {}", id);
-        Optional<Subtheme> subtheme = subthemeRepository.findById(id);
+        Optional<Subtheme> subtheme = subthemeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(subtheme);
     }
 
@@ -112,7 +131,7 @@ public class SubthemeResource {
     @DeleteMapping("/subthemes/{id}")
     public ResponseEntity<Void> deleteSubtheme(@PathVariable Long id) {
         log.debug("REST request to delete Subtheme : {}", id);
-        subthemeRepository.deleteById(id);
+        subthemeService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

@@ -1,16 +1,14 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { LearningPatternsSharedModule } from 'app/shared';
-import {
-  SubjectComponent,
-  SubjectDetailComponent,
-  SubjectUpdateComponent,
-  SubjectDeletePopupComponent,
-  SubjectDeleteDialogComponent,
-  subjectRoute,
-  subjectPopupRoute
-} from './';
+import { LearningPatternsSharedModule } from 'app/shared/shared.module';
+import { SubjectComponent } from './subject.component';
+import { SubjectDetailComponent } from './subject-detail.component';
+import { SubjectUpdateComponent } from './subject-update.component';
+import { SubjectDeletePopupComponent, SubjectDeleteDialogComponent } from './subject-delete-dialog.component';
+import { subjectRoute, subjectPopupRoute } from './subject.route';
+import { SubjectPlanComponent } from './subject-plan/subject-plan.component';
+import { LearningDiagramComponent } from 'app/entities/subject/learning-diagram/learning-diagram.component';
 
 const ENTITY_STATES = [...subjectRoute, ...subjectPopupRoute];
 
@@ -21,9 +19,10 @@ const ENTITY_STATES = [...subjectRoute, ...subjectPopupRoute];
     SubjectDetailComponent,
     SubjectUpdateComponent,
     SubjectDeleteDialogComponent,
-    SubjectDeletePopupComponent
+    SubjectDeletePopupComponent,
+    SubjectPlanComponent,
+    LearningDiagramComponent
   ],
-  entryComponents: [SubjectComponent, SubjectUpdateComponent, SubjectDeleteDialogComponent, SubjectDeletePopupComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  entryComponents: [SubjectDeleteDialogComponent]
 })
 export class LearningPatternsSubjectModule {}

@@ -8,27 +8,28 @@
             </span>
         </button>
     </h2>
+    <jhi-alert-error></jhi-alert-error>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="alert alert-warning" *ngIf="activities?.length === 0">
         <span>No activities found</span>
     </div>
     <div class="table-responsive" *ngIf="activities?.length > 0">
-        <table class="table table-striped">
+        <table class="table table-striped" aria-describedby="page-heading">
             <thead>
             <tr>
-            <th><span>ID</span></th>
-            <th><span>Activity Name</span></th>
-            <th><span>Activity Description</span></th>
-            <th><span>Activity Duration</span></th>
-            <th><span>Activity Utility</span></th>
-            <th><span>Activity Reqs Id</span></th>
-            <th><span>Activity Created By</span></th>
-            <th><span>Activity Creation Date</span></th>
-            <th><span>Activity Modified By</span></th>
-            <th><span>Activity Modified Date</span></th>
-            <th><span>Subtheme</span></th>
-            <th></th>
+            <th scope="col" ><span>ID</span></th>
+            <th scope="col" ><span>Activity Name</span></th>
+            <th scope="col" ><span>Activity Description</span></th>
+            <th scope="col" ><span>Activity Duration</span></th>
+            <th scope="col" ><span>Activity Utility</span></th>
+            <th scope="col" ><span>Activity Reqs Id</span></th>
+            <th scope="col" ><span>Activity Created By</span></th>
+            <th scope="col" ><span>Activity Creation Date</span></th>
+            <th scope="col" ><span>Activity Modified By</span></th>
+            <th scope="col" ><span>Activity Modified Date</span></th>
+            <th scope="col" ><span>Subtheme</span></th>
+            <th scope="col"></th>
             </tr>
             </thead>
             <tbody>

@@ -1,16 +1,12 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { LearningPatternsSharedModule } from 'app/shared';
-import {
-  ActivityComponent,
-  ActivityDetailComponent,
-  ActivityUpdateComponent,
-  ActivityDeletePopupComponent,
-  ActivityDeleteDialogComponent,
-  activityRoute,
-  activityPopupRoute
-} from './';
+import { LearningPatternsSharedModule } from 'app/shared/shared.module';
+import { ActivityComponent } from './activity.component';
+import { ActivityDetailComponent } from './activity-detail.component';
+import { ActivityUpdateComponent } from './activity-update.component';
+import { ActivityDeletePopupComponent, ActivityDeleteDialogComponent } from './activity-delete-dialog.component';
+import { activityRoute, activityPopupRoute } from './activity.route';
 
 const ENTITY_STATES = [...activityRoute, ...activityPopupRoute];
 
@@ -23,7 +19,6 @@ const ENTITY_STATES = [...activityRoute, ...activityPopupRoute];
     ActivityDeleteDialogComponent,
     ActivityDeletePopupComponent
   ],
-  entryComponents: [ActivityComponent, ActivityUpdateComponent, ActivityDeleteDialogComponent, ActivityDeletePopupComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  entryComponents: [ActivityDeleteDialogComponent]
 })
 export class LearningPatternsActivityModule {}

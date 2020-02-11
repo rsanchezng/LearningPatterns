@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 
 import { ITeacher } from 'app/shared/model/teacher.model';
-import { AccountService } from 'app/core';
 import { TeacherService } from './teacher.service';
 
 @Component({
@@ -14,36 +12,18 @@ import { TeacherService } from './teacher.service';
 })
 export class TeacherComponent implements OnInit, OnDestroy {
   teachers: ITeacher[];
-  currentAccount: any;
   eventSubscriber: Subscription;
 
-  constructor(
-    protected teacherService: TeacherService,
-    protected jhiAlertService: JhiAlertService,
-    protected eventManager: JhiEventManager,
-    protected accountService: AccountService
-  ) {}
+  constructor(protected teacherService: TeacherService, protected eventManager: JhiEventManager) {}
 
   loadAll() {
-    this.teacherService
-      .query()
-      .pipe(
-        filter((res: HttpResponse<ITeacher[]>) => res.ok),
-        map((res: HttpResponse<ITeacher[]>) => res.body)
-      )
-      .subscribe(
-        (res: ITeacher[]) => {
-          this.teachers = res;
-        },
-        (res: HttpErrorResponse) => this.onError(res.message)
-      );
+    this.teacherService.query().subscribe((res: HttpResponse<ITeacher[]>) => {
+      this.teachers = res.body;
+    });
   }
 
   ngOnInit() {
     this.loadAll();
-    this.accountService.identity().then(account => {
-      this.currentAccount = account;
-    });
     this.registerChangeInTeachers();
   }
 
@@ -56,10 +36,6 @@ export class TeacherComponent implements OnInit, OnDestroy {
   }
 
   registerChangeInTeachers() {
-    this.eventSubscriber = this.eventManager.subscribe('teacherListModification', response => this.loadAll());
-  }
-
-  protected onError(errorMessage: string) {
-    this.jhiAlertService.error(errorMessage, null, null);
+    this.eventSubscriber = this.eventManager.subscribe('teacherListModification', () => this.loadAll());
   }
 }

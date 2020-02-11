@@ -19,7 +19,6 @@ import { LearningPatternsEntityModule } from './entities/entity.module';
 import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ErrorComponent } from './layouts';
-import { LoginUserComponent } from './app-user/login-user/login-user.component';
 
 @NgModule({
   imports: [
@@ -38,7 +37,7 @@ import { LoginUserComponent } from './app-user/login-user/login-user.component';
     LearningPatternsEntityModule,
     LearningPatternsAppRoutingModule
   ],
-  declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent, LoginUserComponent],
+  declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -56,6 +55,7 @@ import { LoginUserComponent } from './app-user/login-user/login-user.component';
       multi: true
     }
   ],
+  exports: [],
   bootstrap: [JhiMainComponent]
 })
 export class LearningPatternsAppModule {

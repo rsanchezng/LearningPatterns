@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { JhiAlertService } from 'ng-jhipster';
 import { IGroup, Group } from 'app/shared/model/group.model';
 import { GroupService } from './group.service';
 import { ISubject } from 'app/shared/model/subject.model';
-import { SubjectService } from 'app/entities/subject';
+import { SubjectService } from 'app/entities/subject/subject.service';
 import { ITeacher } from 'app/shared/model/teacher.model';
-import { TeacherService } from 'app/entities/teacher';
+import { TeacherService } from 'app/entities/teacher/teacher.service';
 
 @Component({
   selector: 'jhi-group-update',
@@ -52,18 +53,10 @@ export class GroupUpdateComponent implements OnInit {
     });
     this.subjectService
       .query()
-      .pipe(
-        filter((mayBeOk: HttpResponse<ISubject[]>) => mayBeOk.ok),
-        map((response: HttpResponse<ISubject[]>) => response.body)
-      )
-      .subscribe((res: ISubject[]) => (this.subjects = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe((res: HttpResponse<ISubject[]>) => (this.subjects = res.body), (res: HttpErrorResponse) => this.onError(res.message));
     this.teacherService
       .query()
-      .pipe(
-        filter((mayBeOk: HttpResponse<ITeacher[]>) => mayBeOk.ok),
-        map((response: HttpResponse<ITeacher[]>) => response.body)
-      )
-      .subscribe((res: ITeacher[]) => (this.teachers = res), (res: HttpErrorResponse) => this.onError(res.message));
+      .subscribe((res: HttpResponse<ITeacher[]>) => (this.teachers = res.body), (res: HttpErrorResponse) => this.onError(res.message));
   }
 
   updateForm(group: IGroup) {

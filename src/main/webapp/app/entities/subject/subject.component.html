@@ -8,25 +8,26 @@
             </span>
         </button>
     </h2>
+    <jhi-alert-error></jhi-alert-error>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="alert alert-warning" *ngIf="subjects?.length === 0">
         <span>No subjects found</span>
     </div>
     <div class="table-responsive" *ngIf="subjects?.length > 0">
-        <table class="table table-striped">
+        <table class="table table-striped" aria-describedby="page-heading">
             <thead>
             <tr>
-            <th><span>ID</span></th>
-            <th><span>Subject Name</span></th>
-            <th><span>Subject Description</span></th>
-            <th><span>Subject Credits</span></th>
-            <th><span>Subject Created By</span></th>
-            <th><span>Subject Creation Date</span></th>
-            <th><span>Subject Modified By</span></th>
-            <th><span>Subject Modified Date</span></th>
-            <th><span>Teacher</span></th>
-            <th></th>
+            <th scope="col" ><span>ID</span></th>
+            <th scope="col" ><span>Subject Name</span></th>
+            <th scope="col" ><span>Subject Description</span></th>
+            <th scope="col" ><span>Subject Credits</span></th>
+            <th scope="col" ><span>Subject Created By</span></th>
+            <th scope="col" ><span>Subject Creation Date</span></th>
+            <th scope="col" ><span>Subject Modified By</span></th>
+            <th scope="col" ><span>Subject Modified Date</span></th>
+            <th scope="col" ><span>Teacher</span></th>
+            <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -51,6 +52,12 @@
                                 class="btn btn-info btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/subject', subject.id, 'plan']"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'map'"></fa-icon>
+                            <span class="d-none d-md-inline">Plan</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/subject', subject.id, 'edit']"

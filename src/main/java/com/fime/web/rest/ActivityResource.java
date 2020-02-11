@@ -1,8 +1,10 @@
 package com.fime.web.rest;
 
 import com.fime.domain.Activity;
-import com.fime.repository.ActivityRepository;
+import com.fime.service.ActivityService;
 import com.fime.web.rest.errors.BadRequestAlertException;
+import com.fime.service.dto.ActivityCriteria;
+import com.fime.service.ActivityQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -32,10 +34,13 @@ public class ActivityResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final ActivityRepository activityRepository;
+    private final ActivityService activityService;
 
-    public ActivityResource(ActivityRepository activityRepository) {
-        this.activityRepository = activityRepository;
+    private final ActivityQueryService activityQueryService;
+
+    public ActivityResource(ActivityService activityService, ActivityQueryService activityQueryService) {
+        this.activityService = activityService;
+        this.activityQueryService = activityQueryService;
     }
 
     /**
@@ -51,7 +56,7 @@ public class ActivityResource {
         if (activity.getId() != null) {
             throw new BadRequestAlertException("A new activity cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Activity result = activityRepository.save(activity);
+        Activity result = activityService.save(activity);
         return ResponseEntity.created(new URI("/api/activities/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +77,7 @@ public class ActivityResource {
         if (activity.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Activity result = activityRepository.save(activity);
+        Activity result = activityService.save(activity);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, activity.getId().toString()))
             .body(result);
@@ -82,12 +87,26 @@ public class ActivityResource {
      * {@code GET  /activities} : get all the activities.
      *
 
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of activities in body.
      */
     @GetMapping("/activities")
-    public List<Activity> getAllActivities() {
-        log.debug("REST request to get all Activities");
-        return activityRepository.findAll();
+    public ResponseEntity<List<Activity>> getAllActivities(ActivityCriteria criteria) {
+        log.debug("REST request to get Activities by criteria: {}", criteria);
+        List<Activity> entityList = activityQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /activities/count} : count all the activities.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/activities/count")
+    public ResponseEntity<Long> countActivities(ActivityCriteria criteria) {
+        log.debug("REST request to count Activities by criteria: {}", criteria);
+        return ResponseEntity.ok().body(activityQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -99,7 +118,7 @@ public class ActivityResource {
     @GetMapping("/activities/{id}")
     public ResponseEntity<Activity> getActivity(@PathVariable Long id) {
         log.debug("REST request to get Activity : {}", id);
-        Optional<Activity> activity = activityRepository.findById(id);
+        Optional<Activity> activity = activityService.findOne(id);
         return ResponseUtil.wrapOrNotFound(activity);
     }
 
@@ -112,7 +131,7 @@ public class ActivityResource {
     @DeleteMapping("/activities/{id}")
     public ResponseEntity<Void> deleteActivity(@PathVariable Long id) {
         log.debug("REST request to delete Activity : {}", id);
-        activityRepository.deleteById(id);
+        activityService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }
