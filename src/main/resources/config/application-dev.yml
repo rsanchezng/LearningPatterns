@@ -36,9 +36,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/LearningPatternsDev
+    url: jdbc:postgresql://localhost:5432/LearningPatternsDB
     username: postgres
-    password: 123456
+    password: root
     hikari:
       poolName: Hikari
       auto-commit: false
