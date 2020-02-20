@@ -1,15 +1,13 @@
 package com.fime.pddl;
 
-import java.util.List;
-
 public class PDDLDomain implements PDDL {
 
-	List<Subject> subjects;
+	PDDLProperties properties;
 	StringBuilder header;
 
-	public PDDLDomain(List<Subject> subjects) {
+	public PDDLDomain(PDDLProperties properties) {
 		header = new StringBuilder();
-		this.subjects = subjects;
+		this.properties = properties;
 	}
 
 	@Override
@@ -37,9 +35,17 @@ public class PDDLDomain implements PDDL {
 				+ " (:types student resource - object\n" + "         subject Theme subtheme LA - LO)\n"
 				+ " (:constants\n" + "\n");
 
-		getPlanInfo();
+		header.append(properties.subjects);
 		header.append("\n\n");
-
+		header.append(properties.themes);
+		header.append("\n\n");
+		header.append(properties.subthemes);
+		header.append("\n\n");
+		header.append(properties.activites);
+		header.append("\n\n");
+		header.append(properties.resources);
+		header.append("\n\n");
+		
 		header.append(" )\n\n");
 		header.append("\n\n");
 
@@ -49,25 +55,4 @@ public class PDDLDomain implements PDDL {
 
 	}
 
-	private void getPlanInfo() {
-
-		final String IDENT = "        ";
-
-		for (int i = 0; i <= subjects.size(); i++) {
-
-			for (Subject subject : subjects) {
-				header.append(IDENT + subject.getSubjectName());
-				header.append("\n\n");
-
-				if (i == subjects.size()) {
-					for (Theme theme : subject.getThemes()) {
-						header.append(IDENT + theme.getThemeName());
-						header.append("\n\n");
-					}
-				}
-
-			}
-		}
-
-	}
 }
