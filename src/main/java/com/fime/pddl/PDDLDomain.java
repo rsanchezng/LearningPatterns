@@ -30,26 +30,40 @@ public class PDDLDomain implements PDDL {
 	}
 
 	private String createDomainHeader() {
+		
+		final String IDENT = "	";
 
 		header.append("(define (domain degree)\n" + " (:requirements :durative-actions :typing :fluents :equality)\n"
 				+ " (:types student resource - object\n" + "         subject Theme subtheme LA - LO)\n"
 				+ " (:constants\n" + "\n");
+		
+		for (String subject : properties.subjects) {
+			header.append(IDENT + subject + "\n");
+		}
+		header.append("\n\n");
+		
+		for (String theme : properties.themes) {
+			header.append(IDENT + theme + "\n");
+		}
+		header.append("\n\n");
+		
+		for (String subtheme : properties.subthemes) {
+			header.append(IDENT + subtheme + "\n");
+		}
+		header.append("\n\n");
 
-		header.append(properties.subjects);
+		for (String activity : properties.activites) {
+			header.append(IDENT + activity + "\n");
+		}
 		header.append("\n\n");
-		header.append(properties.themes);
-		header.append("\n\n");
-		header.append(properties.subthemes);
-		header.append("\n\n");
-		header.append(properties.activites);
-		header.append("\n\n");
-		header.append(properties.resources);
+
+		for (String resource : properties.resources) {
+			header.append(IDENT + resource + "\n");
+		}
 		header.append("\n\n");
 		
 		header.append(" )\n\n");
 		header.append("\n\n");
-
-		System.out.println(header.toString());
 
 		return header.toString();
 

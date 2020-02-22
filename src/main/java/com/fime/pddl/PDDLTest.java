@@ -23,7 +23,7 @@ public class PDDLTest {
 		Theme dataStructuresThemes = new Theme("Theme1", subthemes);
 		List<Theme> themes = new ArrayList<>();
 		themes.add(dataStructuresThemes);
-		Subject dataStructures = new Subject("DataStructuresAlgs", themes);
+		Subject dataStructures = new Subject("Subject1", themes);
 		
 		Resource dataStructuresResource2 = new Resource("Rec2");
 		List<Resource> resources2 = new ArrayList<>();
@@ -37,7 +37,7 @@ public class PDDLTest {
 		Theme dataStructuresThemes2 = new Theme("Theme2", subthemes2);
 		List<Theme> themes2 = new ArrayList<>();
 		themes2.add(dataStructuresThemes2);
-		Subject dataStructures2 = new Subject("DataStructuresAlgs", themes2);
+		Subject dataStructures2 = new Subject("Subject2", themes2);
 		
 		Resource dataStructuresResource3 = new Resource("Rec3");
 		List<Resource> resources3 = new ArrayList<>();
@@ -51,7 +51,7 @@ public class PDDLTest {
 		Theme dataStructuresThemes3 = new Theme("Theme3", subthemes3);
 		List<Theme> themes3 = new ArrayList<>();
 		themes3.add(dataStructuresThemes3);
-		Subject dataStructures3 = new Subject("DataStructuresAlgs", themes3);
+		Subject dataStructures3 = new Subject("Subject3", themes3);
 		
 		List<Subject> subjects = new ArrayList<>();
 		subjects.add(dataStructures);
