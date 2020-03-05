@@ -13,9 +13,10 @@ public class LearningPattern {
 	private static final String PROBLEM = "Problem_";
 	private static final String PDDL_EXTENSION = ".pddl";
 	
-	public void generateLearningPatternPDDL(List<Subject> subjects) {
+	public void generateLearningPatternPDDL(Student student, List<Subject> subjects, List<Theme> themes, List<Subtheme> subthemes,
+			List<Activity> activites, List<Resource> resources) {
 		
-		PDDLProperties properties =  new PDDLProperties(subjects);
+		PDDLProperties properties =  new PDDLProperties(student, subjects, themes, subthemes, activites, resources);
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmm");
 		Date date = new Date();
@@ -29,7 +30,7 @@ public class LearningPattern {
 		}
 
 		try {
-			PDDLProblem problem = new PDDLProblem();
+			PDDLProblem problem = new PDDLProblem(properties);
 			Files.write(Paths.get(PROBLEM + formattedDate + PDDL_EXTENSION), problem.getPDDLProblem());
 		} catch (Exception e) {
 			e.printStackTrace();

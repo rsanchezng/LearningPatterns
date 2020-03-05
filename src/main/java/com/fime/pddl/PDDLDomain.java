@@ -37,27 +37,27 @@ public class PDDLDomain implements PDDL {
 				+ " (:types student resource - object\n" + "         subject Theme subtheme LA - LO)\n"
 				+ " (:constants\n" + "\n");
 		
-		for (String subject : properties.subjects) {
+		for (String subject : properties.getSubjects()) {
 			header.append(IDENT + subject + "\n");
 		}
 		header.append("\n\n");
 		
-		for (String theme : properties.themes) {
+		for (String theme : properties.getThemes()) {
 			header.append(IDENT + theme + "\n");
 		}
 		header.append("\n\n");
 		
-		for (String subtheme : properties.subthemes) {
+		for (String subtheme : properties.getSubthemes()) {
 			header.append(IDENT + subtheme + "\n");
 		}
 		header.append("\n\n");
 
-		for (String activity : properties.activites) {
+		for (String activity : properties.getActivites()) {
 			header.append(IDENT + activity + "\n");
 		}
 		header.append("\n\n");
 
-		for (String resource : properties.resources) {
+		for (String resource : properties.getResources()) {
 			header.append(IDENT + resource + "\n");
 		}
 		header.append("\n\n");
