@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <div class="col-sm">
-                            <jhi-learning-diagram [model]="model"></jhi-learning-diagram>
+                            <gojs-diagram [initDiagram]='initDiagram' [nodeDataArray]='diagramNodeData' [linkDataArray]='diagramLinkData' [modelData]='diagramModelData' (modelChange)='diagramModelChange($event)' [divClassName]='diagramDivClassName'></gojs-diagram>
                         </div>
                     </div>
                 </div>

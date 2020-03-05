@@ -8,20 +8,19 @@ import { SubjectUpdateComponent } from './subject-update.component';
 import { SubjectDeletePopupComponent, SubjectDeleteDialogComponent } from './subject-delete-dialog.component';
 import { subjectRoute, subjectPopupRoute } from './subject.route';
 import { SubjectPlanComponent } from './subject-plan/subject-plan.component';
-import { LearningDiagramComponent } from 'app/entities/subject/learning-diagram/learning-diagram.component';
+import { GojsAngularModule } from 'gojs-angular';
 
 const ENTITY_STATES = [...subjectRoute, ...subjectPopupRoute];
 
 @NgModule({
-  imports: [LearningPatternsSharedModule, RouterModule.forChild(ENTITY_STATES)],
+  imports: [LearningPatternsSharedModule, RouterModule.forChild(ENTITY_STATES), GojsAngularModule],
   declarations: [
     SubjectComponent,
     SubjectDetailComponent,
     SubjectUpdateComponent,
     SubjectDeleteDialogComponent,
     SubjectDeletePopupComponent,
-    SubjectPlanComponent,
-    LearningDiagramComponent
+    SubjectPlanComponent
   ],
   entryComponents: [SubjectDeleteDialogComponent]
 })
