@@ -20,6 +20,16 @@ public class PDDLTest {
 		List<Activity> activites = null;
 		List<Resource> resources = null;
 		
+		subjects = new ArrayList<>();
+		Subject subject1 =  new Subject("Subject1");
+		subjects.add(subject1);
+		
+		List<Object> dependencies = new ArrayList<Object>();
+		dependencies.add(new Theme("Theme1"));
+		dependencies.add(new Resource("Resource1"));
+		subject1.setDependencies(dependencies);
+		
+		
 		LearningPattern learningPattern = new LearningPattern();
 		learningPattern.generateLearningPatternPDDL(student, subjects, themes, subthemes, activites, resources);
 		

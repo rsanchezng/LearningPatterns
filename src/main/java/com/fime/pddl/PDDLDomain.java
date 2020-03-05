@@ -30,43 +30,47 @@ public class PDDLDomain implements PDDL {
 	}
 
 	private String createDomainHeader() {
-		
-		final String IDENT = "	";
-
-		header.append("(define (domain degree)\n" + " (:requirements :durative-actions :typing :fluents :equality)\n"
-				+ " (:types student resource - object\n" + "         subject Theme subtheme LA - LO)\n"
-				+ " (:constants\n" + "\n");
-		
-		for (String subject : properties.getSubjects()) {
-			header.append(IDENT + subject + "\n");
-		}
-		header.append("\n\n");
-		
-		for (String theme : properties.getThemes()) {
-			header.append(IDENT + theme + "\n");
-		}
-		header.append("\n\n");
-		
-		for (String subtheme : properties.getSubthemes()) {
-			header.append(IDENT + subtheme + "\n");
-		}
-		header.append("\n\n");
-
-		for (String activity : properties.getActivites()) {
-			header.append(IDENT + activity + "\n");
-		}
-		header.append("\n\n");
-
-		for (String resource : properties.getResources()) {
-			header.append(IDENT + resource + "\n");
-		}
-		header.append("\n\n");
-		
-		header.append(" )\n\n");
-		header.append("\n\n");
-
-		return header.toString();
-
+//		
+//		final String IDENT = "	";
+//
+//		header.append("(define (domain degree)\n" + " (:requirements :durative-actions :typing :fluents :equality)\n"
+//				+ " (:types student resource - object\n" + "         subject Theme subtheme LA - LO)\n"
+//				+ " (:constants\n" + "\n");
+//		
+//		for (String subject : properties.getSubjects()) {
+//			header.append(IDENT + subject + "\n");
+//		}
+//		header.append("\n\n");
+//		
+//		for (String theme : properties.getThemes()) {
+//			header.append(IDENT + theme + "\n");
+//		}
+//		header.append("\n\n");
+//		
+//		for (String subtheme : properties.getSubthemes()) {
+//			header.append(IDENT + subtheme + "\n");
+//		}
+//		header.append("\n\n");
+//
+//		for (String activity : properties.getActivites()) {
+//			header.append(IDENT + activity + "\n");
+//		}
+//		header.append("\n\n");
+//
+//		for (String resource : properties.getResources()) {
+//			header.append(IDENT + resource + "\n");
+//		}
+//		header.append("\n\n");
+//		
+//		header.append(" )\n\n");
+//		header.append("\n\n");
+//
+//		return header.toString();
+//
+//		
+	
+		return "header";
+	
 	}
 
 }
