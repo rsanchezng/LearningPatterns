@@ -2,6 +2,9 @@ package com.fime.pddl;
 
 import java.util.List;
 
+import lombok.Data;
+
+@Data
 public class PDDLProperties {
 
 	private Student student;
@@ -22,52 +25,4 @@ public class PDDLProperties {
 		this.resources = resources;
 	}
 
-	public Student getStudent() {
-		return student;
-	}
-
-	public void setStudent(Student student) {
-		this.student = student;
-	}
-
-	public List<Subject> getSubjects() {
-		return subjects;
-	}
-
-	public void setSubjects(List<Subject> subjects) {
-		this.subjects = subjects;
-	}
-
-	public List<Theme> getThemes() {
-		return themes;
-	}
-
-	public void setThemes(List<Theme> themes) {
-		this.themes = themes;
-	}
-
-	public List<Subtheme> getSubthemes() {
-		return subthemes;
-	}
-
-	public void setSubthemes(List<Subtheme> subthemes) {
-		this.subthemes = subthemes;
-	}
-
-	public List<Activity> getActivites() {
-		return activites;
-	}
-
-	public void setActivites(List<Activity> activites) {
-		this.activites = activites;
-	}
-
-	public List<Resource> getResources() {
-		return resources;
-	}
-
-	public void setResources(List<Resource> resources) {
-		this.resources = resources;
-	}
-	
 }
