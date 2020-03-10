@@ -1,5 +1,7 @@
 package com.fime.pddl;
 
+import com.fime.pddl.ConstantDomainPDDLFunctions;
+
 public class PDDLDomain implements PDDL {
 
 	PDDLProperties properties;

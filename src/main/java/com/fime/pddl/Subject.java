@@ -1,30 +1,14 @@
 package com.fime.pddl;
 
-import java.util.List;
+import lombok.Data;
 
+@Data
 public class Subject {
-	
-	private String subjectName;
-	private List<Object> dependencies;
-	
-	public Subject(String subjectName) {
-		this.subjectName = subjectName;
-	}
-	
-	public String getSubjectName() {
-		return subjectName;
-	}
-	public void setSubjectName(String subjectName) {
-		this.subjectName = subjectName;
-	}
 
-	public List<Object> getDependencies() {
-		return dependencies;
-	}
+    private String subjectName;
+    //	private List<Object> dependencies;
+    private boolean subjectDone;
+    private int credits;
+    private int minGrade;
 
-	public void setDependencies(List<Object> dependencies) {
-		this.dependencies = dependencies;
-	}
-	
-	
 }

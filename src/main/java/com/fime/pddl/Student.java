@@ -1,15 +1,14 @@
 package com.fime.pddl;
 
+import lombok.Data;
+
+@Data
 public class Student {
 
-	String studentName;
+    private String studentName;
+    //	available-credits student1
+    private int availableCredits;
+    //	Esto hace referencia a total-credits-subject-gain student1
+    private int acumulatedCredits;
 
-	public String getStudentName() {
-		return studentName;
-	}
-
-	public void setStudentName(String studentName) {
-		this.studentName = studentName;
-	}
-	
 }
