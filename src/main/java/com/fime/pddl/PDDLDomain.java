@@ -3,10 +3,9 @@ package com.fime.pddl;
 public class PDDLDomain implements PDDL {
 
 	PDDLProperties properties;
-	StringBuilder header;
+	
 
 	public PDDLDomain(PDDLProperties properties) {
-		header = new StringBuilder();
 		this.properties = properties;
 	}
 
@@ -19,6 +18,7 @@ public class PDDLDomain implements PDDL {
 		domain.append(createDomainHeader());
 		domain.append(pddlFunctions.getPredicates());
 		domain.append(pddlFunctions.getFunctions());
+		domain.append(createSubjectEnrollments());
 		domain.append(pddlFunctions.getLAWithNoReqs());
 		domain.append(pddlFunctions.getLAWitReqSubthemes());
 		domain.append(pddlFunctions.getLAWitReqLA());
@@ -30,8 +30,9 @@ public class PDDLDomain implements PDDL {
 	}
 
 	private String createDomainHeader() {
-
+		
 		final String IDENT = "	";
+		StringBuilder header = new StringBuilder();
 
 		header.append("(define (domain degree)\n" + " (:requirements :durative-actions :typing :fluents :equality)\n"
 				+ " (:types student resource - object\n" + "         subject Theme subtheme LA - LO)\n"
@@ -41,7 +42,7 @@ public class PDDLDomain implements PDDL {
 		    if( properties.getSubjects().indexOf(subject) != properties.getSubjects().size() - 1){
                 header.append(IDENT + subject.getSubjectName() + "\n");
             } else {
-                header.append(IDENT + subject.getSubjectName() + " - subject\n");
+                header.append(IDENT + subject.getSubjectName() + " - Subject\n");
             }
 		});
 		header.append("\n\n");
@@ -50,16 +51,16 @@ public class PDDLDomain implements PDDL {
             if( properties.getThemes().indexOf(theme) != properties.getThemes().size() - 1){
                 header.append(IDENT + theme.getThemeName() + "\n");
             } else {
-                header.append(IDENT + theme.getThemeName() + " - theme\n");
+                header.append(IDENT + theme.getThemeName() + " - Theme\n");
             }
         });
         header.append("\n\n");
 
         properties.getSubthemes().forEach((subtheme) -> {
-            if( properties.getThemes().indexOf(subtheme) != properties.getThemes().size() - 1){
+            if( properties.getSubthemes().indexOf(subtheme) != properties.getSubthemes().size() - 1){
                 header.append(IDENT + subtheme.getSubthemeName() + "\n");
             } else {
-                header.append(IDENT + subtheme.getSubthemeName() + " - subtheme\n");
+                header.append(IDENT + subtheme.getSubthemeName() + " - Subtheme\n");
             }
         });
         header.append("\n\n");
@@ -68,7 +69,7 @@ public class PDDLDomain implements PDDL {
             if( properties.getActivites().indexOf(activity) != properties.getActivites().size() - 1){
                 header.append(IDENT + activity.getActivityName() + "\n");
             } else {
-                header.append(IDENT + activity.getActivityName() + " - activity\n");
+                header.append(IDENT + activity.getActivityName() + " - Activity\n");
             }
         });
         header.append("\n\n");
@@ -77,7 +78,7 @@ public class PDDLDomain implements PDDL {
             if( properties.getResources().indexOf(resource) != properties.getResources().size() - 1){
                 header.append(IDENT + resource.getResourceName() + "\n");
             } else {
-                header.append(IDENT + resource.getResourceName() + " - resource\n");
+                header.append(IDENT + resource.getResourceName() + " - Resource\n");
             }
         });
         header.append("\n\n");
@@ -86,6 +87,37 @@ public class PDDLDomain implements PDDL {
 		header.append("\n\n");
 
 		return header.toString();
+	}
+	
+	private String createSubjectEnrollments() {
+		
+		final String IDENT = "	";
+		StringBuilder subjectEnrollment = new StringBuilder();
+
+		subjectEnrollment.append("\n;-----------------------------------------------------------\n");
+		
+		properties.getSubjects().forEach((subject) -> {
+			
+			subjectEnrollment.append("(:durative-action enroll-subject_" + subject.getSubjectName() +"\n" + 
+					" :parameters (?s - student)\n" + 
+					" :duration (= ?duration 0)\n" + 
+					" :condition (and\n" + 
+					"        (at start (available-subject " +  subject.getSubjectName() + " ?s))\n" + 
+					"        (at start (not-approved " +  subject.getSubjectName() + " ?s))\n" + 
+					"        (at start (<(credits-subject " +  subject.getSubjectName() + " )(available-credits ?s)))\n" + 
+					"        )\n" + 
+					" :effect (and\n" + 
+					"        (at end (enrollment ?s " +  subject.getSubjectName() + "))\n" + 
+					"        (at end (decrease (available-credits ?s)(credits-subject " +  subject.getSubjectName() + ")))\n" + 
+					"        (at end (not (available-subject " +  subject.getSubjectName() + " ?s)))\n" + 
+					"        )\n" + 
+					")\n");
+			
+		});
+		subjectEnrollment.append("\n;-----------------------------------------------------------\n");
+		subjectEnrollment.append("\n\n");
+
+        return subjectEnrollment.toString();
 	}
 
 }

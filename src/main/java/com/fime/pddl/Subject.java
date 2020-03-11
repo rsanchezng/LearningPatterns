@@ -7,11 +7,18 @@ public class Subject {
     private boolean subjectDone;
     private int credits;
     private int minGrade;
-
+    
     public Subject() {
     }
+    
+    public Subject(String subjectName, boolean subjectDone, int credits, int minGrade) {
+		this.subjectName = subjectName;
+		this.subjectDone = subjectDone;
+		this.credits = credits;
+		this.minGrade = minGrade;
+	}
 
-    public String getSubjectName() {
+	public String getSubjectName() {
         return this.subjectName;
     }
 

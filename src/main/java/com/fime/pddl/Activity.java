@@ -18,7 +18,20 @@ public class Activity {
     public Activity() {
     }
 
-    public String getActivityIdentifier() {
+    public Activity(String activityIdentifier, String activityName, Subtheme parentSubtheme, List<Object> dependencies,
+			boolean activityDone, int value, int studentGrade, int duration, List<Resource> resources) {
+		this.activityIdentifier = activityIdentifier;
+		this.activityName = activityName;
+		this.parentSubtheme = parentSubtheme;
+		this.dependencies = dependencies;
+		this.activityDone = activityDone;
+		this.value = value;
+		this.studentGrade = studentGrade;
+		this.duration = duration;
+		this.resources = resources;
+	}
+
+	public String getActivityIdentifier() {
         return this.activityIdentifier;
     }
 

@@ -12,7 +12,16 @@ public class Subtheme {
     public Subtheme() {
     }
 
-    public String getSubthemeName() {
+    public Subtheme(String subthemeName, Theme parentTheme, boolean subthemeDone, int maxGradeSubtheme,
+			int studentScore) {
+		this.subthemeName = subthemeName;
+		this.parentTheme = parentTheme;
+		this.subthemeDone = subthemeDone;
+		this.maxGradeSubtheme = maxGradeSubtheme;
+		this.studentScore = studentScore;
+	}
+
+	public String getSubthemeName() {
         return this.subthemeName;
     }
 

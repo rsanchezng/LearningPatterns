@@ -10,8 +10,13 @@ public class Theme {
     public Theme() {
     }
 
+    public Theme(String themeName, Subject parentSubject, boolean themeDone) {
+		this.themeName = themeName;
+		this.parentSubject = parentSubject;
+		this.themeDone = themeDone;
+	}
 
-    public String getThemeName() {
+	public String getThemeName() {
         return this.themeName;
     }
 
