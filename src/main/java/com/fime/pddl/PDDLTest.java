@@ -25,9 +25,14 @@ public class PDDLTest {
 
 		Theme theme1 = new Theme("Theme1", subject1, false);
 		themes.add(theme1);
+		
+		Theme theme2 = new Theme("Theme2", subject2, false);
+		themes.add(theme2);
 
-        Subtheme subtheme1 = new Subtheme("Theme1", theme1, false, 0, 50);
+        Subtheme subtheme1 = new Subtheme("Subteme1", theme1, false, 0, 50);
         subthemes.add(subtheme1);
+        Subtheme subtheme2 = new Subtheme("Subtheme2", theme2, false, 0, 50);
+        subthemes.add(subtheme2);
         
         Resource res1 = new Resource();
         res1.setResourceName("Resource1");

@@ -23,6 +23,7 @@ public class PDDLDomain implements PDDL {
 		domain.append(pddlFunctions.getLAWitReqSubthemes());
 		domain.append(pddlFunctions.getLAWitReqLA());
 		domain.append(pddlFunctions.getALWithMultipleLAReq());
+		domain.append(getPassThemeActions());
 		domain.append(pddlFunctions.getSubjectPass());
 
 		return domain.toString().getBytes();
@@ -118,6 +119,47 @@ public class PDDLDomain implements PDDL {
 		subjectEnrollment.append("\n\n");
 
         return subjectEnrollment.toString();
+	}
+	
+	private String getPassThemeActions() {
+		
+		final String IDENT = "	";
+		StringBuilder subjectEnrollment = new StringBuilder();
+
+		subjectEnrollment.append("\n;-----------------------------------------------------------\n");
+		
+		properties.getThemes().forEach((theme) -> {
+			
+			subjectEnrollment.append("(:durative-action PASS-"+ theme.getThemeName() +"_" + theme.getParentSubject().getSubjectName() + 
+					"\n:parameters (?s - student)\n" + 
+					":duration (= ?duration 0)\n" + 
+					":condition (and \n" + 
+					"               (at start (enrollment ?s "+ theme.getParentSubject().getSubjectName() + "))\n" + 
+					getConditions(theme, theme.getParentSubject().getSubjectName()) +
+					"           )\n" + 
+					":effect (and\n" + 
+					"                (at end (done-Theme "+ theme.getThemeName() + " " + theme.getParentSubject().getSubjectName() + " ?s))\n" + 
+					"         )\n" + 
+					")\n");
+			
+		});
+		subjectEnrollment.append("\n;-----------------------------------------------------------\n");
+		subjectEnrollment.append("\n\n");
+
+        return subjectEnrollment.toString();
+	}
+
+	private String getConditions(Theme theme, String subjectName) {
+
+		StringBuilder conditions = new StringBuilder();
+
+		properties.getSubthemes().forEach((subtheme) -> {
+			if (subtheme.getParentTheme().equals(theme)) {
+				conditions.append("               (at start (>= (score "+ subtheme.getSubthemeName()  + " ?s)(mingrade " + subjectName + ")))\n ");
+			}
+		});
+
+		return conditions.toString();
 	}
 
 }
