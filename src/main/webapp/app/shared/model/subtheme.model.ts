@@ -9,6 +9,7 @@ export interface ISubtheme {
   subthemeCreationDate?: Moment;
   subthemeModifiedBy?: string;
   subthemeModifiedDate?: Moment;
+  subthemeMaxGrade?: number;
   theme?: ITheme;
 }
 
@@ -21,6 +22,7 @@ export class Subtheme implements ISubtheme {
     public subthemeCreationDate?: Moment,
     public subthemeModifiedBy?: string,
     public subthemeModifiedDate?: Moment,
+    public subthemeMaxGrade?: number,
     public theme?: ITheme
   ) {}
 }
