@@ -31,7 +31,7 @@ public class LearningPattern {
 
 		try {
 			PDDLProblem problem = new PDDLProblem(properties);
-			Files.write(Paths.get(PROBLEM + formattedDate + PDDL_EXTENSION), problem.getPDDLProblem());
+			Files.write(Paths.get(PROBLEM + formattedDate + PDDL_EXTENSION), problem.generatePDDL());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

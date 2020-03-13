@@ -4,7 +4,6 @@ public class PDDLDomain implements PDDL {
 
 	PDDLProperties properties;
 	
-
 	public PDDLDomain(PDDLProperties properties) {
 		this.properties = properties;
 	}
