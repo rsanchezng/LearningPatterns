@@ -1,11 +1,2 @@
-id;subject_name;subject_description;subject_credits;subject_created_by;subject_creation_date;subject_modified_by;subject_modified_date
-1;mobile Fish;Home Loan Account Table Computer;5808;FTP Savings Account;2019-11-24;Movies Producer;2019-11-24
-2;red Chips Soap;Home Loan Account;706;Home Namibia;2019-11-24;Gorgeous Frozen Pants;2019-11-24
-3;Licensed Savings Account;Cambridgeshire Mississippi;4645;Credit Card Account Table Small Frozen Sausages;2019-11-23;cross-platform access;2019-11-24
-4;Nakfa;Bahamian Dollar Investment Account;83319;Salad;2019-11-24;Tuna;2019-11-24
-5;convergence;Mayotte;18485;Facilitator;2019-11-24;Markets Chief;2019-11-24
-6;National Awesome sky blue;Tactics;84453;compress South Georgia and the South Sandwich Islands;2019-11-24;Specialist Home Loan Account;2019-11-24
-7;scalable;Small;98688;index orange;2019-11-24;overriding;2019-11-24
-8;application quantify Unbranded Plastic Tuna;Internal;85003;Highway Ergonomic;2019-11-24;Lempira;2019-11-24
-9;New York tangible Mississippi;Frozen bus;76078;Idaho compress Avon;2019-11-24;partnerships Grocery Intelligent;2019-11-24
-10;withdrawal knowledge base Buckinghamshire;Concrete Investment Account Saint Lucia;20306;Brand;2019-11-24;Chilean Peso Unidades de fomento;2019-11-24
+id;subject_name;subject_description;subject_credits;subject_created_by;subject_creation_date;subject_modified_by;subject_modified_date;teacher_id
+1;Data Structures & Algorithms;Test Subject;6;admin;2020-03-13;admin;2020-03-13;1
