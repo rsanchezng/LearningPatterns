@@ -59,6 +59,10 @@ public class SubthemeResourceIT {
     private static final LocalDate UPDATED_SUBTHEME_MODIFIED_DATE = LocalDate.now(ZoneId.systemDefault());
     private static final LocalDate SMALLER_SUBTHEME_MODIFIED_DATE = LocalDate.ofEpochDay(-1L);
 
+    private static final Integer DEFAULT_SUBTHEME_MAX_GRADE = 1;
+    private static final Integer UPDATED_SUBTHEME_MAX_GRADE = 2;
+    private static final Integer SMALLER_SUBTHEME_MAX_GRADE = 1 - 1;
+
     @Autowired
     private SubthemeRepository subthemeRepository;
 
@@ -112,7 +116,8 @@ public class SubthemeResourceIT {
             .subthemeCreatedBy(DEFAULT_SUBTHEME_CREATED_BY)
             .subthemeCreationDate(DEFAULT_SUBTHEME_CREATION_DATE)
             .subthemeModifiedBy(DEFAULT_SUBTHEME_MODIFIED_BY)
-            .subthemeModifiedDate(DEFAULT_SUBTHEME_MODIFIED_DATE);
+            .subthemeModifiedDate(DEFAULT_SUBTHEME_MODIFIED_DATE)
+            .subthemeMaxGrade(DEFAULT_SUBTHEME_MAX_GRADE);
         return subtheme;
     }
     /**
@@ -128,7 +133,8 @@ public class SubthemeResourceIT {
             .subthemeCreatedBy(UPDATED_SUBTHEME_CREATED_BY)
             .subthemeCreationDate(UPDATED_SUBTHEME_CREATION_DATE)
             .subthemeModifiedBy(UPDATED_SUBTHEME_MODIFIED_BY)
-            .subthemeModifiedDate(UPDATED_SUBTHEME_MODIFIED_DATE);
+            .subthemeModifiedDate(UPDATED_SUBTHEME_MODIFIED_DATE)
+            .subthemeMaxGrade(UPDATED_SUBTHEME_MAX_GRADE);
         return subtheme;
     }
 
@@ -158,6 +164,7 @@ public class SubthemeResourceIT {
         assertThat(testSubtheme.getSubthemeCreationDate()).isEqualTo(DEFAULT_SUBTHEME_CREATION_DATE);
         assertThat(testSubtheme.getSubthemeModifiedBy()).isEqualTo(DEFAULT_SUBTHEME_MODIFIED_BY);
         assertThat(testSubtheme.getSubthemeModifiedDate()).isEqualTo(DEFAULT_SUBTHEME_MODIFIED_DATE);
+        assertThat(testSubtheme.getSubthemeMaxGrade()).isEqualTo(DEFAULT_SUBTHEME_MAX_GRADE);
     }
 
     @Test
@@ -196,7 +203,8 @@ public class SubthemeResourceIT {
             .andExpect(jsonPath("$.[*].subthemeCreatedBy").value(hasItem(DEFAULT_SUBTHEME_CREATED_BY)))
             .andExpect(jsonPath("$.[*].subthemeCreationDate").value(hasItem(DEFAULT_SUBTHEME_CREATION_DATE.toString())))
             .andExpect(jsonPath("$.[*].subthemeModifiedBy").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_BY)))
-            .andExpect(jsonPath("$.[*].subthemeModifiedDate").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_DATE.toString())));
+            .andExpect(jsonPath("$.[*].subthemeModifiedDate").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_DATE.toString())))
+            .andExpect(jsonPath("$.[*].subthemeMaxGrade").value(hasItem(DEFAULT_SUBTHEME_MAX_GRADE)));
     }
     
     @Test
@@ -215,7 +223,8 @@ public class SubthemeResourceIT {
             .andExpect(jsonPath("$.subthemeCreatedBy").value(DEFAULT_SUBTHEME_CREATED_BY))
             .andExpect(jsonPath("$.subthemeCreationDate").value(DEFAULT_SUBTHEME_CREATION_DATE.toString()))
             .andExpect(jsonPath("$.subthemeModifiedBy").value(DEFAULT_SUBTHEME_MODIFIED_BY))
-            .andExpect(jsonPath("$.subthemeModifiedDate").value(DEFAULT_SUBTHEME_MODIFIED_DATE.toString()));
+            .andExpect(jsonPath("$.subthemeModifiedDate").value(DEFAULT_SUBTHEME_MODIFIED_DATE.toString()))
+            .andExpect(jsonPath("$.subthemeMaxGrade").value(DEFAULT_SUBTHEME_MAX_GRADE));
     }
 
 
@@ -762,6 +771,111 @@ public class SubthemeResourceIT {
 
     @Test
     @Transactional
+    public void getAllSubthemesBySubthemeMaxGradeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeMaxGrade equals to DEFAULT_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldBeFound("subthemeMaxGrade.equals=" + DEFAULT_SUBTHEME_MAX_GRADE);
+
+        // Get all the subthemeList where subthemeMaxGrade equals to UPDATED_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldNotBeFound("subthemeMaxGrade.equals=" + UPDATED_SUBTHEME_MAX_GRADE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeMaxGradeIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeMaxGrade not equals to DEFAULT_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldNotBeFound("subthemeMaxGrade.notEquals=" + DEFAULT_SUBTHEME_MAX_GRADE);
+
+        // Get all the subthemeList where subthemeMaxGrade not equals to UPDATED_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldBeFound("subthemeMaxGrade.notEquals=" + UPDATED_SUBTHEME_MAX_GRADE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeMaxGradeIsInShouldWork() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeMaxGrade in DEFAULT_SUBTHEME_MAX_GRADE or UPDATED_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldBeFound("subthemeMaxGrade.in=" + DEFAULT_SUBTHEME_MAX_GRADE + "," + UPDATED_SUBTHEME_MAX_GRADE);
+
+        // Get all the subthemeList where subthemeMaxGrade equals to UPDATED_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldNotBeFound("subthemeMaxGrade.in=" + UPDATED_SUBTHEME_MAX_GRADE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeMaxGradeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeMaxGrade is not null
+        defaultSubthemeShouldBeFound("subthemeMaxGrade.specified=true");
+
+        // Get all the subthemeList where subthemeMaxGrade is null
+        defaultSubthemeShouldNotBeFound("subthemeMaxGrade.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeMaxGradeIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeMaxGrade is greater than or equal to DEFAULT_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldBeFound("subthemeMaxGrade.greaterThanOrEqual=" + DEFAULT_SUBTHEME_MAX_GRADE);
+
+        // Get all the subthemeList where subthemeMaxGrade is greater than or equal to UPDATED_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldNotBeFound("subthemeMaxGrade.greaterThanOrEqual=" + UPDATED_SUBTHEME_MAX_GRADE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeMaxGradeIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeMaxGrade is less than or equal to DEFAULT_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldBeFound("subthemeMaxGrade.lessThanOrEqual=" + DEFAULT_SUBTHEME_MAX_GRADE);
+
+        // Get all the subthemeList where subthemeMaxGrade is less than or equal to SMALLER_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldNotBeFound("subthemeMaxGrade.lessThanOrEqual=" + SMALLER_SUBTHEME_MAX_GRADE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeMaxGradeIsLessThanSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeMaxGrade is less than DEFAULT_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldNotBeFound("subthemeMaxGrade.lessThan=" + DEFAULT_SUBTHEME_MAX_GRADE);
+
+        // Get all the subthemeList where subthemeMaxGrade is less than UPDATED_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldBeFound("subthemeMaxGrade.lessThan=" + UPDATED_SUBTHEME_MAX_GRADE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSubthemesBySubthemeMaxGradeIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        subthemeRepository.saveAndFlush(subtheme);
+
+        // Get all the subthemeList where subthemeMaxGrade is greater than DEFAULT_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldNotBeFound("subthemeMaxGrade.greaterThan=" + DEFAULT_SUBTHEME_MAX_GRADE);
+
+        // Get all the subthemeList where subthemeMaxGrade is greater than SMALLER_SUBTHEME_MAX_GRADE
+        defaultSubthemeShouldBeFound("subthemeMaxGrade.greaterThan=" + SMALLER_SUBTHEME_MAX_GRADE);
+    }
+
+
+    @Test
+    @Transactional
     public void getAllSubthemesByThemeIsEqualToSomething() throws Exception {
         // Initialize the database
         subthemeRepository.saveAndFlush(subtheme);
@@ -792,7 +906,8 @@ public class SubthemeResourceIT {
             .andExpect(jsonPath("$.[*].subthemeCreatedBy").value(hasItem(DEFAULT_SUBTHEME_CREATED_BY)))
             .andExpect(jsonPath("$.[*].subthemeCreationDate").value(hasItem(DEFAULT_SUBTHEME_CREATION_DATE.toString())))
             .andExpect(jsonPath("$.[*].subthemeModifiedBy").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_BY)))
-            .andExpect(jsonPath("$.[*].subthemeModifiedDate").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_DATE.toString())));
+            .andExpect(jsonPath("$.[*].subthemeModifiedDate").value(hasItem(DEFAULT_SUBTHEME_MODIFIED_DATE.toString())))
+            .andExpect(jsonPath("$.[*].subthemeMaxGrade").value(hasItem(DEFAULT_SUBTHEME_MAX_GRADE)));
 
         // Check, that the count call also returns 1
         restSubthemeMockMvc.perform(get("/api/subthemes/count?sort=id,desc&" + filter))
@@ -845,7 +960,8 @@ public class SubthemeResourceIT {
             .subthemeCreatedBy(UPDATED_SUBTHEME_CREATED_BY)
             .subthemeCreationDate(UPDATED_SUBTHEME_CREATION_DATE)
             .subthemeModifiedBy(UPDATED_SUBTHEME_MODIFIED_BY)
-            .subthemeModifiedDate(UPDATED_SUBTHEME_MODIFIED_DATE);
+            .subthemeModifiedDate(UPDATED_SUBTHEME_MODIFIED_DATE)
+            .subthemeMaxGrade(UPDATED_SUBTHEME_MAX_GRADE);
 
         restSubthemeMockMvc.perform(put("/api/subthemes")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -862,6 +978,7 @@ public class SubthemeResourceIT {
         assertThat(testSubtheme.getSubthemeCreationDate()).isEqualTo(UPDATED_SUBTHEME_CREATION_DATE);
         assertThat(testSubtheme.getSubthemeModifiedBy()).isEqualTo(UPDATED_SUBTHEME_MODIFIED_BY);
         assertThat(testSubtheme.getSubthemeModifiedDate()).isEqualTo(UPDATED_SUBTHEME_MODIFIED_DATE);
+        assertThat(testSubtheme.getSubthemeMaxGrade()).isEqualTo(UPDATED_SUBTHEME_MAX_GRADE);
     }
 
     @Test

@@ -40,7 +40,7 @@
                 <td>{{theme.themeModifiedDate | date:'mediumDate'}}</td>
                 <td>
                     <div *ngIf="theme.subject">
-                        <a [routerLink]="['/subject', theme.subject?.id, 'view' ]" >{{theme.subject?.id}}</a>
+                        <a [routerLink]="['/subject', theme.subject.id, 'view' ]" >{{theme.subject.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    
+
     <!--
         Added the entity Subtheme.
     -->
@@ -31,6 +31,9 @@
                 <constraints nullable="true" />
             </column>
             <column name="subtheme_modified_date" type="date">
+                <constraints nullable="true" />
+            </column>
+            <column name="subtheme_max_grade" type="integer">
                 <constraints nullable="true" />
             </column>
             <column name="theme_id" type="bigint">
@@ -65,6 +68,8 @@
             <column name="subtheme_creation_date" type="date"/>
             <column name="subtheme_modified_by" type="string"/>
             <column name="subtheme_modified_date" type="date"/>
+            <column name="subtheme_max_grade" type="numeric"/>
+            <column name="theme_id" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here, do not remove-->
         </loadData>
     </changeSet>
