@@ -44,7 +44,8 @@ public class PDDLProblem implements PDDL {
 				"\n" + 
 				getActivitiesResources() +
 				"\n" +
-				getListOfActivitiesWithReqsAndNoReqs() +
+//				getListOfActivitiesWithReqsAndNoReqs() +
+				"TBD" +
 				"\n" + 
 				"	(= (maxgrade-subtheme Binary) 100)\n" + 
 				"	(= (maxgrade-subtheme Red-Black) 100)\n" + 
