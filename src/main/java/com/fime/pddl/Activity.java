@@ -4,12 +4,12 @@ import java.util.List;
 
 public class Activity {
 
-    private String activityIdentifier;
-    private String activityName;
+    private String identifier;
+    private String name;
     private Subtheme parentSubtheme;
     //	si dependencies es nula o vacia califica para: (not-has-reqs LA1050) y si esta llena puede ser: (has-reqs A4 Binary)
     private List<Object> dependencies;
-    private boolean activityDone;
+    private boolean done;
     private int value; //Maestro
     private int studentGrade;
     private int duration;
@@ -18,25 +18,25 @@ public class Activity {
     public Activity() {
     }
 
-    public Activity(String activityIdentifier, String activityName, Subtheme parentSubtheme, List<Object> dependencies,
-			boolean activityDone, int value, int studentGrade, int duration, List<Resource> resources) {
-		this.activityIdentifier = activityIdentifier;
-		this.activityName = activityName;
+    public Activity(String identifier, String name, Subtheme parentSubtheme, List<Object> dependencies,
+                    boolean done, int value, int studentGrade, int duration, List<Resource> resources) {
+		this.identifier = identifier;
+		this.name = name;
 		this.parentSubtheme = parentSubtheme;
 		this.dependencies = dependencies;
-		this.activityDone = activityDone;
+		this.done = done;
 		this.value = value;
 		this.studentGrade = studentGrade;
 		this.duration = duration;
 		this.resources = resources;
 	}
 
-	public String getActivityIdentifier() {
-        return this.activityIdentifier;
+	public String getIdentifier() {
+        return this.identifier;
     }
 
-    public String getActivityName() {
-        return this.activityName;
+    public String getName() {
+        return this.name;
     }
 
     public Subtheme getParentSubtheme() {
@@ -47,8 +47,8 @@ public class Activity {
         return this.dependencies;
     }
 
-    public boolean isActivityDone() {
-        return this.activityDone;
+    public boolean isDone() {
+        return this.done;
     }
 
     public int getValue() {
@@ -67,12 +67,12 @@ public class Activity {
         return this.resources;
     }
 
-    public void setActivityIdentifier(String activityIdentifier) {
-        this.activityIdentifier = activityIdentifier;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setParentSubtheme(Subtheme parentSubtheme) {
@@ -83,8 +83,8 @@ public class Activity {
         this.dependencies = dependencies;
     }
 
-    public void setActivityDone(boolean activityDone) {
-        this.activityDone = activityDone;
+    public void setDone(boolean done) {
+        this.done = done;
     }
 
     public void setValue(int value) {
@@ -108,12 +108,12 @@ public class Activity {
         if (!(o instanceof Activity)) return false;
         final Activity other = (Activity) o;
         if (!other.canEqual((Object) this)) return false;
-        final Object this$activityIdentifier = this.activityIdentifier;
-        final Object other$activityIdentifier = other.activityIdentifier;
+        final Object this$activityIdentifier = this.identifier;
+        final Object other$activityIdentifier = other.identifier;
         if (this$activityIdentifier == null ? other$activityIdentifier != null : !this$activityIdentifier.equals(other$activityIdentifier))
             return false;
-        final Object this$activityName = this.activityName;
-        final Object other$activityName = other.activityName;
+        final Object this$activityName = this.name;
+        final Object other$activityName = other.name;
         if (this$activityName == null ? other$activityName != null : !this$activityName.equals(other$activityName))
             return false;
         final Object this$parentSubtheme = this.parentSubtheme;
@@ -124,7 +124,7 @@ public class Activity {
         final Object other$dependencies = other.dependencies;
         if (this$dependencies == null ? other$dependencies != null : !this$dependencies.equals(other$dependencies))
             return false;
-        if (this.activityDone != other.activityDone) return false;
+        if (this.done != other.done) return false;
         if (this.value != other.value) return false;
         if (this.studentGrade != other.studentGrade) return false;
         if (this.duration != other.duration) return false;
@@ -141,15 +141,15 @@ public class Activity {
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final Object $activityIdentifier = this.activityIdentifier;
+        final Object $activityIdentifier = this.identifier;
         result = result * PRIME + ($activityIdentifier == null ? 43 : $activityIdentifier.hashCode());
-        final Object $activityName = this.activityName;
+        final Object $activityName = this.name;
         result = result * PRIME + ($activityName == null ? 43 : $activityName.hashCode());
         final Object $parentSubtheme = this.parentSubtheme;
         result = result * PRIME + ($parentSubtheme == null ? 43 : $parentSubtheme.hashCode());
         final Object $dependencies = this.dependencies;
         result = result * PRIME + ($dependencies == null ? 43 : $dependencies.hashCode());
-        result = result * PRIME + (this.activityDone ? 79 : 97);
+        result = result * PRIME + (this.done ? 79 : 97);
         result = result * PRIME + this.value;
         result = result * PRIME + this.studentGrade;
         result = result * PRIME + this.duration;
@@ -159,6 +159,6 @@ public class Activity {
     }
 
     public String toString() {
-        return "Activity(activityIdentifier=" + this.activityIdentifier + ", activityName=" + this.activityName + ", parentSubtheme=" + this.parentSubtheme + ", dependencies=" + this.dependencies + ", activityDone=" + this.activityDone + ", value=" + this.value + ", studentGrade=" + this.studentGrade + ", duration=" + this.duration + ", resources=" + this.resources + ")";
+        return "Activity(activityIdentifier=" + this.identifier + ", activityName=" + this.name + ", parentSubtheme=" + this.parentSubtheme + ", dependencies=" + this.dependencies + ", activityDone=" + this.done + ", value=" + this.value + ", studentGrade=" + this.studentGrade + ", duration=" + this.duration + ", resources=" + this.resources + ")";
     }
 }

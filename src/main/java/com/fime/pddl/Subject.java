@@ -2,28 +2,28 @@ package com.fime.pddl;
 
 public class Subject {
 
-    private String subjectName;
+    private String name;
     //	private List<Object> dependencies;
-    private boolean subjectDone;
+    private boolean done;
     private int credits;
     private int minGrade;
-    
+
     public Subject() {
     }
-    
-    public Subject(String subjectName, boolean subjectDone, int credits, int minGrade) {
-		this.subjectName = subjectName;
-		this.subjectDone = subjectDone;
+
+    public Subject(String name, boolean done, int credits, int minGrade) {
+		this.name = name;
+		this.done = done;
 		this.credits = credits;
 		this.minGrade = minGrade;
 	}
 
-	public String getSubjectName() {
-        return this.subjectName;
+    public String getName() {
+        return this.name;
     }
 
-    public boolean isSubjectDone() {
-        return this.subjectDone;
+    public boolean isDone() {
+        return this.done;
     }
 
     public int getCredits() {
@@ -34,12 +34,12 @@ public class Subject {
         return this.minGrade;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setSubjectDone(boolean subjectDone) {
-        this.subjectDone = subjectDone;
+    public void setDone(boolean done) {
+        this.done = done;
     }
 
     public void setCredits(int credits) {
@@ -55,11 +55,10 @@ public class Subject {
         if (!(o instanceof Subject)) return false;
         final Subject other = (Subject) o;
         if (!other.canEqual((Object) this)) return false;
-        final Object this$subjectName = this.subjectName;
-        final Object other$subjectName = other.subjectName;
-        if (this$subjectName == null ? other$subjectName != null : !this$subjectName.equals(other$subjectName))
-            return false;
-        if (this.subjectDone != other.subjectDone) return false;
+        final Object this$name = this.name;
+        final Object other$name = other.name;
+        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (this.done != other.done) return false;
         if (this.credits != other.credits) return false;
         if (this.minGrade != other.minGrade) return false;
         return true;
@@ -72,15 +71,15 @@ public class Subject {
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final Object $subjectName = this.subjectName;
-        result = result * PRIME + ($subjectName == null ? 43 : $subjectName.hashCode());
-        result = result * PRIME + (this.subjectDone ? 79 : 97);
+        final Object $name = this.name;
+        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+        result = result * PRIME + (this.done ? 79 : 97);
         result = result * PRIME + this.credits;
         result = result * PRIME + this.minGrade;
         return result;
     }
 
     public String toString() {
-        return "Subject(subjectName=" + this.subjectName + ", subjectDone=" + this.subjectDone + ", credits=" + this.credits + ", minGrade=" + this.minGrade + ")";
+        return "Subject(name=" + this.name + ", done=" + this.done + ", credits=" + this.credits + ", minGrade=" + this.minGrade + ")";
     }
 }

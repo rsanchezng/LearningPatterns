@@ -2,7 +2,7 @@ package com.fime.pddl;
 
 public class Student {
 
-    private String studentName;
+    private String name;
     //	available-credits student1
     private int availableCredits;
     //	Esto hace referencia a total-credits-subject-gain student1
@@ -11,8 +11,8 @@ public class Student {
     public Student() {
     }
 
-    public String getStudentName() {
-        return this.studentName;
+    public String getName() {
+        return this.name;
     }
 
     public int getAvailableCredits() {
@@ -23,8 +23,8 @@ public class Student {
         return this.acumulatedCredits;
     }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setAvailableCredits(int availableCredits) {
@@ -40,10 +40,9 @@ public class Student {
         if (!(o instanceof Student)) return false;
         final Student other = (Student) o;
         if (!other.canEqual((Object) this)) return false;
-        final Object this$studentName = this.studentName;
-        final Object other$studentName = other.studentName;
-        if (this$studentName == null ? other$studentName != null : !this$studentName.equals(other$studentName))
-            return false;
+        final Object this$name = this.name;
+        final Object other$name = other.name;
+        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
         if (this.availableCredits != other.availableCredits) return false;
         if (this.acumulatedCredits != other.acumulatedCredits) return false;
         return true;
@@ -56,14 +55,14 @@ public class Student {
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final Object $studentName = this.studentName;
-        result = result * PRIME + ($studentName == null ? 43 : $studentName.hashCode());
+        final Object $name = this.name;
+        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
         result = result * PRIME + this.availableCredits;
         result = result * PRIME + this.acumulatedCredits;
         return result;
     }
 
     public String toString() {
-        return "Student(studentName=" + this.studentName + ", availableCredits=" + this.availableCredits + ", acumulatedCredits=" + this.acumulatedCredits + ")";
+        return "Student(name=" + this.name + ", availableCredits=" + this.availableCredits + ", acumulatedCredits=" + this.acumulatedCredits + ")";
     }
 }

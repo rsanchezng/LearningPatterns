@@ -2,35 +2,35 @@ package com.fime.pddl;
 
 public class Resource {
 
-    private String resourceName;
-    private boolean resourceFree;
-    private int resourceQuantity;
+    private String name;
+    private boolean available;
+    private int quantity;
 
     public Resource() {
     }
 
-    public String getResourceName() {
-        return this.resourceName;
+    public String getName() {
+        return this.name;
     }
 
-    public boolean isResourceFree() {
-        return this.resourceFree;
+    public boolean isAvailable() {
+        return this.available;
     }
 
-    public int getResourceQuantity() {
-        return this.resourceQuantity;
+    public int getQuantity() {
+        return this.quantity;
     }
 
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setResourceFree(boolean resourceFree) {
-        this.resourceFree = resourceFree;
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
-    public void setResourceQuantity(int resourceQuantity) {
-        this.resourceQuantity = resourceQuantity;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public boolean equals(final Object o) {
@@ -38,12 +38,11 @@ public class Resource {
         if (!(o instanceof Resource)) return false;
         final Resource other = (Resource) o;
         if (!other.canEqual((Object) this)) return false;
-        final Object this$resourceName = this.resourceName;
-        final Object other$resourceName = other.resourceName;
-        if (this$resourceName == null ? other$resourceName != null : !this$resourceName.equals(other$resourceName))
-            return false;
-        if (this.resourceFree != other.resourceFree) return false;
-        if (this.resourceQuantity != other.resourceQuantity) return false;
+        final Object this$name = this.name;
+        final Object other$name = other.name;
+        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (this.available != other.available) return false;
+        if (this.quantity != other.quantity) return false;
         return true;
     }
 
@@ -54,14 +53,14 @@ public class Resource {
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final Object $resourceName = this.resourceName;
-        result = result * PRIME + ($resourceName == null ? 43 : $resourceName.hashCode());
-        result = result * PRIME + (this.resourceFree ? 79 : 97);
-        result = result * PRIME + this.resourceQuantity;
+        final Object $name = this.name;
+        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+        result = result * PRIME + (this.available ? 79 : 97);
+        result = result * PRIME + this.quantity;
         return result;
     }
 
     public String toString() {
-        return "Resource(resourceName=" + this.resourceName + ", resourceFree=" + this.resourceFree + ", resourceQuantity=" + this.resourceQuantity + ")";
+        return "Resource(name=" + this.name + ", available=" + this.available + ", quantity=" + this.quantity + ")";
     }
 }

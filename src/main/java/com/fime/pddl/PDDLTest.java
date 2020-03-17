@@ -8,7 +8,7 @@ public class PDDLTest {
 	public static void main(String[] args) throws IOException {
 
 		Student student = new Student();
-		student.setStudentName("Adrian");
+		student.setName("Adrian");
 
 		List<Subject> subjects  = new ArrayList<>();
 		List<Theme> themes = new ArrayList<>();
@@ -25,7 +25,7 @@ public class PDDLTest {
 
 		Theme theme1 = new Theme("Theme1", subject1, false);
 		themes.add(theme1);
-		
+
 		Theme theme2 = new Theme("Theme2", subject2, false);
 		themes.add(theme2);
 
@@ -33,9 +33,9 @@ public class PDDLTest {
         subthemes.add(subtheme1);
         Subtheme subtheme2 = new Subtheme("Subtheme2", theme2, false, 0, 50);
         subthemes.add(subtheme2);
-        
+
         Resource res1 = new Resource();
-        res1.setResourceName("Resource1");
+        res1.setName("Resource1");
         resources.add(res1);
 
         Activity activity1 = new Activity("Activity1", "Activity1", subtheme1, null, false, 15, 50, 0, resources);
