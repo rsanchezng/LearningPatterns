@@ -31,6 +31,7 @@ export class SubthemeUpdateComponent implements OnInit {
     subthemeCreationDate: [],
     subthemeModifiedBy: [],
     subthemeModifiedDate: [],
+    subthemeMaxGrade: [],
     theme: []
   });
 
@@ -61,6 +62,7 @@ export class SubthemeUpdateComponent implements OnInit {
       subthemeCreationDate: subtheme.subthemeCreationDate,
       subthemeModifiedBy: subtheme.subthemeModifiedBy,
       subthemeModifiedDate: subtheme.subthemeModifiedDate,
+      subthemeMaxGrade: subtheme.subthemeMaxGrade,
       theme: subtheme.theme
     });
   }
@@ -89,6 +91,7 @@ export class SubthemeUpdateComponent implements OnInit {
       subthemeCreationDate: this.editForm.get(['subthemeCreationDate']).value,
       subthemeModifiedBy: this.editForm.get(['subthemeModifiedBy']).value,
       subthemeModifiedDate: this.editForm.get(['subthemeModifiedDate']).value,
+      subthemeMaxGrade: this.editForm.get(['subthemeMaxGrade']).value,
       theme: this.editForm.get(['theme']).value
     };
   }

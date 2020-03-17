@@ -39,6 +39,8 @@ public class SubthemeCriteria implements Serializable, Criteria {
 
     private LocalDateFilter subthemeModifiedDate;
 
+    private IntegerFilter subthemeMaxGrade;
+
     private LongFilter themeId;
 
     public SubthemeCriteria(){
@@ -52,6 +54,7 @@ public class SubthemeCriteria implements Serializable, Criteria {
         this.subthemeCreationDate = other.subthemeCreationDate == null ? null : other.subthemeCreationDate.copy();
         this.subthemeModifiedBy = other.subthemeModifiedBy == null ? null : other.subthemeModifiedBy.copy();
         this.subthemeModifiedDate = other.subthemeModifiedDate == null ? null : other.subthemeModifiedDate.copy();
+        this.subthemeMaxGrade = other.subthemeMaxGrade == null ? null : other.subthemeMaxGrade.copy();
         this.themeId = other.themeId == null ? null : other.themeId.copy();
     }
 
@@ -116,6 +119,14 @@ public class SubthemeCriteria implements Serializable, Criteria {
         this.subthemeModifiedDate = subthemeModifiedDate;
     }
 
+    public IntegerFilter getSubthemeMaxGrade() {
+        return subthemeMaxGrade;
+    }
+
+    public void setSubthemeMaxGrade(IntegerFilter subthemeMaxGrade) {
+        this.subthemeMaxGrade = subthemeMaxGrade;
+    }
+
     public LongFilter getThemeId() {
         return themeId;
     }
@@ -142,6 +153,7 @@ public class SubthemeCriteria implements Serializable, Criteria {
             Objects.equals(subthemeCreationDate, that.subthemeCreationDate) &&
             Objects.equals(subthemeModifiedBy, that.subthemeModifiedBy) &&
             Objects.equals(subthemeModifiedDate, that.subthemeModifiedDate) &&
+            Objects.equals(subthemeMaxGrade, that.subthemeMaxGrade) &&
             Objects.equals(themeId, that.themeId);
     }
 
@@ -155,6 +167,7 @@ public class SubthemeCriteria implements Serializable, Criteria {
         subthemeCreationDate,
         subthemeModifiedBy,
         subthemeModifiedDate,
+        subthemeMaxGrade,
         themeId
         );
     }
@@ -169,6 +182,7 @@ public class SubthemeCriteria implements Serializable, Criteria {
                 (subthemeCreationDate != null ? "subthemeCreationDate=" + subthemeCreationDate + ", " : "") +
                 (subthemeModifiedBy != null ? "subthemeModifiedBy=" + subthemeModifiedBy + ", " : "") +
                 (subthemeModifiedDate != null ? "subthemeModifiedDate=" + subthemeModifiedDate + ", " : "") +
+                (subthemeMaxGrade != null ? "subthemeMaxGrade=" + subthemeMaxGrade + ", " : "") +
                 (themeId != null ? "themeId=" + themeId + ", " : "") +
             "}";
     }

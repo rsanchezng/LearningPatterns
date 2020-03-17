@@ -24,7 +24,7 @@ describe('Service Tests', () => {
       httpMock = injector.get(HttpTestingController);
       currentDate = moment();
 
-      elemDefault = new Subtheme(0, 'AAAAAAA', 'AAAAAAA', 'AAAAAAA', currentDate, 'AAAAAAA', currentDate);
+      elemDefault = new Subtheme(0, 'AAAAAAA', 'AAAAAAA', 'AAAAAAA', currentDate, 'AAAAAAA', currentDate, 0);
     });
 
     describe('Service methods', () => {
@@ -79,7 +79,8 @@ describe('Service Tests', () => {
             subthemeCreatedBy: 'BBBBBB',
             subthemeCreationDate: currentDate.format(DATE_FORMAT),
             subthemeModifiedBy: 'BBBBBB',
-            subthemeModifiedDate: currentDate.format(DATE_FORMAT)
+            subthemeModifiedDate: currentDate.format(DATE_FORMAT),
+            subthemeMaxGrade: 1
           },
           elemDefault
         );
@@ -108,7 +109,8 @@ describe('Service Tests', () => {
             subthemeCreatedBy: 'BBBBBB',
             subthemeCreationDate: currentDate.format(DATE_FORMAT),
             subthemeModifiedBy: 'BBBBBB',
-            subthemeModifiedDate: currentDate.format(DATE_FORMAT)
+            subthemeModifiedDate: currentDate.format(DATE_FORMAT),
+            subthemeMaxGrade: 1
           },
           elemDefault
         );

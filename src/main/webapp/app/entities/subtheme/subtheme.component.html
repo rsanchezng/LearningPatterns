@@ -25,6 +25,7 @@
             <th scope="col" ><span>Subtheme Creation Date</span></th>
             <th scope="col" ><span>Subtheme Modified By</span></th>
             <th scope="col" ><span>Subtheme Modified Date</span></th>
+            <th scope="col" ><span>Subtheme Max Grade</span></th>
             <th scope="col" ><span>Theme</span></th>
             <th scope="col"></th>
             </tr>
@@ -38,6 +39,7 @@
                 <td>{{subtheme.subthemeCreationDate | date:'mediumDate'}}</td>
                 <td>{{subtheme.subthemeModifiedBy}}</td>
                 <td>{{subtheme.subthemeModifiedDate | date:'mediumDate'}}</td>
+                <td>{{subtheme.subthemeMaxGrade}}</td>
                 <td>
                     <div *ngIf="subtheme.theme">
                         <a [routerLink]="['/theme', subtheme.theme?.id, 'view' ]" >{{subtheme.theme?.id}}</a>

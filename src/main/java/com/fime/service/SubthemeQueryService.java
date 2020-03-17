@@ -103,6 +103,9 @@ public class SubthemeQueryService extends QueryService<Subtheme> {
             if (criteria.getSubthemeModifiedDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getSubthemeModifiedDate(), Subtheme_.subthemeModifiedDate));
             }
+            if (criteria.getSubthemeMaxGrade() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getSubthemeMaxGrade(), Subtheme_.subthemeMaxGrade));
+            }
             if (criteria.getThemeId() != null) {
                 specification = specification.and(buildSpecification(criteria.getThemeId(),
                     root -> root.join(Subtheme_.theme, JoinType.LEFT).get(Theme_.id)));

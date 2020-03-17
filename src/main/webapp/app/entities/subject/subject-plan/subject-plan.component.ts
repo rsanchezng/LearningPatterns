@@ -52,18 +52,46 @@ export class SubjectPlanComponent implements OnInit {
   }
 
   public diagramNodeData: Array<go.ObjectData> = [
-    { key: 'Alpha', color: 'lightblue' },
-    { key: 'Beta', color: 'orange' },
-    { key: 'Gamma', color: 'lightgreen' },
-    { key: 'Delta', color: 'pink' }
+    { key: 'Data Structures & Algorithms', color: 'orange' },
+    { key: 'Trees', color: 'red' },
+    { key: 'Sorting', color: 'red' },
+    { key: 'Binary', color: 'lightblue' },
+    { key: 'Red-Black', color: 'lightblue' },
+    { key: 'Quicksort', color: 'lightblue' },
+    { key: 'Tree Sort', color: 'lightblue' },
+    { key: 'A1', color: 'green' },
+    { key: 'A2', color: 'green' },
+    { key: 'A3', color: 'green' },
+    { key: 'A4', color: 'green' },
+    { key: 'A5', color: 'green' },
+    { key: 'A6', color: 'green' },
+    { key: 'A7', color: 'green' },
+    { key: 'A8', color: 'green' },
+    { key: 'A9', color: 'green' },
+    { key: 'A10', color: 'green' },
+    { key: 'A11', color: 'green' },
+    { key: 'A12', color: 'green' }
   ];
 
   public diagramLinkData: Array<go.ObjectData> = [
-    { key: -1, from: 'Alpha', to: 'Beta' },
-    { key: -2, from: 'Alpha', to: 'Gamma' },
-    { key: -3, from: 'Beta', to: 'Beta' },
-    { key: -4, from: 'Gamma', to: 'Delta' },
-    { key: -5, from: 'Delta', to: 'Alpha' }
+    { key: -1, from: 'Data Structures & Algorithms', to: 'Trees' },
+    { key: -2, from: 'Data Structures & Algorithms', to: 'Sorting' },
+    { key: -3, from: 'Trees', to: 'Binary' },
+    { key: -4, from: 'Trees', to: 'Red-Black' },
+    { key: -5, from: 'Sorting', to: 'Quicksort' },
+    { key: -6, from: 'Sorting', to: 'Tree Sort' },
+    { key: -7, from: 'Binary', to: 'A1' },
+    { key: -8, from: 'Binary', to: 'A2' },
+    { key: -9, from: 'Binary', to: 'A3' },
+    { key: -10, from: 'Red-Black', to: 'A4' },
+    { key: -11, from: 'Red-Black', to: 'A5' },
+    { key: -12, from: 'Red-Black', to: 'A6' },
+    { key: -13, from: 'Quicksort', to: 'A7' },
+    { key: -14, from: 'Quicksort', to: 'A8' },
+    { key: -15, from: 'Quicksort', to: 'A9' },
+    { key: -16, from: 'Tree Sort', to: 'A10' },
+    { key: -17, from: 'Tree Sort', to: 'A11' },
+    { key: -18, from: 'Tree Sort', to: 'A12' }
   ];
 
   public diagramDivClassName: string = 'myDiagramDiv';

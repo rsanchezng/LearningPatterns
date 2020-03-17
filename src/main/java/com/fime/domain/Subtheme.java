@@ -38,6 +38,9 @@ public class Subtheme implements Serializable {
     @Column(name = "subtheme_modified_date")
     private LocalDate subthemeModifiedDate;
 
+    @Column(name = "subtheme_max_grade")
+    private Integer subthemeMaxGrade;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("subthemes")
     private Theme theme;
@@ -129,6 +132,19 @@ public class Subtheme implements Serializable {
         this.subthemeModifiedDate = subthemeModifiedDate;
     }
 
+    public Integer getSubthemeMaxGrade() {
+        return subthemeMaxGrade;
+    }
+
+    public Subtheme subthemeMaxGrade(Integer subthemeMaxGrade) {
+        this.subthemeMaxGrade = subthemeMaxGrade;
+        return this;
+    }
+
+    public void setSubthemeMaxGrade(Integer subthemeMaxGrade) {
+        this.subthemeMaxGrade = subthemeMaxGrade;
+    }
+
     public Theme getTheme() {
         return theme;
     }
@@ -169,6 +185,7 @@ public class Subtheme implements Serializable {
             ", subthemeCreationDate='" + getSubthemeCreationDate() + "'" +
             ", subthemeModifiedBy='" + getSubthemeModifiedBy() + "'" +
             ", subthemeModifiedDate='" + getSubthemeModifiedDate() + "'" +
+            ", subthemeMaxGrade=" + getSubthemeMaxGrade() +
             "}";
     }
 }
