@@ -20,7 +20,7 @@ public class PDDLProblem implements PDDL {
 				" )\n" +
 				"\n" +
 				"(:init\n" +
-				"	(free Mary)\n" +
+				"	(free "  + properties.getStudent().getName() +  ")\n" +
 				"	(= (total-credits-subject-gain " + properties.getStudent().getName() +  ") "  + properties.getStudent().getAcumulatedCredits() +  ")\n" +
 				"	(= (available-credits " + properties.getStudent().getName() + ") " + properties.getStudent().getAvailableCredits() + " )\n" +
 				"\n" +
@@ -44,20 +44,14 @@ public class PDDLProblem implements PDDL {
 				"\n" +
 				getActivitiesResources() +
 				"\n" +
-//				getListOfActivitiesWithReqsAndNoReqs() +
-				"TBD" +
+				getListOfActivitiesWithReqsAndNoReqs() +
 				"\n" +
-				"	(= (maxgrade-subtheme Binary) 100)\n" +
-				"	(= (maxgrade-subtheme Red-Black) 100)\n" +
-				"	(= (maxgrade-subtheme Quicksort) 100)\n" +
-				"	(= (maxgrade-subtheme TreeSort) 100)\n" +
+				getSubthemeMaxGrade() +
 				"\n" +
 				")\n" +
 				"\n" +
 				"\n" +
-				"(:goal (and\n" +
-				"		(pass-degree DataStructuresAlgs Mary)\n" +
-				"       )\n" +
+				getPassDegreeGoals() +
 				")\n" +
 				"\n" +
 				"\n" +
@@ -161,8 +155,8 @@ public class PDDLProblem implements PDDL {
 	private String getThemesParentSubject() {
 		StringBuilder themesParentSubject = new StringBuilder();
 		properties.getThemes().forEach(theme -> {
-			themesParentSubject.append("	(isPartOfSubject " + theme.getName() + " "
-					+ theme.getParentSubject().getName() + ")\n");
+			themesParentSubject.append("	(isPartOfSubject " + theme.getParentSubject().getName() + " "
+					+ theme.getName() + ")\n");
 		});
 
 		return themesParentSubject.toString();
@@ -185,14 +179,43 @@ public class PDDLProblem implements PDDL {
 		StringBuilder activitiesWithNoReqs = new StringBuilder();
 
 		properties.getActivites().forEach(activity -> {
-			if(activity.getDependencies().equals(null) || activity.getDependencies().isEmpty()) {
+			if(activity.getDependencies() == null || activity.getDependencies().isEmpty()) {
 				activitiesWithReqs.append("	(not-has-reqs " + activity.getName() + ")\n");
 			}
 			else {
-				activitiesWithNoReqs.append("	(has-reqs "+ activity.getName() +" Binary)\n");
+				activity.getDependencies().forEach(dependency ->{
+					activitiesWithNoReqs.append("	(has-reqs "+ activity.getName() +" " + dependency + ")\n");
+				});
 			}
 		});
 
-		return activitiesWithReqs.append(activitiesWithNoReqs).toString();
+		return activitiesWithReqs.append("\n").append(activitiesWithNoReqs).toString();
+	}
+	
+	private String getSubthemeMaxGrade() {
+		
+		StringBuilder subthemeMaxGrade = new StringBuilder();
+		
+		properties.getSubthemes().forEach(subtheme ->{
+			subthemeMaxGrade.append("	(= (maxgrade-subtheme " + subtheme.getName() + ") " + subtheme.getMaxGrade() +  ")\n");
+		});
+		
+		return subthemeMaxGrade.toString();
+	}
+	
+	private String getPassDegreeGoals() {
+		
+		StringBuilder passDegreeGoals = new StringBuilder();
+		
+		passDegreeGoals.append("(:goal (and\n");
+		
+		properties.getThemes().forEach(theme ->{
+			passDegreeGoals.append("		(pass-degree " + theme.getName() + " " + properties.getStudent().getName() + ")\n");
+		});
+		
+		passDegreeGoals.append("       )\n");
+		
+		
+		return passDegreeGoals.toString();
 	}
 }

@@ -4,7 +4,6 @@ public class Subtheme {
 
     private String name;
     private Theme parentTheme;
-    //	private List<Object> dependencies;
     private boolean done;
     private int maxGrade;
     private int studentScore;

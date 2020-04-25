@@ -3,7 +3,6 @@ package com.fime.pddl;
 public class Subject {
 
     private String name;
-    //	private List<Object> dependencies;
     private boolean done;
     private int credits;
     private int minGrade;

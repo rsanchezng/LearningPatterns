@@ -4,7 +4,6 @@ public class Theme {
 
     private String name;
     private Subject parentSubject;
-    //	private List<Object> dependencies;
     private boolean done;
 
     public Theme() {

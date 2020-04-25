@@ -70,7 +70,7 @@ public class PDDLDomain implements PDDL {
             if( properties.getActivites().indexOf(activity) != properties.getActivites().size() - 1){
                 header.append(IDENT + activity.getName() + "\n");
             } else {
-                header.append(IDENT + activity.getName() + " - Activity\n");
+                header.append(IDENT + activity.getName() + " - LA\n");
             }
         });
         header.append("\n\n");
@@ -128,7 +128,7 @@ public class PDDLDomain implements PDDL {
 
 		properties.getThemes().forEach((theme) -> {
 
-			subjectEnrollment.append("(:durative-action PASS-"+ theme.getName() +"_" + theme.getParentSubject().getName() +
+			subjectEnrollment.append("(:durative-action PASS-Theme-"+ theme.getName() +"_" + theme.getParentSubject().getName() +
 					"\n:parameters (?s - student)\n" +
 					":duration (= ?duration 0)\n" +
 					":condition (and \n" +

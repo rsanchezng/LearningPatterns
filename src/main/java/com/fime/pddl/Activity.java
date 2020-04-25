@@ -8,7 +8,7 @@ public class Activity {
     private String name;
     private Subtheme parentSubtheme;
     //	si dependencies es nula o vacia califica para: (not-has-reqs LA1050) y si esta llena puede ser: (has-reqs A4 Binary)
-    private List<Object> dependencies;
+    private List<String> dependencies;
     private boolean done;
     private int value; //Maestro
     private int studentGrade;
@@ -18,7 +18,7 @@ public class Activity {
     public Activity() {
     }
 
-    public Activity(String identifier, String name, Subtheme parentSubtheme, List<Object> dependencies,
+    public Activity(String identifier, String name, Subtheme parentSubtheme, List<String> dependencies,
                     boolean done, int value, int studentGrade, int duration, List<Resource> resources) {
 		this.identifier = identifier;
 		this.name = name;
@@ -43,7 +43,7 @@ public class Activity {
         return this.parentSubtheme;
     }
 
-    public List<Object> getDependencies() {
+    public List<String> getDependencies() {
         return this.dependencies;
     }
 
@@ -79,7 +79,7 @@ public class Activity {
         this.parentSubtheme = parentSubtheme;
     }
 
-    public void setDependencies(List<Object> dependencies) {
+    public void setDependencies(List<String> dependencies) {
         this.dependencies = dependencies;
     }
 
