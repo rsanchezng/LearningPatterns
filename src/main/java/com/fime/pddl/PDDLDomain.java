@@ -3,7 +3,7 @@ package com.fime.pddl;
 public class PDDLDomain implements PDDL {
 
 	PDDLProperties properties;
-	
+
 	public PDDLDomain(PDDLProperties properties) {
 		this.properties = properties;
 	}
@@ -31,7 +31,7 @@ public class PDDLDomain implements PDDL {
 	}
 
 	private String createDomainHeader() {
-		
+
 		final String IDENT = "	";
 		StringBuilder header = new StringBuilder();
 
@@ -41,45 +41,45 @@ public class PDDLDomain implements PDDL {
 
 		properties.getSubjects().forEach((subject) -> {
 		    if( properties.getSubjects().indexOf(subject) != properties.getSubjects().size() - 1){
-                header.append(IDENT + subject.getSubjectName() + "\n");
+                header.append(IDENT + subject.getName() + "\n");
             } else {
-                header.append(IDENT + subject.getSubjectName() + " - Subject\n");
+                header.append(IDENT + subject.getName() + " - Subject\n");
             }
 		});
 		header.append("\n\n");
 
         properties.getThemes().forEach((theme) -> {
             if( properties.getThemes().indexOf(theme) != properties.getThemes().size() - 1){
-                header.append(IDENT + theme.getThemeName() + "\n");
+                header.append(IDENT + theme.getName() + "\n");
             } else {
-                header.append(IDENT + theme.getThemeName() + " - Theme\n");
+                header.append(IDENT + theme.getName() + " - Theme\n");
             }
         });
         header.append("\n\n");
 
         properties.getSubthemes().forEach((subtheme) -> {
             if( properties.getSubthemes().indexOf(subtheme) != properties.getSubthemes().size() - 1){
-                header.append(IDENT + subtheme.getSubthemeName() + "\n");
+                header.append(IDENT + subtheme.getName() + "\n");
             } else {
-                header.append(IDENT + subtheme.getSubthemeName() + " - Subtheme\n");
+                header.append(IDENT + subtheme.getName() + " - Subtheme\n");
             }
         });
         header.append("\n\n");
 
         properties.getActivites().forEach((activity) -> {
             if( properties.getActivites().indexOf(activity) != properties.getActivites().size() - 1){
-                header.append(IDENT + activity.getActivityName() + "\n");
+                header.append(IDENT + activity.getName() + "\n");
             } else {
-                header.append(IDENT + activity.getActivityName() + " - Activity\n");
+                header.append(IDENT + activity.getName() + " - LA\n");
             }
         });
         header.append("\n\n");
 
         properties.getResources().forEach((resource) -> {
             if( properties.getResources().indexOf(resource) != properties.getResources().size() - 1){
-                header.append(IDENT + resource.getResourceName() + "\n");
+                header.append(IDENT + resource.getName() + "\n");
             } else {
-                header.append(IDENT + resource.getResourceName() + " - Resource\n");
+                header.append(IDENT + resource.getName() + " - Resource\n");
             }
         });
         header.append("\n\n");
@@ -89,57 +89,57 @@ public class PDDLDomain implements PDDL {
 
 		return header.toString();
 	}
-	
+
 	private String createSubjectEnrollments() {
-		
+
 		StringBuilder subjectEnrollment = new StringBuilder();
 
 		subjectEnrollment.append("\n;-----------------------------------------------------------\n");
-		
+
 		properties.getSubjects().forEach((subject) -> {
-			
-			subjectEnrollment.append("(:durative-action enroll-subject_" + subject.getSubjectName() +"\n" + 
-					" :parameters (?s - student)\n" + 
-					" :duration (= ?duration 1)\n" + 
-					" :condition (and\n" + 
-					"        (at start (available-subject " +  subject.getSubjectName() + " ?s))\n" + 
-					"        (at start (not-approved " +  subject.getSubjectName() + " ?s))\n" + 
-					"        (at start (<(credits-subject " +  subject.getSubjectName() + " )(available-credits ?s)))\n" + 
-					"        )\n" + 
-					" :effect (and\n" + 
-					"        (at end (enrollment ?s " +  subject.getSubjectName() + "))\n" + 
-					"        (at end (decrease (available-credits ?s)(credits-subject " +  subject.getSubjectName() + ")))\n" + 
-					"        (at end (not (available-subject " +  subject.getSubjectName() + " ?s)))\n" + 
-					"        )\n" + 
+
+			subjectEnrollment.append("(:durative-action enroll-subject_" + subject.getName() +"\n" +
+					" :parameters (?s - student)\n" +
+					" :duration (= ?duration 1)\n" +
+					" :condition (and\n" +
+					"        (at start (available-subject " +  subject.getName() + " ?s))\n" +
+					"        (at start (not-approved " +  subject.getName() + " ?s))\n" +
+					"        (at start (<(credits-subject " +  subject.getName() + " )(available-credits ?s)))\n" +
+					"        )\n" +
+					" :effect (and\n" +
+					"        (at end (enrollment ?s " +  subject.getName() + "))\n" +
+					"        (at end (decrease (available-credits ?s)(credits-subject " +  subject.getName() + ")))\n" +
+					"        (at end (not (available-subject " +  subject.getName() + " ?s)))\n" +
+					"        )\n" +
 					")\n");
-			
+
 		});
 		subjectEnrollment.append("\n;-----------------------------------------------------------\n");
 		subjectEnrollment.append("\n\n");
 
         return subjectEnrollment.toString();
 	}
-	
+
 	private String getPassThemeActions() {
-		
+
 		StringBuilder subjectEnrollment = new StringBuilder();
 
 		subjectEnrollment.append("\n;-----------------------------------------------------------\n");
-		
+
 		properties.getThemes().forEach((theme) -> {
-			
-			subjectEnrollment.append("(:durative-action PASS-"+ theme.getThemeName() +"_" + theme.getParentSubject().getSubjectName() + 
-					"\n:parameters (?s - student)\n" + 
-					":duration (= ?duration 0)\n" + 
-					":condition (and \n" + 
-					"               (at start (enrollment ?s "+ theme.getParentSubject().getSubjectName() + "))\n" + 
-					getSubthemes(theme, theme.getParentSubject().getSubjectName()) +
-					"           )\n" + 
-					":effect (and\n" + 
-					"                (at end (done-Theme "+ theme.getThemeName() + " " + theme.getParentSubject().getSubjectName() + " ?s))\n" + 
-					"         )\n" + 
+
+			subjectEnrollment.append("(:durative-action PASS-Theme-"+ theme.getName() +"_" + theme.getParentSubject().getName() +
+					"\n:parameters (?s - student)\n" +
+					":duration (= ?duration 0)\n" +
+					":condition (and \n" +
+					"               (at start (enrollment ?s "+ theme.getParentSubject().getName() + "))\n" +
+					getSubthemes(theme, theme.getParentSubject().getName()) +
+					"           )\n" +
+					":effect (and\n" +
+					"                (at end (done-Theme "+ theme.getName() + " " + theme.getParentSubject().getName() + " ?s))\n" +
+					"         )\n" +
 					")\n");
-			
+
 		});
 		subjectEnrollment.append("\n;-----------------------------------------------------------\n");
 		subjectEnrollment.append("\n\n");
@@ -153,27 +153,27 @@ public class PDDLDomain implements PDDL {
 
 		properties.getSubthemes().forEach((subtheme) -> {
 			if (subtheme.getParentTheme().equals(theme)) {
-				conditions.append("               (at start (>= (score "+ subtheme.getSubthemeName()  + " ?s)(mingrade " + subjectName + ")))\n ");
+				conditions.append("               (at start (>= (score "+ subtheme.getName()  + " ?s)(mingrade " + subjectName + ")))\n ");
 			}
 		});
 
 		return conditions.toString();
 	}
-	
+
 	private String getPassSubjectActions() {
-		
+
 		StringBuilder passSubjectActions = new StringBuilder();
 
 		properties.getSubjects().forEach((subject) -> {
-			passSubjectActions.append("(:durative-action PASS-"+ subject.getSubjectName() + "\n" + 
-					":parameters (?s - student)\n" + 
-					":duration (= ?duration 1)\n" + 
-					":condition (and\n" + 
-					"                (at start (enrollment ?s " + subject.getSubjectName() + "))\n" + 
-					getThemes(subject, subject.getSubjectName()) +
-					"            )\n" + 
-					":effect\n" + 
-					"        (at end (done-subject-LA "+ subject.getSubjectName() + " ?s))\n" + 
+			passSubjectActions.append("(:durative-action PASS-"+ subject.getName() + "\n" +
+					":parameters (?s - student)\n" +
+					":duration (= ?duration 1)\n" +
+					":condition (and\n" +
+					"                (at start (enrollment ?s " + subject.getName() + "))\n" +
+					getThemes(subject, subject.getName()) +
+					"            )\n" +
+					":effect\n" +
+					"        (at end (done-subject-LA "+ subject.getName() + " ?s))\n" +
 					")\n\n");
 		});
 		passSubjectActions.append("\n;-----------------------------------------------------------\n");
@@ -188,7 +188,7 @@ public class PDDLDomain implements PDDL {
 
 		properties.getThemes().forEach((theme) -> {
 			if (theme.getParentSubject().equals(subject)) {
-				conditions.append("                (at start (done-Theme " + theme.getThemeName() + " " + subjectName + " ?s))\n");
+				conditions.append("                (at start (done-Theme " + theme.getName() + " " + subjectName + " ?s))\n");
 			}
 		});
 
