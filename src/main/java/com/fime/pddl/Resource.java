@@ -8,8 +8,15 @@ public class Resource {
 
     public Resource() {
     }
+    
+    public Resource(String name, boolean available, int quantity) {
+		super();
+		this.name = name;
+		this.available = available;
+		this.quantity = quantity;
+	}
 
-    public String getName() {
+	public String getName() {
         return this.name;
     }
 

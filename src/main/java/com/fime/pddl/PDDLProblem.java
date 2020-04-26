@@ -86,7 +86,7 @@ public class PDDLProblem implements PDDL {
 		properties.getActivites().forEach(activity -> {
 			if(!activity.isDone()) {
 				activitiesNotDone.append("	(not-done-LA " + activity.getName() + " "
-						+ activity.getParentSubtheme().getParentTheme().getName() + " " + studentName + ")\n");
+						+ activity.getParentSubtheme().getParentTheme().getParentSubject().getName() + " " + studentName + ")\n");
 			}
 		});
 
@@ -146,7 +146,7 @@ public class PDDLProblem implements PDDL {
 	private String getSubthemesParentTheme() {
 		StringBuilder subthemesParentTheme = new StringBuilder();
 		properties.getSubthemes().forEach(subtheme -> {
-			subthemesParentTheme.append("	(isPartOfTheme " + subtheme.getParentTheme().getName() + " " + subtheme.getName() + ")\n");
+			subthemesParentTheme.append("	(isPartOfTheme " + subtheme.getName() + " " + subtheme.getParentTheme().getName() + ")\n");
 		});
 
 		return subthemesParentTheme.toString();
@@ -155,8 +155,8 @@ public class PDDLProblem implements PDDL {
 	private String getThemesParentSubject() {
 		StringBuilder themesParentSubject = new StringBuilder();
 		properties.getThemes().forEach(theme -> {
-			themesParentSubject.append("	(isPartOfSubject " + theme.getParentSubject().getName() + " "
-					+ theme.getName() + ")\n");
+			themesParentSubject.append("	(isPartOfSubject " + theme.getName() + " "
+					+ theme.getParentSubject().getName() + ")\n");
 		});
 
 		return themesParentSubject.toString();
@@ -210,7 +210,7 @@ public class PDDLProblem implements PDDL {
 		passDegreeGoals.append("(:goal (and\n");
 		
 		properties.getThemes().forEach(theme ->{
-			passDegreeGoals.append("		(pass-degree " + theme.getName() + " " + properties.getStudent().getName() + ")\n");
+			passDegreeGoals.append("		(pass-degree " + theme.getParentSubject().getName() + " " + properties.getStudent().getName() + ")\n");
 		});
 		
 		passDegreeGoals.append("       )\n");
